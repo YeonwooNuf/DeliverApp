@@ -6,6 +6,7 @@ import 'package:delivery/widget/bottom_bar.dart';
 import 'package:flutter/material.dart';
 //test
 //김수현
+//나혼자해봄
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
