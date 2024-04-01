@@ -138,7 +138,7 @@ class HomeScreen extends StatelessWidget {
                         SizedBox(
                           width: 8,
                         ),
-                        _roundedContainer(' assets/images/jjajang.jpeg', '중식'),
+                        _roundedContainer('assets/images/jjajang.jpeg', '중식'),
                         SizedBox(
                           width: 8,
                         ),

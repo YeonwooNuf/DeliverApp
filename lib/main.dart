@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
         child: Scaffold(
           body: TabBarView(
             physics: NeverScrollableScrollPhysics(),
-            children: <Widget>[
+            children: <Widget>[ 
               HomePage(),
               FavoritePage(),
               OrderHistoryPage(),
