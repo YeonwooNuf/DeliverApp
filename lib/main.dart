@@ -1,5 +1,6 @@
 import 'package:delivery/pages/FavoritePage.dart';
 import 'package:delivery/pages/HomePage.dart';
+import 'package:delivery/pages/LoginPage.dart';
 import 'package:delivery/pages/MyPage.dart';
 import 'package:delivery/pages/OrderHistoryPage.dart';
 import 'package:delivery/widget/bottom_bar.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 //test
 //김수현
 //나혼자해봄
-void main() => runApp(MyApp());
+void main() => runApp(LoginPage());
 
 class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();

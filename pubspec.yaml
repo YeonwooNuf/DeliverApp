@@ -68,6 +68,9 @@ flutter:
   - assets/images/pho.jpeg
   - assets/images/pizza.jpeg
   - assets/images/sushi.jpeg
+  - assets/images/오토바이1.png
+  - assets/images/kakao_login_large_wide.png
+  - assets/images/android_light_sq_ctn@2x.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
