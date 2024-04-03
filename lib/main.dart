@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 //test
 //김수현
 //나혼자해봄
-void main() => runApp(LoginPage());
+void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();

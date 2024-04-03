@@ -20,14 +20,42 @@ class _DropDownButtonPageState extends State<FavoritePage> {
           Icon(Icons.arrow_drop_down,color: Colors.black,),
         ],
       ),
-      body: Container(
-        color: Colors.white,
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Container(
               color: Colors.red,
               height: 180,
-            )
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(10.0),
+                    
+                  
+                  
+
+                  )
+
+                ],
+
+              ),
+            ),
+             Container(
+              color: Colors.blue,
+              height: 180,
+            ),
+            Container(
+              color: Colors.yellow,
+              height: 180,
+            ),
+            Container(
+              color: Colors.green,
+              height: 180,
+            ),
+            Container(
+              color: Colors.purple,
+              height: 180,
+            ),
           ],
         ),
       )
