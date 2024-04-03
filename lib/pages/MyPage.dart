@@ -75,6 +75,43 @@ class DeliveryScreen extends StatelessWidget {
               '나의 리뷰       |         주문내역         |       즐겨찾기',
               style: TextStyle(fontSize: 16),
             ),
+            SizedBox(height: 70),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    '1',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  backgroundColor: Colors.grey[300],
+                ),
+                SizedBox(width: 90),
+                CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    '1',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  backgroundColor: Colors.grey[300],
+                ),
+                SizedBox(width: 90),
+                CircleAvatar(
+                  radius: 20,
+                  child: Text(
+                    '0',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  backgroundColor: Colors.grey[300],
+                ),
+              ],
+            ),
+            SizedBox(height: 24),
+            Text(
+              '나의 리뷰       |         주문내역         |       즐겨찾기',
+              style: TextStyle(fontSize: 16),
+            ),
             SizedBox(height: 40),
             SizedBox(
               width: double.infinity,
