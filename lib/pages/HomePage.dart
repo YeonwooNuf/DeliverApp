@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(HomePage());
-}
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -16,7 +13,6 @@ class HomePage extends StatelessWidget {
         primaryColor: Colors.black,
       ),
       home: Scaffold(
-        resizeToAvoidBottomInset: false, // 키보드로 인한 화면 크기 조정 방지
         body: Directionality(
           textDirection: TextDirection.ltr,
           child: HomeScreen(),
@@ -25,6 +21,7 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
 
 class HomeScreen extends StatelessWidget {
   @override
