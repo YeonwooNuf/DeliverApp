@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:delivery/pages/DetailPage.dart';
 
 // void main() {
 //   runApp(MyPage());
@@ -106,11 +107,6 @@ class DeliveryScreen extends StatelessWidget {
                   backgroundColor: Colors.grey[300],
                 ),
               ],
-            ),
-            SizedBox(height: 24),
-            Text(
-              '나의 리뷰       |         주문내역         |       즐겨찾기',
-              style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 40),
             SizedBox(

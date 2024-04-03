@@ -14,7 +14,14 @@ class DetailPage extends StatelessWidget {
   }
 }
 
-class DeliveryScreen extends StatelessWidget {
+class DeliveryScreen extends StatefulWidget {
+  @override
+  _DeliveryScreenState createState() => _DeliveryScreenState();
+}
+
+class _DeliveryScreenState extends State<DeliveryScreen> {
+  String displayInfo = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,15 +88,14 @@ class DeliveryScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0), // 네모낳게 만드는 부분
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ReviewPage()),
-                      );
+                      updateDisplayInfo('리뷰 정보 표시');
                     },
                     child: Text('리뷰'),
                   ),
@@ -97,15 +103,14 @@ class DeliveryScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,                      
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0), // 네모낳게 만드는 부분
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => OrderHistoryPage()),
-                      );
+                      updateDisplayInfo('주문내역 정보 표시');
                     },
                     child: Text('주문내역'),
                   ),
@@ -113,84 +118,34 @@ class DeliveryScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0), // 네모낳게 만드는 부분
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => FavoritesPage()),
-                      );
+                      updateDisplayInfo('즐겨찾기 정보 표시');
                     },  
                     child: Text('즐겨찾기'),
                   ),
                 ),
               ],
             ),
+            SizedBox(height: 24),
+            Text(
+              displayInfo,
+              style: TextStyle(fontSize: 16),
+            ),
           ],
         ),
       ),
     );
   }
-}
 
-class ReviewPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('리뷰'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('리뷰 사진'),
-            Text('리뷰 텍스트'),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class OrderHistoryPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('주문내역'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('주문했던 매장 사진'),
-            Text('주문 정보'),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class FavoritesPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('즐겨찾기'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('즐겨찾기 매장 사진'),
-            Text('즐겨찾기 매장 정보'),
-          ],
-        ),
-      ),
-    );
+  void updateDisplayInfo(String info) {
+    setState(() {
+      displayInfo = info;
+    });
   }
 }
