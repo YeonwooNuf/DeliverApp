@@ -1,12 +1,14 @@
-import 'package:delivery/pages/FavoritePage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
+// void main() {
+//   runApp(MyPage());
+// }
 
 class MyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: '배달 앱',
       home: DeliveryScreen(),
     );
   }
@@ -17,24 +19,26 @@ class DeliveryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('어플 이름'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
+          // mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
-          // mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: 8),
+            SizedBox(height: 80),
             Text(
               '장연우',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 30),
             Text(
               '010-2995-3117',
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 40),
+            SizedBox(height: 70),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -71,7 +75,7 @@ class DeliveryScreen extends StatelessWidget {
               '나의 리뷰       |         주문내역         |       즐겨찾기',
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 24),
+            SizedBox(height: 40),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -91,8 +95,9 @@ class DeliveryScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 24),
+            SizedBox(height: 60),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextButton.icon(
                   onPressed: () {
@@ -103,7 +108,7 @@ class DeliveryScreen extends StatelessWidget {
                   },
                   icon: Icon(Icons.location_on, size: 34),
                   label: Padding(
-                    padding: const EdgeInsets.only(left: 50.0),
+                    padding: const EdgeInsets.only(left: 150.0),
                     child: Text(
                       '주소등록',
                       style: TextStyle(fontSize: 20),
@@ -119,12 +124,12 @@ class DeliveryScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => FavoritePage()),
+                      MaterialPageRoute(builder: (context) => FavoritesPage()),
                     );
                   },
                   icon: Icon(Icons.favorite_border, size: 34),
                   label: Padding(
-                    padding: const EdgeInsets.only(left: 50.0),
+                    padding: const EdgeInsets.only(left: 150.0),
                     child: Text(
                       '즐겨찾기',
                       style: TextStyle(fontSize: 20),
@@ -172,16 +177,16 @@ class AddressPage extends StatelessWidget {
   }
 }
 
-// class FavoritesPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('즐겨찾기'),
-//       ),
-//       body: Center(
-//         child: Text('즐겨찾기 페이지'),
-//       ),
-//     );
-//   }
-// }
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('즐겨찾기'),
+      ),
+      body: Center(
+        child: Text('즐겨찾기 페이지'),
+      ),
+    );
+  }
+}
