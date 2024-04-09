@@ -1,5 +1,11 @@
+import 'package:delivery/category/Asian.dart';
+import 'package:delivery/category/Chicken.dart';
+import 'package:delivery/category/Chinese.dart';
+import 'package:delivery/category/Japanese.dart';
+import 'package:delivery/category/Korean.dart';
+import 'package:delivery/category/Mexican.dart';
+import 'package:delivery/category/Pizza.dart';
 import 'package:flutter/material.dart';
-
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -7,7 +13,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '타이틀',
       theme: ThemeData(
         brightness: Brightness.dark,
         primaryColor: Colors.black,
@@ -22,11 +27,9 @@ class HomePage extends StatelessWidget {
   }
 }
 
-
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // 수정된 부분: _appBar 함수 내부에 검색창이 포함된 Container를 추가함
     Widget _appBar() {
       return SafeArea(
         child: Container(
@@ -60,8 +63,7 @@ class HomeScreen extends StatelessWidget {
                           style: TextStyle(color: Colors.black),
                           decoration: InputDecoration(
                             hintText: '검색',
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 20),
+                            hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(22),
                             ),
@@ -78,99 +80,125 @@ class HomeScreen extends StatelessWidget {
         ),
       );
     }
-
-   Widget _roundedContainer(String image, String title) {
-  double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
-  return Expanded(
-    child: Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(30), // 컨테이너의 모서리를 둥글게 설정
-          ),
-          width: squareSize,
-          height: 50,
-          child: ClipRRect( // 이미지의 모서리만 둥글게 하기 위해 ClipRRect를 사용합니다.
-            borderRadius: BorderRadius.circular(30), // 이미지의 모서리를 둥글게 설정
-            child: Image.asset(
-              image,
-              width: squareSize,
-              height: 50,
-              fit: BoxFit.cover, // 이미지가 컨테이너에 꽉 차도록 설정
-            ),
-          ),
-        ),
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        )
-      ],
-    ),
-  );
-}
-
-
-    Widget _contents() {
+//카테고리 정의하는 메서드
+    Widget _roundedContainer(String image, String title, VoidCallback onTap) {
       double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
       return Expanded(
-          child: Container(
-        color: Colors.white,
-        child: SingleChildScrollView(
+        child: GestureDetector(
+          onTap: onTap,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        _roundedContainer('assets/images/bibimbap.jpeg', '한식'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        _roundedContainer('assets/images/sushi.jpeg', '일식'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        _roundedContainer('assets/images/jjajang.jpeg', '중식'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                       _roundedContainer('assets/images/chicken.jpeg', '치킨'),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      children: [
-                        _roundedContainer('assets/images/pizza.jpeg', '피자'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        _roundedContainer('assets/images/pho.jpeg', '아시아'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                       _roundedContainer('assets/images/burrito.jpeg', '멕시칸'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                  ],
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(30), // 컨테이너의 모서리를 둥글게 설정
+                ),
+                width: squareSize,
+                height: 50,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Image.asset(
+                    image,
+                    width: squareSize,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.black,
                 ),
               )
             ],
           ),
         ),
-      ));
+      );
+      
+    }
+
+    Widget _contents() {
+      double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
+      return Expanded(
+        child: Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          _roundedContainer('assets/images/bibimbap.jpeg', '한식', () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Korean()),
+                            );
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/sushi.jpeg', '일식', () {
+                             Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Japanese()),
+                            );
+                            // 클릭 시 수행할 동작 추가
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/jjajang.jpeg', '중식', () {
+                             Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Chinese()),
+                            );
+                            // 클릭 시 수행할 동작 추가
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/chicken.jpeg', '치킨', () {
+                             Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Chicken()),
+                            );
+                            // 클릭 시 수행할 동작 추가
+                          }),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          _roundedContainer('assets/images/pizza.jpeg', '피자', () {
+                             Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Pizza()),// 클릭 시 수행할 동작 추가
+                            );
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/pho.jpeg', '아시아', () {
+                             Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Asian()),
+                            );
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/burrito.jpeg', '멕시칸', () {
+                             Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Mexican()),
+                            );
+                          }),
+                          SizedBox(width: 8),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      );
     }
 
     return Scaffold(
@@ -179,6 +207,7 @@ class HomeScreen extends StatelessWidget {
           _appBar(),
           _contents(),
         ],
+
       ),
     );
   }
