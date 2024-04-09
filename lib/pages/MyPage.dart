@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-// void main() {
-//   runApp(MyPage());
-// }
+import 'package:delivery/pages/DetailPage.dart';
+import 'package:delivery/pages/AddressManagePage.dart';
+import 'package:delivery/pages/FavoritePage.dart';
 
 class MyPage extends StatelessWidget {
   @override
@@ -14,6 +13,8 @@ class MyPage extends StatelessWidget {
   }
 }
 
+// 깃 커밋 테스트
+
 class DeliveryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,6 @@ class DeliveryScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -82,7 +82,7 @@ class DeliveryScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DetailScreen()),
+                    MaterialPageRoute(builder: (context) => DetailPage()),
                   );
                 },
                 child: Text(
@@ -90,8 +90,8 @@ class DeliveryScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 18),
                 ),
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 247, 245, 245)), // 배경색을 빨간색으로 설정
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.black), // 전경색(텍스트 색상)을 흰색으로 설정
+                  backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 247, 245, 245)),
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
                 ),
               ),
             ),
@@ -99,45 +99,90 @@ class DeliveryScreen extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddressPage()),
-                    );
-                  },
-                  icon: Icon(Icons.location_on, size: 34),
-                  label: Padding(
-                    padding: const EdgeInsets.only(left: 150.0),
-                    child: Text(
-                      '주소등록',
-                      style: TextStyle(fontSize: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddressManagePage()),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.location_on, size: 34),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            '주소관리',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // 배경색을 빨간색으로 설정
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.black), // 전경색(텍스트 색상)을 흰색으로 설정
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                    ),
                   ),
                 ),
                 SizedBox(height: 16),
-                TextButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FavoritesPage()),
-                    );
-                  },
-                  icon: Icon(Icons.favorite_border, size: 34),
-                  label: Padding(
-                    padding: const EdgeInsets.only(left: 150.0),
-                    child: Text(
-                      '즐겨찾기',
-                      style: TextStyle(fontSize: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FavoritePage()),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.favorite_border, size: 34),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            '즐겨찾기',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ],
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
                     ),
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.white), // 배경색을 빨간색으로 설정
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.black), // 전경색(텍스트 색상)을 흰색으로 설정
+                ),
+                SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LogoutPage()),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Icon(Icons.exit_to_app, size: 34),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Text(
+                            '로그아웃',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        ),
+                      ],
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                    ),
                   ),
                 ),
               ],
@@ -149,43 +194,15 @@ class DeliveryScreen extends StatelessWidget {
   }
 }
 
-class DetailScreen extends StatelessWidget {
+class LogoutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('상세 정보'),
+        title: Text('로그아웃'),
       ),
       body: Center(
-        child: Text('상세 정보 페이지'),
-      ),
-    );
-  }
-}
-
-class AddressPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('주소등록'),
-      ),
-      body: Center(
-        child: Text('주소등록 페이지'),
-      ),
-    );
-  }
-}
-
-class FavoritesPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('즐겨찾기'),
-      ),
-      body: Center(
-        child: Text('즐겨찾기 페이지'),
+        child: Text('로그아웃 페이지'),
       ),
     );
   }
