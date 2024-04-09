@@ -4,7 +4,7 @@ class Japanese extends StatefulWidget {
   @override
   _JapaneseState createState() => _JapaneseState();
 }
-
+//test
 class _JapaneseState extends State<Japanese> {
   int _currentIndex = 1; // 초기 탭을 일식으로 설정
 
