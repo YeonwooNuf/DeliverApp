@@ -14,103 +14,120 @@ class _AddressManagePageState extends State<AddressManagePage> {
 
   @override
   Widget build(BuildContext context) {
+    double buttonWidth = MediaQuery.of(context).size.width * 0.9; // 화면 너비의 90%를 채우도록 설정
+
     return Scaffold(
       appBar: AppBar(
         title: Text('주소 관리'),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        //crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              // 새 주소 추가 기능 구현
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddressRegisterPage()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add_circle_outline, size: 30, color: Colors.black),
-                SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    '새 주소 추가',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
-                  ),
+          SizedBox(
+            width: buttonWidth,
+            child: ElevatedButton(
+              onPressed: () {
+                // 새 주소 추가 기능 구현
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddressRegisterPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 255, 255, 255), // 배경색을 흰색으로 설정
+                foregroundColor: Colors.black, // 텍스트 색상을 검정색으로 설정
+                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(color: Colors.grey),
                 ),
-              ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add_circle_outline, size: 30, color: Colors.black),
+                  SizedBox(width: 8), // 간격 조정
+                  Expanded(
+                    child: Text(
+                      '새 주소 추가',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          SizedBox(height: 25), // 간격 추가
-          ElevatedButton(
-            onPressed: () {
-              // 집 주소 추가 기능 구현
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.home, size: 30, color: Colors.black),
-                SizedBox(width: 16),
-                Expanded(
-                  child: Text(
-                    '집 주소 추가',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20, color: Colors.black),
-                  ),
+          SizedBox(height: 12), // 간격 추가
+          SizedBox(
+            width: buttonWidth,
+            child: ElevatedButton(
+              onPressed: () {
+                // 집 주소 추가 기능 구현
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white, // 배경색을 흰색으로 설정
+                foregroundColor: Colors.black, // 텍스트 색상을 검정색으로 설정
+                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(color: Colors.grey),
                 ),
-              ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.home, size: 30, color: Colors.black),
+                  SizedBox(width: 8), // 간격 조정
+                  Expanded(
+                    child: Text(
+                      '집 주소 추가',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(height: 5), // 간격 추가
-          ElevatedButton(
-            onPressed: () {
-              // 회사 주소 추가 기능 구현
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(0),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.work, size: 30, color: Colors.black),
-                SizedBox(width: 30),
-                Expanded(
-                  child: Text(
-                    '회사 주소 추가',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 20, color: Colors.black),
-                  ),
+          SizedBox(
+            width: buttonWidth,
+            child: ElevatedButton(
+              onPressed: () {
+                // 회사 주소 추가 기능 구현
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white, // 배경색을 흰색으로 설정
+                foregroundColor: Colors.black, // 텍스트 색상을 검정색으로 설정
+                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(color: Colors.grey),
                 ),
-              ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.work, size: 30, color: Colors.black),
+                  SizedBox(width: 8), // 간격 조정
+                  Expanded(
+                    child: Text(
+                      '회사 주소 추가',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(height: 30), // 간격 추가
-          Divider(height: 1, color: Colors.grey), // 구분선 추가
+          Container(
+            height: 4, // Divider의 굵기 조절
+            color: Colors.grey[300], // Divider의 색상 설정
+          ),
           SizedBox(height: 10),
           Text(
             '현재 주소 목록',
@@ -118,7 +135,10 @@ class _AddressManagePageState extends State<AddressManagePage> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),
-          Divider(height: 1, color: Colors.grey), // 구분선 추가
+          Container(
+            height: 4, // Divider의 굵기 조절
+            color: Colors.grey[300], // Divider의 색상 설정
+          ),
           SizedBox(height:30),
           Expanded(
             child: ListView.builder(

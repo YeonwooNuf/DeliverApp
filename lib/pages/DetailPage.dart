@@ -1,26 +1,12 @@
 import 'package:flutter/material.dart';
 
-/* void main() {
-  runApp(DeliveryScreen());
-} */
-
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '배달 앱',
-      home: DeliveryScreen(),
-    );
-  }
+  _DetailPageState createState() => _DetailPageState();
 }
 
-class DeliveryScreen extends StatefulWidget {
-  @override
-  _DeliveryScreenState createState() => _DeliveryScreenState();
-} // 버튼 누를 때 페이지 이동말고 같은 페이지에서 데이터 띄우는 코드
-
-class _DeliveryScreenState extends State<DeliveryScreen> {
-  String displayInfo = '';  // 버튼 누르면 뜨는 데이터 변수값
+class _DetailPageState extends State<DetailPage> {
+  String displayInfo = '';
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +15,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).pop();
           },
         ),
         title: Text('어플 이름'),
@@ -97,7 +83,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0), // 네모낳게 만드는 부분
+                        borderRadius: BorderRadius.circular(0),
                       ),
                     ),
                     onPressed: () {
@@ -110,9 +96,9 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,                      
+                      foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0), // 네모낳게 만드는 부분
+                        borderRadius: BorderRadius.circular(0),
                       ),
                     ),
                     onPressed: () {
@@ -127,12 +113,12 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0), // 네모낳게 만드는 부분
+                        borderRadius: BorderRadius.circular(0),
                       ),
                     ),
                     onPressed: () {
                       updateDisplayInfo('즐겨찾기 정보 표시');
-                    },  
+                    },
                     child: Text('즐겨찾기'),
                   ),
                 ),
