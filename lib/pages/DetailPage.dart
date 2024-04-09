@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(DetailPage());
-}
+/* void main() {
+  runApp(DeliveryScreen());
+} */
 
 class DetailPage extends StatelessWidget {
   @override
@@ -17,15 +17,21 @@ class DetailPage extends StatelessWidget {
 class DeliveryScreen extends StatefulWidget {
   @override
   _DeliveryScreenState createState() => _DeliveryScreenState();
-}
+} // 버튼 누를 때 페이지 이동말고 같은 페이지에서 데이터 띄우는 코드
 
 class _DeliveryScreenState extends State<DeliveryScreen> {
-  String displayInfo = '';
+  String displayInfo = '';  // 버튼 누르면 뜨는 데이터 변수값
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text('어플 이름'),
       ),
       body: Padding(
