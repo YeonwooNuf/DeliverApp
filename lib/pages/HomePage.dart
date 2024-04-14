@@ -1,10 +1,5 @@
-import 'package:delivery/category/Asian.dart';
-import 'package:delivery/category/Chicken.dart';
-import 'package:delivery/category/Chinese.dart';
-import 'package:delivery/category/Japanese.dart';
-import 'package:delivery/category/Korean.dart';
-import 'package:delivery/category/Mexican.dart';
-import 'package:delivery/category/Pizza.dart';
+import 'package:delivery/category/CategorySelect.dart';
+import 'package:delivery/pages/SearchPage.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -14,8 +9,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.black,
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
       ),
       home: Scaffold(
         body: Directionality(
@@ -52,34 +47,42 @@ class HomeScreen extends StatelessWidget {
               ),
               // 수정된 부분: 검색창이 AppBar 아래에 추가됨
               Container(
-                height: 60,
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: '검색',
-                            hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(22),
-                            ),
-                            prefixIcon: Icon(Icons.search, color: Colors.black),
+              height: 60,
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        onTap: () {
+                          // 검색 필드를 탭했을 때 SearchPage로 이동합니다.
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SearchPage()),
+                          );
+                        },
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          hintText: '검색',
+                          hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
                           ),
+                          prefixIcon: Icon(Icons.search, color: Colors.black),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
             ],
           ),
         ),
       );
     }
+
 //카테고리 정의하는 메서드
     Widget _roundedContainer(String image, String title, VoidCallback onTap) {
       double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
@@ -115,7 +118,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       );
-      
     }
 
     Widget _contents() {
@@ -132,33 +134,45 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          _roundedContainer('assets/images/bibimbap.jpeg', '한식', () {
+                          _roundedContainer('assets/images/bibimbap.jpeg', '한식',
+                              () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Korean()),
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '한식')),
                             );
                           }),
                           SizedBox(width: 8),
-                          _roundedContainer('assets/images/sushi.jpeg', '일식', () {
-                             Navigator.push(
+                          _roundedContainer('assets/images/sushi.jpeg', '일식',
+                              () {
+                            Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Japanese()),
-                            );
-                            // 클릭 시 수행할 동작 추가
-                          }),
-                          SizedBox(width: 8),
-                          _roundedContainer('assets/images/jjajang.jpeg', '중식', () {
-                             Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Chinese()),
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '일식')),
                             );
                             // 클릭 시 수행할 동작 추가
                           }),
                           SizedBox(width: 8),
-                          _roundedContainer('assets/images/chicken.jpeg', '치킨', () {
-                             Navigator.push(
+                          _roundedContainer('assets/images/jjajang.jpeg', '중식',
+                              () {
+                            Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Chicken()),
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '중식')),
+                            );
+                            // 클릭 시 수행할 동작 추가
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/chicken.jpeg', '치킨',
+                              () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '치킨')),
                             );
                             // 클릭 시 수행할 동작 추가
                           }),
@@ -167,24 +181,33 @@ class HomeScreen extends StatelessWidget {
                       SizedBox(height: 8),
                       Row(
                         children: [
-                          _roundedContainer('assets/images/pizza.jpeg', '피자', () {
-                             Navigator.push(
+                          _roundedContainer('assets/images/pizza.jpeg', '피자',
+                              () {
+                            Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Pizza()),// 클릭 시 수행할 동작 추가
+                              MaterialPageRoute(
+                                  builder: (context) => CategorySelect(
+                                      CategoryName: '피자')), // 클릭 시 수행할 동작 추가
                             );
                           }),
                           SizedBox(width: 8),
-                          _roundedContainer('assets/images/pho.jpeg', '아시아', () {
-                             Navigator.push(
+                          _roundedContainer('assets/images/pho.jpeg', '아시아',
+                              () {
+                            Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Asian()),
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '아시아')),
                             );
                           }),
                           SizedBox(width: 8),
-                          _roundedContainer('assets/images/burrito.jpeg', '멕시칸', () {
-                             Navigator.push(
+                          _roundedContainer('assets/images/burrito.jpeg', '멕시칸',
+                              () {
+                            Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Mexican()),
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '멕시칸')),
                             );
                           }),
                           SizedBox(width: 8),
@@ -207,7 +230,6 @@ class HomeScreen extends StatelessWidget {
           _appBar(),
           _contents(),
         ],
-
       ),
     );
   }
