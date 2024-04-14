@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'SearchPage.dart'; // SearchPage.dart 파일을 import 합니다.
 
+void main() {
+  runApp(HomePage());
+}
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,162 +26,144 @@ class HomePage extends StatelessWidget {
   }
 }
 
-
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // 수정된 부분: _appBar 함수 내부에 검색창이 포함된 Container를 추가함
-    Widget _appBar() {
-      return SafeArea(
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(color: Colors.white),
-          child: Column(
-            children: [
-              Row(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        children: [
+          _appBar(context), // _appBar에 context를 전달합니다.
+          _contents(context), // _contents에 context를 전달합니다.
+        ],
+      ),
+    );
+  }
+
+  Widget _appBar(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(color: Colors.white),
+        child: Column(
+          children: [
+            GestureDetector(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Icon(Icons.search, color: Colors.black), // 돋보기 아이콘 추가
                   Text(
                     '집 주소',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 18, color: Colors.black),
                   ),
-                  Icon(Icons.keyboard_arrow_down, color: Colors.black),
                   Expanded(child: Container(height: 50)),
                 ],
               ),
-              // 수정된 부분: 검색창이 AppBar 아래에 추가됨
-              Container(
-                height: 60,
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: '검색',
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(22),
-                            ),
-                            prefixIcon: Icon(Icons.search, color: Colors.black),
+            ),
+            Container(
+              height: 60,
+              color: Colors.white,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        onTap: () {
+                          // 검색 필드를 탭했을 때 SearchPage로 이동합니다.
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SearchPage()),
+                          );
+                        },
+                        style: TextStyle(color: Colors.black),
+                        decoration: InputDecoration(
+                          hintText: '검색',
+                          hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(22),
                           ),
+                          prefixIcon: Icon(Icons.search, color: Colors.black),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      );
-    }
-
-   Widget _roundedContainer(String image, String title) {
-  double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
-  return Expanded(
-    child: Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(30), // 컨테이너의 모서리를 둥글게 설정
-          ),
-          width: squareSize,
-          height: 50,
-          child: ClipRRect( // 이미지의 모서리만 둥글게 하기 위해 ClipRRect를 사용합니다.
-            borderRadius: BorderRadius.circular(30), // 이미지의 모서리를 둥글게 설정
-            child: Image.asset(
-              image,
-              width: squareSize,
-              height: 50,
-              fit: BoxFit.cover, // 이미지가 컨테이너에 꽉 차도록 설정
             ),
-          ),
+          ],
         ),
-        Text(
-          title,
-          style: TextStyle(
-            color: Colors.black,
-          ),
-        )
-      ],
-    ),
-  );
-}
+      ),
+    );
+  }
 
-
-    Widget _contents() {
-      double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
-      return Expanded(
-          child: Container(
-        color: Colors.white,
-        child: SingleChildScrollView(
+  Widget _contents(BuildContext context) {
+    // 내용 위젯을 반환합니다.
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Container( // 배경색을 흰색으로 설정한 Container를 추가합니다.
+          color: Colors.white,
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        _roundedContainer('assets/images/bibimbap.jpeg', '한식'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        _roundedContainer('assets/images/sushi.jpeg', '일식'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        _roundedContainer('assets/images/jjajang.jpeg', '중식'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                       _roundedContainer('assets/images/chicken.jpeg', '치킨'),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      children: [
-                        _roundedContainer('assets/images/pizza.jpeg', '피자'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        _roundedContainer('assets/images/pho.jpeg', '아시아'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                       _roundedContainer('assets/images/burrito.jpeg', '멕시칸'),
-                        SizedBox(
-                          width: 8,
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                  ],
-                ),
-              )
+              Row(
+                children: [
+                  _roundedContainer(context, 'assets/images/bibimbap.jpeg', '한식'),
+                  SizedBox(width: 8),
+                  _roundedContainer(context, 'assets/images/sushi.jpeg', '일식'),
+                  SizedBox(width: 8),
+                  _roundedContainer(context, 'assets/images/jjajang.jpeg', '중식'),
+                  SizedBox(width: 8),
+                  _roundedContainer(context, 'assets/images/chicken.jpeg', '치킨'),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  _roundedContainer(context, 'assets/images/pizza.jpeg', '피자'),
+                  SizedBox(width: 8),
+                  _roundedContainer(context, 'assets/images/pho.jpeg', '아시아'),
+                  SizedBox(width: 8),
+                  _roundedContainer(context, 'assets/images/burrito.jpeg', '멕시칸'),
+                  SizedBox(width: 8),
+                ],
+              ),
+              SizedBox(height: 8),
             ],
           ),
         ),
-      ));
-    }
+      ),
+    );
+  }
 
-    return Scaffold(
-      body: Column(
+  Widget _roundedContainer(BuildContext context, String image, String title) {
+    double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: Colors.white, // 배경색을 흰색으로 설정
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Column(
         children: [
-          _appBar(),
-          _contents(),
+          Container(
+            width: squareSize,
+            height: 50,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Image.asset(
+                image,
+                width: squareSize,
+                height: 50,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Text(
+            title,
+            style: TextStyle(color: Colors.black),
+          )
         ],
       ),
     );
