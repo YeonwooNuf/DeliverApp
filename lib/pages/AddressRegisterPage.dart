@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:delivery/pages/AddressManagePage.dart';
 
 class AddressRegisterPage extends StatefulWidget {
   @override
@@ -7,7 +8,7 @@ class AddressRegisterPage extends StatefulWidget {
 
 class _AddressRegisterPageState extends State<AddressRegisterPage> {
   List<String> addresses = [
-    '인하대,인하공전,경서성공고 인천광역시 미추홀구 인하로 100 수준원점',
+    '인하대,인하공전,정석항공고 인천광역시 미추홀구 인하로 100 수준원점',
     '인천광역시 미추홀구 인하로105번길 43 302호',
   ];
   int _selectedIndex = -1;

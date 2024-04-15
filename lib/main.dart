@@ -18,8 +18,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'title',
       theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.black,
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
         hintColor: Colors.white,
       ),
       home: DefaultTabController(

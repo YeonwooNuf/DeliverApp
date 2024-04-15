@@ -59,7 +59,7 @@ class _AddressManagePageState extends State<AddressManagePage> {
               ),
             ),
           ),
-          SizedBox(height: 12), // 간격 추가
+          SizedBox(height: 25), // 간격 추가
           SizedBox(
             width: buttonWidth,
             child: ElevatedButton(
@@ -150,7 +150,9 @@ class _AddressManagePageState extends State<AddressManagePage> {
                   trailing: IconButton(
                     icon: Icon(Icons.delete),
                     onPressed: () {
-                      // 주소 삭제 기능 구현
+                      setState(() {
+                        addresses.removeAt(index);
+                      });
                     },
                   ),
                 );
