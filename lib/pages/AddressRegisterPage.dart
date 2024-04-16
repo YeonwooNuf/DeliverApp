@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/AddressManagePage.dart';
+import 'package:provider/provider.dart';
+import 'package:delivery/AddressChange.dart';
+import 'package:delivery/main.dart';
 
 class AddressRegisterPage extends StatefulWidget {
   @override
@@ -7,10 +10,10 @@ class AddressRegisterPage extends StatefulWidget {
 }
 
 class _AddressRegisterPageState extends State<AddressRegisterPage> {
-  List<String> addresses = [
-    '인하대,인하공전,정석항공고 인천광역시 미추홀구 인하로 100 수준원점',
-    '인천광역시 미추홀구 인하로105번길 43 302호',
-  ];
+  // List<String> addresses = [
+  //   '인하대,인하공전,정석항공고 인천광역시 미추홀구 인하로 100 수준원점',
+  //   '인천광역시 미추홀구 인하로105번길 43 302호',
+  // ];
   int _selectedIndex = -1;
 
   @override
@@ -62,27 +65,34 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
             SizedBox(height: 20), // 버튼과 Divider 간격 조정
             Divider(height: 1, color: Colors.grey),
             Expanded(
-              child: ListView.builder(
-                itemCount: addresses.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Icon(Icons.location_on),
-                    title: Text(addresses[index]),
-                    trailing: _selectedIndex == index
-                        ? Icon(Icons.check_circle, color: Colors.blue)
-                        : null,
-                    onTap: () {
-                      setState(() {
-                        _selectedIndex = index;
-                      });
-                    },
-                  );
-                },
-              ),
+            child: _buildAddressList(context),
             ),
           ],
         ),
       ),
     );
   }
+  Widget _buildAddressList(BuildContext context) {
+  return Consumer<ItemListNotifier>(
+    builder: (context, itemListNotifier, child) {
+      return ListView.builder(
+        itemCount: itemListNotifier.addresses.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: Icon(Icons.location_on),
+            title: Text(itemListNotifier.addresses[index]),
+            trailing: _selectedIndex == index
+                        ? Icon(Icons.check_circle, color: Colors.blue)
+                        : null,
+            onTap: () {
+                      setState(() {
+                        _selectedIndex = index;
+              });
+            },
+          );
+        },
+      );
+    },
+  );
+}
 }

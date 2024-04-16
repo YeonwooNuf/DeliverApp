@@ -4,12 +4,19 @@ class DetailPage extends StatefulWidget {
   @override
   _DetailPageState createState() => _DetailPageState();
 }
-
+class Review {
+  final String imagePath;
+  final String text;
+  
+  Review({required this.imagePath, required this.text});
+}
 class _DetailPageState extends State<DetailPage> {
-  String displayInfo = '';
-
+  String displayText = '';
+  bool showImage = false;
+  
   @override
   Widget build(BuildContext context) {
+    double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -76,7 +83,7 @@ class _DetailPageState extends State<DetailPage> {
             SizedBox(height: 70),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
+              children: <Widget> [
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -86,8 +93,9 @@ class _DetailPageState extends State<DetailPage> {
                         borderRadius: BorderRadius.circular(0),
                       ),
                     ),
+                    
                     onPressed: () {
-                      updateDisplayInfo('리뷰 정보 표시');
+                      updateReviewInfo('리뷰 정보 표시');
                     },
                     child: Text('리뷰'),
                   ),
@@ -102,7 +110,7 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                     ),
                     onPressed: () {
-                      updateDisplayInfo('주문내역 정보 표시');
+                      updateOrderInfo('주문내역 정보 표시');
                     },
                     child: Text('주문내역'),
                   ),
@@ -117,7 +125,7 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                     ),
                     onPressed: () {
-                      updateDisplayInfo('즐겨찾기 정보 표시');
+                      updateLikeInfo('즐겨찾기 정보 표시');
                     },
                     child: Text('즐겨찾기'),
                   ),
@@ -125,9 +133,30 @@ class _DetailPageState extends State<DetailPage> {
               ],
             ),
             SizedBox(height: 24),
-            Text(
-              displayInfo,
-              style: TextStyle(fontSize: 16),
+            InkWell(
+              onTap: () {
+                print("버튼이 눌렸습니다.");
+                // 여기에 버튼을 탭했을 때 원하는 기능을 추가하세요.
+              },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  if (showImage)
+                    Image.asset(
+                      'assets/images/review.png',
+                      width: squareSize, // 이미지 크기 조절
+                      height: 50, // 이미지 높이
+                      fit: BoxFit.contain,
+                    ),
+                  Expanded(
+                    child: Text(
+                      displayText,
+                      textAlign: TextAlign.center, // 텍스트 가운데 정렬
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -135,9 +164,22 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  void updateDisplayInfo(String info) {
+  void updateReviewInfo(String info) {
     setState(() {
-      displayInfo = info;
+      displayText = info;
+      showImage = true; // 이미지를 보여줄지 말지 결정
+    });
+  }
+  void updateOrderInfo(String info) {
+    setState(() {
+      displayText = info;
+      showImage = false;
+    });
+  }
+  void updateLikeInfo(String info) {
+    setState(() {
+      displayText = info;
+      showImage = false;
     });
   }
 }

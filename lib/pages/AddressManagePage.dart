@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'AddressRegisterPage.dart';
+import 'package:provider/provider.dart';
+import 'package:delivery/pages/AddressRegisterPage.dart';
+import 'package:delivery/AddressChange.dart';
+import 'package:delivery/pages/HomeAddressPage.dart';
+import 'package:delivery/pages/CompanyAddressPage.dart';
 
 class AddressManagePage extends StatefulWidget {
   @override
@@ -7,10 +11,10 @@ class AddressManagePage extends StatefulWidget {
 }
 
 class _AddressManagePageState extends State<AddressManagePage> {
-  List<String> addresses = [
-    '인하대,인하공전,정석항공고 인천광역시 미추홀구 인하로 100 수준원점',
-    '인천광역시 미추홀구 인하로105번길 43 302호',
-  ];
+  // List<String> addresses = [
+  //   '인하대,인하공전,정석항공고 인천광역시 미추홀구 인하로 100 수준원점',
+  //   '인천광역시 미추홀구 인하로105번길 43 302호',
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +68,10 @@ class _AddressManagePageState extends State<AddressManagePage> {
             width: buttonWidth,
             child: ElevatedButton(
               onPressed: () {
-                // 집 주소 추가 기능 구현
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeAddressPage()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white, // 배경색을 흰색으로 설정
@@ -97,6 +104,10 @@ class _AddressManagePageState extends State<AddressManagePage> {
             child: ElevatedButton(
               onPressed: () {
                 // 회사 주소 추가 기능 구현
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CompanyAddressPage()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white, // 배경색을 흰색으로 설정
@@ -141,26 +152,31 @@ class _AddressManagePageState extends State<AddressManagePage> {
           ),
           SizedBox(height:30),
           Expanded(
-            child: ListView.builder(
-              itemCount: addresses.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(Icons.location_on),
-                  title: Text(addresses[index]),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      setState(() {
-                        addresses.removeAt(index);
-                      });
-                    },
-                  ),
-                );
-              },
-            ),
+            child: _buildAddressList(),
           ),
         ],
       ),
     );
   }
+  Widget _buildAddressList() {
+  return Consumer<ItemListNotifier>(
+    builder: (context, notifier, child) {
+      return ListView.builder(
+        itemCount: notifier.addresses.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: Icon(Icons.location_on),
+            title: Text(notifier.addresses[index]),
+            trailing: IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                notifier.removeAddress(index);
+              },
+            ),
+          );
+        },
+      );
+    },
+  );
+}
 }

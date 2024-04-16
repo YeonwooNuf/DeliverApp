@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:delivery/pages/AddressManagePage.dart';
 import 'package:provider/provider.dart';
+import 'package:delivery/pages/AddressManagePage.dart';
 import 'package:delivery/AddressChange.dart';
 import 'package:delivery/main.dart';
 
-class HomeAddressPage extends StatefulWidget {
+class CompanyAddressPage extends StatefulWidget {
   @override
-  _HomeAddressPageState createState() => _HomeAddressPageState();
+  _CompanyAddressPage createState() => _CompanyAddressPage();
 }
 
-class _HomeAddressPageState extends State<HomeAddressPage> {
+class _CompanyAddressPage extends State<CompanyAddressPage> {
   // List<String> addresses = [
   //   '인하대,인하공전,정석항공고 인천광역시 미추홀구 인하로 100 수준원점',
   //   '인천광역시 미추홀구 인하로105번길 43 302호',
@@ -21,7 +21,7 @@ class _HomeAddressPageState extends State<HomeAddressPage> {
     double buttonWidth = MediaQuery.of(context).size.width * 0.9; //버튼의 크기 = 화면넓이의 90%
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('집 주소 등록')), // 주소 등록 페이지 제목 추가
+        title: Center(child: Text('회사 주소 등록')), // 주소 등록 페이지 제목 추가
         actions: [
           IconButton(
             icon: Icon(Icons.save),

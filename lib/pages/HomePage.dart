@@ -15,8 +15,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.black,
+        brightness: Brightness.light,
+        primaryColor: Colors.white,
       ),
       home: Scaffold(
         body: Directionality(
