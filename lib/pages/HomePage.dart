@@ -1,6 +1,7 @@
 import 'package:delivery/category/CategorySelect.dart';
 import 'package:delivery/pages/SearchPage.dart';
 import 'package:flutter/material.dart';
+import 'package:delivery/pages/AddressRegisterPage.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -30,22 +31,35 @@ class HomeScreen extends StatelessWidget {
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(color: Colors.white),
+          padding: const EdgeInsets.only(left: 16.0), // 좌측에 여백 추가
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '집 주소',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 18, color: Colors.black),
+              Align(
+                alignment: Alignment.centerLeft, // 왼쪽 정렬
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddressRegisterPage()),
+                    );
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min, // Row의 크기를 내용물에 맞게 조정
+                    children: [
+                      Icon(Icons.location_on, color: Colors.black),
+                      SizedBox(width: 8), // 아이콘과 텍스트 사이에 간격 추가
+                      Text(
+                        '집 주소',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                      Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                    ],
                   ),
-                  Icon(Icons.keyboard_arrow_down, color: Colors.black),
-                  Expanded(child: Container(height: 50)),
-                ],
+                ),
               ),
-              // 수정된 부분: 검색창이 AppBar 아래에 추가됨
+
               Container(
               height: 60,
               color: Colors.white,
