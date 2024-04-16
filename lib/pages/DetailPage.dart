@@ -1,35 +1,28 @@
 import 'package:flutter/material.dart';
 
-/* void main() {
-  runApp(DeliveryScreen());
-} */
-
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '배달 앱',
-      home: DeliveryScreen(),
-    );
-  }
+  _DetailPageState createState() => _DetailPageState();
 }
-
-class DeliveryScreen extends StatefulWidget {
-  @override
-  _DeliveryScreenState createState() => _DeliveryScreenState();
-} // 버튼 누를 때 페이지 이동말고 같은 페이지에서 데이터 띄우는 코드
-
-class _DeliveryScreenState extends State<DeliveryScreen> {
-  String displayInfo = '';  // 버튼 누르면 뜨는 데이터 변수값
-
+class Review {
+  final String imagePath;
+  final String text;
+  
+  Review({required this.imagePath, required this.text});
+}
+class _DetailPageState extends State<DetailPage> {
+  String displayText = '';
+  bool showImage = false;
+  
   @override
   Widget build(BuildContext context) {
+    double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).pop();
           },
         ),
         title: Text('어플 이름'),
@@ -90,18 +83,19 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
             SizedBox(height: 70),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
+              children: <Widget> [
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0), // 네모낳게 만드는 부분
+                        borderRadius: BorderRadius.circular(0),
                       ),
                     ),
+                    
                     onPressed: () {
-                      updateDisplayInfo('리뷰 정보 표시');
+                      updateReviewInfo('리뷰 정보 표시');
                     },
                     child: Text('리뷰'),
                   ),
@@ -110,13 +104,13 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,                      
+                      foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0), // 네모낳게 만드는 부분
+                        borderRadius: BorderRadius.circular(0),
                       ),
                     ),
                     onPressed: () {
-                      updateDisplayInfo('주문내역 정보 표시');
+                      updateOrderInfo('주문내역 정보 표시');
                     },
                     child: Text('주문내역'),
                   ),
@@ -127,21 +121,42 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0), // 네모낳게 만드는 부분
+                        borderRadius: BorderRadius.circular(0),
                       ),
                     ),
                     onPressed: () {
-                      updateDisplayInfo('즐겨찾기 정보 표시');
-                    },  
+                      updateLikeInfo('즐겨찾기 정보 표시');
+                    },
                     child: Text('즐겨찾기'),
                   ),
                 ),
               ],
             ),
             SizedBox(height: 24),
-            Text(
-              displayInfo,
-              style: TextStyle(fontSize: 16),
+            InkWell(
+              onTap: () {
+                print("버튼이 눌렸습니다.");
+                // 여기에 버튼을 탭했을 때 원하는 기능을 추가하세요.
+              },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  if (showImage)
+                    Image.asset(
+                      'assets/images/review.png',
+                      width: squareSize, // 이미지 크기 조절
+                      height: 50, // 이미지 높이
+                      fit: BoxFit.contain,
+                    ),
+                  Expanded(
+                    child: Text(
+                      displayText,
+                      textAlign: TextAlign.center, // 텍스트 가운데 정렬
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -149,9 +164,22 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     );
   }
 
-  void updateDisplayInfo(String info) {
+  void updateReviewInfo(String info) {
     setState(() {
-      displayInfo = info;
+      displayText = info;
+      showImage = true; // 이미지를 보여줄지 말지 결정
+    });
+  }
+  void updateOrderInfo(String info) {
+    setState(() {
+      displayText = info;
+      showImage = false;
+    });
+  }
+  void updateLikeInfo(String info) {
+    setState(() {
+      displayText = info;
+      showImage = false;
     });
   }
 }
