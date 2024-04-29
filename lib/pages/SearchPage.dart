@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class SearchPage extends StatelessWidget {
   @override
@@ -77,19 +78,29 @@ class SearchPage extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.access_time, color: Colors.grey, size: 16), // 시계 아이콘 색상을 회색으로, 크기를 16으로 설정
-                      SizedBox(width: 10),
-                      Text('청년다방', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)), // '청년다방' 텍스트 크기를 16으로, 볼드 스타일로 설정
-                    ],
+                  child: InkWell(
+                    onTap: () {
+                      // 여기에 "청년다방" 부분을 탭했을 때 실행할 코드를 작성하세요.
+                      print('청년다방이 탭되었습니다.');
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0), // 적당한 패딩을 추가하여 탭하기 쉽게 만듭니다.
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.access_time, color: Colors.grey, size: 16), // 시계 아이콘 색상을 회색으로, 크기를 16으로 설정
+                          SizedBox(width: 10),
+                          Text('청년다방', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)), // '청년다방' 텍스트 크기를 16으로, 볼드 스타일로 설정
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.close, color: Colors.black, size: 16), // X 버튼 색상을 검정색으로, 크기를 16으로 설정
                   onPressed: () {
-                    // X 버튼 기능 구현
+                    // 여기에 X 버튼을 눌렀을 때 실행할 코드를 작성하세요.
+                    print('X 버튼이 탭되었습니다.');
                   },
                 ),
               ],
@@ -97,19 +108,29 @@ class SearchPage extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.access_time, color: Colors.grey, size: 16), // 시계 아이콘 색상을 회색으로, 크기를 16으로 설정
-                      SizedBox(width: 10),
-                      Text('동대문 엽기떡볶이', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)), // '청년다방' 텍스트 크기를 16으로, 볼드 스타일로 설정
-                    ],
+                  child: InkWell(
+                    onTap: () {
+                      // 여기에 "동대문 엽기떡볶이" 부분을 탭했을 때 실행할 코드를 작성하세요.
+                      print('동대문 엽기떡볶이가 탭되었습니다.');
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0), // 탭하기 쉽게 하기 위해 적당한 패딩을 추가합니다.
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.access_time, color: Colors.grey, size: 16), // 시계 아이콘 색상을 회색으로, 크기를 16으로 설정
+                          SizedBox(width: 10),
+                          Text('동대문 엽기떡볶이', style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold)), // '동대문 엽기떡볶이' 텍스트 크기를 16으로, 볼드 스타일로 설정
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 IconButton(
                   icon: Icon(Icons.close, color: Colors.black, size: 16), // X 버튼 색상을 검정색으로, 크기를 16으로 설정
                   onPressed: () {
-                    // X 버튼 기능 구현
+                    // 여기에 X 버튼을 눌렀을 때 실행할 코드를 작성하세요.
+                    print('X 버튼이 탭되었습니다.');
                   },
                 ),
               ],
