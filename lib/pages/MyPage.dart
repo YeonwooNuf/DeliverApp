@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:delivery/pages/DetailPage.dart';
 import 'package:delivery/pages/AddressManagePage.dart';
 import 'package:delivery/pages/FavoritePage.dart';
+import 'package:delivery/pages/LogoutPage.dart';
+import 'package:delivery/pages/LoginPage.dart';
 
 class MyPage extends StatelessWidget {
   @override
@@ -194,16 +196,17 @@ class DeliveryScreen extends StatelessWidget {
   }
 }
 
-class LogoutPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('로그아웃'),
-      ),
-      body: Center(
-        child: Text('로그아웃 페이지'),
-      ),
-    );
-  }
-}
+
+// class LogoutPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('로그아웃'),
+//       ),
+//       body: Center(
+//         child: Text('로그아웃 페이지'),
+//       ),
+//     );
+//   }
+// }

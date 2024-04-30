@@ -2,6 +2,7 @@ import 'package:delivery/category/CategorySelect.dart';
 import 'package:delivery/pages/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/AddressRegisterPage.dart';
+import 'package:delivery/pages/MenuSearchPage.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
