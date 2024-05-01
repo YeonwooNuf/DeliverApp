@@ -218,7 +218,7 @@ class _JapaneseState extends State<CategorySelect> {
   }
 
   //이미지 클릭 메서드
-  Widget _Image(String URL, String ShopName) {
+  Widget _Image(String image_URL, String storeName) {
     return Padding(
       padding: EdgeInsets.all(20),
       child: Column(
@@ -229,7 +229,11 @@ class _JapaneseState extends State<CategorySelect> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MenuSearchPage()),
+                    MaterialPageRoute(
+                        builder: (context) => MenuSearchPage(
+                              image_URL: image_URL,
+                              storeName: storeName,
+                            )),
                   );
                 },
                 child: Container(
@@ -240,7 +244,7 @@ class _JapaneseState extends State<CategorySelect> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20), // 원하는 반지름 값으로 설정
                     child: Image.asset(
-                      '${URL}',
+                      '${image_URL}',
                       fit: BoxFit.fill, // 이미지를 컨테이너에 맞춤
                       width: double.infinity, // 이미지가 컨테이너에 가득 차도록 가로 너비를 확장
                       height: double.infinity, // 이미지가 컨테이너에 가득 차도록 세로 너비를 확장
@@ -259,7 +263,7 @@ class _JapaneseState extends State<CategorySelect> {
             height: 30,
             alignment: Alignment.centerLeft,
             child: Text(
-              '${ShopName}',
+              '${storeName}',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 20,
