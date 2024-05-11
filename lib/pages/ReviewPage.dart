@@ -4,16 +4,12 @@ class ReviewPage extends StatefulWidget {
   // 각각의 변수를 final로 선언하여 변경 불가능하게 만듭니다.
   final String restaurantName;
   final String orderDetails;
-  final String restaurantName1;
-  final String orderDetails1;
 
   // 생성자에서 모든 변수를 필수적으로 받도록 설정합니다.
   ReviewPage({
     Key? key,
     required this.restaurantName,
     required this.orderDetails,
-    required this.restaurantName1,
-    required this.orderDetails1,
   }) : super(key: key);
 
   @override
@@ -37,6 +33,7 @@ class _ReviewPageState extends State<ReviewPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.white, // 배경색을 흰색으로 설정
       appBar: AppBar(
@@ -60,7 +57,7 @@ class _ReviewPageState extends State<ReviewPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0), // 패딩 설정
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: screenWidth * 0.1), // 패딩 설정
           color: Colors.white,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start, // 자식들을 시작 지점에서 정렬
@@ -70,29 +67,29 @@ class _ReviewPageState extends State<ReviewPage> {
                 children: [
                   Icon(
                     Icons.store, // 가게 아이콘
-                    size: 40, // 아이콘 크기
+                    size: screenWidth * 0.1, // 아이콘 크기
                     color: Colors.blue, // 아이콘 색상
                   ),
-                  SizedBox(width: 10), // 아이콘과 텍스트 사이 간격
+                  SizedBox(width: screenWidth * 0.02), // 아이콘과 텍스트 사이 간격
                   Text(
                     '음식 평가', // 텍스트 내용
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: screenWidth * 0.04,
                       color: Colors.black,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 10), // 간격
+              SizedBox(height: screenWidth * 0.02), // 간격
               Text(
                 widget.restaurantName, // 생성자를 통해 전달받은 가게 이름
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: screenWidth * 0.04,
                   color: Colors.black,
                 ),
               ),
-              SizedBox(height: 10), // 간격
+              SizedBox(height: screenWidth * 0.02), // 간격
               // 별점을 나타내는 부분
               Row(
                 mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
@@ -101,7 +98,7 @@ class _ReviewPageState extends State<ReviewPage> {
                     icon: Icon(
                       stars[index] ? Icons.star : Icons.star_border, // 별점 상태에 따라 아이콘 결정
                       color: Colors.orange, // 별 색상
-                      size: 30, // 별 크기
+                      size: screenWidth * 0.06, // 별 크기
                     ),
                     onPressed: () {
                       setState(() {
@@ -117,7 +114,7 @@ class _ReviewPageState extends State<ReviewPage> {
                   );
                 }),
               ),
-              SizedBox(height: 20), // 높이 간격
+              SizedBox(height: screenWidth * 0.04), // 높이 간격
               // 주문 상세 정보와 좋아요/싫어요 버튼을 포함하는 부분
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,7 +126,7 @@ class _ReviewPageState extends State<ReviewPage> {
                         Text(
                           widget.orderDetails, // 생성자를 통해 전달받은 주문 상세 정보
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: screenWidth * 0.04,
                             color: Colors.black,
                           ),
                         ),
@@ -145,7 +142,7 @@ class _ReviewPageState extends State<ReviewPage> {
                       });
                     },
                   ),
-                  SizedBox(width: 20), // 너비 간격
+                  SizedBox(width: screenWidth * 0.04), // 너비 간격
                   IconButton(
                     icon: Icon(Icons.thumb_down, color: _isDisliked ? Colors.blue : Colors.grey),
                     onPressed: () {
@@ -157,7 +154,7 @@ class _ReviewPageState extends State<ReviewPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: screenWidth * 0.04),
               // FeedbackTile 배달 파트너 위로 이동
               if (_isDisliked)
                 ExpansionTile(
@@ -166,7 +163,7 @@ class _ReviewPageState extends State<ReviewPage> {
                         ? "피드백을 선택해주세요"
                         : selectedFeedbacks.join(', '), // 선택한 피드백이 있으면 그것을 표시
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: screenWidth * 0.04,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -179,16 +176,16 @@ class _ReviewPageState extends State<ReviewPage> {
                     _buildFeedbackTile('너무 비쌈'),
                   ],
                 ),
-              SizedBox(height: 20,),
+              SizedBox(height: screenWidth * 0.04),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
                     Icons.motorcycle, // 배달 아이콘
-                    size: 40, // 아이콘 크기
+                    size: screenWidth * 0.1, // 아이콘 크기
                     color: Colors.blue, // 아이콘 색상
                   ),
-                  SizedBox(width: 10), // 아이콘과 텍스트 사이 간격
+                  SizedBox(width: screenWidth * 0.02), // 아이콘과 텍스트 사이 간격
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +193,7 @@ class _ReviewPageState extends State<ReviewPage> {
                         Text(
                           "배달 파트너", // 생성자를 통해 전달받은 주문 상세 정보
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: screenWidth * 0.04,
                             color: Colors.black,
                           ),
                         ),
@@ -212,7 +209,7 @@ class _ReviewPageState extends State<ReviewPage> {
                       });
                     },
                   ),
-                  SizedBox(width: 20), // 너비 간격
+                  SizedBox(width: screenWidth * 0.04),
                   IconButton(
                     icon: Icon(Icons.thumb_down, color: _deliveryDisliked ? Colors.blue : Colors.grey),
                     onPressed: () {
@@ -224,7 +221,7 @@ class _ReviewPageState extends State<ReviewPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 10), 
+              SizedBox(height: screenWidth * 0.02), // 간격
               if (_deliveryDisliked)
                 ExpansionTile(
                   title: Text(
@@ -232,7 +229,7 @@ class _ReviewPageState extends State<ReviewPage> {
                         ? "피드백을 선택해주세요"
                         : deliveryFeedbacks.join(', '), // 선택한 피드백이 있으면 그것을 표시
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: screenWidth * 0.04,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -249,17 +246,17 @@ class _ReviewPageState extends State<ReviewPage> {
           ),
         ),
       ),
-        bottomNavigationBar: Container(
+      bottomNavigationBar: Container(
         width: double.infinity,
-        height: 80,
+        height: screenWidth * 0.15,
         decoration: BoxDecoration(
           color: Colors.blue,
           boxShadow: [
             BoxShadow(
               color: Colors.blue.withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3), // changes position of shadow
+              spreadRadius: screenWidth * 0.01,
+              blurRadius: screenWidth * 0.02,
+              offset: Offset(0, screenWidth * 0.007),
             ),
           ],
         ),
@@ -273,7 +270,7 @@ class _ReviewPageState extends State<ReviewPage> {
           ),
           child: Text(
             '등록하기',
-            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold), // 버튼의 글씨색을 흰색으로 변경
+            style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold), // 버튼의 글씨색을 흰색으로 변경
           ),
         ),
       ),
@@ -282,7 +279,7 @@ class _ReviewPageState extends State<ReviewPage> {
 
   Widget _buildFeedbackTile(String feedback) {
     return ListTile(
-      title: Text(feedback,style: TextStyle(color: Colors.black),),
+      title: Text(feedback, style: TextStyle(color: Colors.black),),
       trailing: selectedFeedbacks.contains(feedback)
           ? Icon(Icons.check, color: Colors.blue) // 선택된 항목에 체크 표시
           : null,
@@ -299,7 +296,7 @@ class _ReviewPageState extends State<ReviewPage> {
   }
   Widget _buildDeliveryTile(String feedbackdel) {
     return ListTile(
-      title: Text(feedbackdel,style: TextStyle(color: Colors.black),),
+      title: Text(feedbackdel, style: TextStyle(color: Colors.black),),
       trailing: deliveryFeedbacks.contains(feedbackdel)
           ? Icon(Icons.check, color: Colors.blue) // 선택된 항목에 체크 표시
           : null,
@@ -315,4 +312,3 @@ class _ReviewPageState extends State<ReviewPage> {
     );
   }
 }
-

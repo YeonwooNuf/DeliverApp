@@ -16,6 +16,30 @@ class _FavoritePageState extends State<FavoritePage> {
   // 현재 선택된 필터링 옵션
   String? selectedFilter;
 
+  // 즐겨찾기 목록을 저장할 리스트
+  List<Widget> favorites = [];
+
+  // 즐겨찾기 항목 데이터
+  final List<Map<String, dynamic>> favoriteData = [
+    {
+      'imagePath': 'assets/images/1.png',
+      'title': '동대문 엽기떡볶이 인하대점',
+      'starRating': 4,
+    },
+    {
+      'imagePath': 'assets/images/2.png',
+      'title': '청년다방 인하대점',
+      'starRating': 3,
+    },
+    {
+      'imagePath': 'assets/images/3.png',
+      'title': '백소정 인하대점',
+      'starRating': 5,
+    },
+  ];
+
+  int currentIndex = 0; // 다음에 추가할 즐겨찾기 항목의 인덱스
+
   @override
   void initState() {
     super.initState();
@@ -25,16 +49,18 @@ class _FavoritePageState extends State<FavoritePage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            // 뒤로 가기 버튼 클릭 시 현재 라우트를 제거하여 이전 화면으로 이동
-            print("뒤로가기버튼 클릭됨");
-            Navigator.of(context).pop();
-          },
-        ),
+        // leading: IconButton( // 뒤로가기 버튼 제거
+        //   icon: Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     // 뒤로 가기 버튼 클릭 시 현재 라우트를 제거하여 이전 화면으로 이동
+        //     Navigator.of(context).pop();
+        //   },
+        // ),
         title: Text(
           '즐겨찾기',
           style: TextStyle(color: Colors.black), // 텍스트 색상 변경
@@ -44,12 +70,12 @@ class _FavoritePageState extends State<FavoritePage> {
         elevation: 0, // 그림자 없애기
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0), // 양쪽에 16.0 패딩 추가
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05), // 양쪽에 상대적인 패딩 추가
         child: Column(
           children: [
             // 필터 드롭다운을 오른쪽으로 정렬
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(screenWidth * 0.02),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end, // 오른쪽 정렬
                 children: [
@@ -70,9 +96,9 @@ class _FavoritePageState extends State<FavoritePage> {
                           children: [
                             Text(
                               value,
-                              style: TextStyle(color: Colors.black, fontSize: 16),
+                              style: TextStyle(color: Colors.black, fontSize: screenWidth * 0.04),
                             ),
-                            SizedBox(width: 5), // 아이콘과 텍스트 사이 간격
+                            SizedBox(width: screenWidth * 0.01), // 아이콘과 텍스트 사이 간격
                             // Icon(Icons.arrow_drop_down, color: Colors.black), // 필터 아이콘
                           ],
                         ),
@@ -82,60 +108,32 @@ class _FavoritePageState extends State<FavoritePage> {
                 ],
               ),
             ),
+            // 즐겨찾기 추가 버튼
+            ElevatedButton(
+              onPressed: () {
+                // 다음 항목을 가져와서 즐겨찾기에 추가
+                addFavoriteItem(
+                  favoriteData[currentIndex]['imagePath'],
+                  favoriteData[currentIndex]['title'],
+                  favoriteData[currentIndex]['starRating'].toString(),
+                );
+
+                // 다음 항목의 인덱스 업데이트
+                currentIndex = (currentIndex + 1) % favoriteData.length;
+              },
+              child: Text('즐겨찾기 추가'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // 버튼의 배경색을 파란색으로 변경
+                textStyle: TextStyle(fontSize: screenWidth * 0.04), // 버튼 텍스트 크기 조정
+              ),
+            ),
+            SizedBox(height: screenWidth * 0.02),
             // ListView를 사용하여 스크롤 가능한 목록 생성
             Expanded(
               child: ListView(
                 children: [
-                  buildItemWidget(
-                    imagePath: 'assets/images/1.png',
-                    title: '동대문 엽기떡볶이 인하대점',
-                    starRating: 4,
-                  ),
-                  Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ), // Divider 추가
-                  buildItemWidget(
-                    imagePath: 'assets/images/2.png',
-                    title: '청년다방 인하대점',
-                    starRating: 3,
-                  ),
-                  Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ), // Divider 추가
-                  buildItemWidget(
-                    imagePath: 'assets/images/3.png',
-                    title: '백소정 인하대점',
-                    starRating: 5,
-                  ),
-                  Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ), // Divider 추가
-                  buildItemWidget(
-                    imagePath: 'assets/images/4.png',
-                    title: '더 진국 인하대점',
-                    starRating: 2,
-                  ),
-                  Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ), // Divider 추가
-                  buildItemWidget(
-                    imagePath: 'assets/images/4.png',
-                    title: '더 진국 인하대점',
-                    starRating: 4,
-                  ),
-                  Divider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ), // Divider 추가
-                  buildItemWidget(
-                    imagePath: 'assets/images/4.png',
-                    title: '더 진국 인하대점',
-                    starRating: 3,
-                  ),
+                  // 즐겨찾기 목록
+                  ...favorites,
                 ],
               ),
             ),
@@ -146,18 +144,28 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  Widget buildItemWidget({required String imagePath, required String title, required int starRating}) {
+  // 즐겨찾기 항목을 생성하고 리스트에 추가하는 함수
+  void addFavoriteItem(String imagePath, String title, String starRating) {
+    setState(() {
+      favorites.add(
+        buildItemWidget(imagePath, title, starRating),
+      );
+    });
+  }
+
+  // 즐겨찾기 항목 위젯 생성 함수
+  Widget buildItemWidget(String imagePath, String title, String starRating) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Stack(
         children: [
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), // 모서리를 둥글게 설정
-              // border: Border.all(color: Colors.black, width: 1), // 테두리 추가
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.grey[200], // 배경색을 회색 계통으로 변경
             ),
-            child: ClipRRect( // 모서리를 둥글게 하기 위해 ClipRRect 사용
-              borderRadius: BorderRadius.circular(10), // 모서리를 둥글게 설정
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
               child: Row(
                 children: [
                   Image.asset(
@@ -166,7 +174,7 @@ class _FavoritePageState extends State<FavoritePage> {
                     height: 90,
                     fit: BoxFit.contain,
                   ),
-                  SizedBox(width: 10), // 이미지와 텍스트 사이 간격
+                  SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,55 +183,20 @@ class _FavoritePageState extends State<FavoritePage> {
                           title,
                           style: TextStyle(
                             fontSize: 14.0,
-                            // fontWeight: FontWeight.bold,
-                            color: Colors.black, // 텍스트 색상 변경
+                            color: Colors.black,
                           ),
                         ),
                         Row(
-                          children: List.generate(starRating, (index) => Icon(Icons.star, color: Colors.yellow, size: 20)),
+                          children: List.generate(
+                            int.parse(starRating),
+                            (index) => Icon(Icons.star, color: Colors.yellow, size: 20),
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-            ),
-          ),
-          Positioned(
-            top: 5,
-            right: 5,
-            child: IconButton(
-              icon: Icon(Icons.close),
-              iconSize: 18, // 삭제 버튼 아이콘의 크기 조절
-              onPressed: () {
-                // 삭제 버튼을 눌렀을 때 팝업 창 표시
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text("삭제 확인"),
-                      content: Text("정말 삭제하시겠습니까?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            print("삭제 확인");
-                            // 삭제 작업 수행
-                            // 여기에 삭제 로직을 추가하세요
-                            Navigator.of(context).pop(); // 팝업 닫기
-                          },
-                          child: Text("예"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // 팝업 닫기
-                          },
-                          child: Text("아니오"),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
             ),
           ),
         ],
