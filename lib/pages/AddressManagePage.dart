@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/pages/NewAddressPage.dart';
 import 'package:delivery/AddressChange.dart';
-import 'package:delivery/pages/HomeAddressPage.dart';
-import 'package:delivery/pages/CompanyAddressPage.dart';
 
 class AddressManagePage extends StatefulWidget {
   @override
@@ -37,7 +35,7 @@ class _AddressManagePageState extends State<AddressManagePage> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor:
-                    Color.fromARGB(255, 255, 255, 255), // 배경색을 흰색으로 설정
+                    Colors.white, // 배경색을 흰색으로 설정
                 foregroundColor: Colors.black, // 텍스트 색상을 검정색으로 설정
                 padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
                 shape: RoundedRectangleBorder(
@@ -58,77 +56,6 @@ class _AddressManagePageState extends State<AddressManagePage> {
                           fontSize: 20,
                           color: Colors.black,
                           fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 25), // 간격 추가
-          SizedBox(
-            width: buttonWidth,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeAddressPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white, // 배경색을 흰색으로 설정
-                foregroundColor: Colors.black, // 텍스트 색상을 검정색으로 설정
-                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(color: Colors.grey),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.home, size: 30, color: Colors.black),
-                  SizedBox(width: 8), // 간격 조정
-                  Expanded(
-                    child: Text(
-                      '집 주소 등록',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20, color: Colors.black),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 5), // 간격 추가
-          SizedBox(
-            width: buttonWidth,
-            child: ElevatedButton(
-              onPressed: () {
-                // 회사 주소 추가 기능 구현
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CompanyAddressPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white, // 배경색을 흰색으로 설정
-                foregroundColor: Colors.black, // 텍스트 색상을 검정색으로 설정
-                padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(color: Colors.grey),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.work, size: 30, color: Colors.black),
-                  SizedBox(width: 8), // 간격 조정
-                  Expanded(
-                    child: Text(
-                      '회사 주소 등록',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20, color: Colors.black),
                     ),
                   ),
                 ],
@@ -167,64 +94,67 @@ class _AddressManagePageState extends State<AddressManagePage> {
       String? workAddress = notifier.workAddress;
       List<String> addresses = notifier.addresses;
 
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 20), // 주소 목록 위 간격 조정
-          Text(
-            '    집',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 17,
+      return SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20), // 주소 목록 위 간격 조정
+            Text(
+              '    집',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+              ),
             ),
-          ),
-          ListTile(
-            leading: Icon(Icons.home),
-            title: Text(homeAddress ?? '집 주소가 없습니다.'),
-            onTap: () {
-              setState(() {});
-            },
-          ),
-          SizedBox(height: 10), // 주소 목록과 간격 조정
-          Text(
-            '    회사',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 17,
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text(homeAddress ?? '집 주소가 없습니다.'),
+              onTap: () {
+                setState(() {});
+              },
             ),
-          ),
-          ListTile(
-            leading: Icon(Icons.work),
-            title: Text(workAddress ?? '회사 주소가 없습니다.'),
-            onTap: () {
-              setState(() {});
-            },
-          ),
-          SizedBox(height: 10), // 주소 목록 아래 간격 조정
-          Text(
-            '    기타',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 17,
+            SizedBox(height: 10), // 주소 목록과 간격 조정
+            Text(
+              '    회사',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+              ),
             ),
-          ),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: addresses.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                leading: Icon(Icons.location_on),
-                title: Text(addresses[index]),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    notifier.removeAddress(index);
-                  },
-                ),
-              );
-            },
-          ),
-        ],
+            ListTile(
+              leading: Icon(Icons.work),
+              title: Text(workAddress ?? '회사 주소가 없습니다.'),
+              onTap: () {
+                setState(() {});
+              },
+            ),
+            SizedBox(height: 10), // 주소 목록 아래 간격 조정
+            Text(
+              '    기타',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+              ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(), // 스크롤을 막기 위해 physics를 NeverScrollableScrollPhysics로 설정
+              itemCount: addresses.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: Icon(Icons.location_on),
+                  title: Text(addresses[index]),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      notifier.removeAddress(index);
+                    },
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       );
     },
   );

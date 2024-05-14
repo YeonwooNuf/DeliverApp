@@ -4,12 +4,13 @@ import 'package:delivery/AddressChange.dart';
 import 'package:delivery/pages/AddressSearch.dart';
 
 class AddressRegisterPage extends StatefulWidget {
+  
   @override
   _AddressRegisterPageState createState() => _AddressRegisterPageState();
 }
 
 class _AddressRegisterPageState extends State<AddressRegisterPage> {
-  int _selectedIndex = -1;
+  int _selectedIndex = -2;
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +19,6 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('주소 등록')), // 주소 등록 페이지 제목 추가
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              // 저장 기능 구현
-            },
-          ),
-        ],
       ),
       body: SafeArea(
         child: Column(
@@ -38,7 +31,13 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AddressSearch()),
-                );
+                ).then((value) {
+                  if (value != null) {
+                    setState(() {
+                      _selectedIndex = value;
+                    });
+                  }
+                });
               },
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search), // 돋보기 아이콘 추가
@@ -73,6 +72,7 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
   }
 
   Widget _buildAddressList(BuildContext context) {
+
     // 주소 목록을 가져오는 예시 함수
     String? homeAddress = Provider.of<ItemListNotifier>(context).homeAddress;
     String? workAddress = Provider.of<ItemListNotifier>(context).workAddress;

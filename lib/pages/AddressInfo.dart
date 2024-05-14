@@ -1,18 +1,19 @@
-import 'package:delivery/pages/CompanyDetail.dart';
 import 'package:flutter/material.dart';
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'My App',
-      home: HomePage(),
-    );
-  }
-}
+import 'package:provider/provider.dart';
+import 'package:delivery/AddressChange.dart';
+import 'package:delivery/pages/AddressRegisterPage.dart';
+import 'package:delivery/pages/MyPage.dart';
 
 class AddressInfo extends StatefulWidget {
   final String searchedAddress;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: '배달 앱',
+      home: AddressRegisterPage(),
+    );
+  }
 
   AddressInfo({Key? key, required this.searchedAddress}) : super(key: key);
 
@@ -29,7 +30,7 @@ class _AddressInfoState extends State<AddressInfo> {
   Color _locationColor = Colors.transparent;
 
   @override
-  Widget build(BuildContext context) {
+  StatefulWidget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('주소 상세 정보'),
@@ -81,6 +82,8 @@ class _AddressInfoState extends State<AddressInfo> {
                         _workColor = Colors.transparent;
                         _locationColor = Colors.transparent;
                       });
+                      Provider.of<ItemListNotifier>(context, listen: false)
+                          .setHomeAddress(widget.searchedAddress);
                     },
                     splashColor: Colors.grey,
                     borderRadius: BorderRadius.circular(8),
@@ -169,6 +172,7 @@ class _AddressInfoState extends State<AddressInfo> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
+                      // 저장 버튼이 눌렸을 때의 동작
                       if (_homeColor == Colors.transparent &&
                           _workColor == Colors.transparent &&
                           _locationColor == Colors.transparent) {
@@ -194,11 +198,53 @@ class _AddressInfoState extends State<AddressInfo> {
                         print('길 안내 : $_directions');
                         if (_homeColor == Colors.black12) {
                           print('선택된 버튼: 집');
+                          Provider.of<ItemListNotifier>(context, listen: false)
+                              .removeHomeAddress();
+                          Provider.of<ItemListNotifier>(context, listen: false)
+                              .setHomeAddress(widget.searchedAddress);
                         } else if (_workColor == Colors.black12) {
                           print('선택된 버튼: 회사');
+                          Provider.of<ItemListNotifier>(context, listen: false)
+                              .removeWorkAddress();
+                          Provider.of<ItemListNotifier>(context, listen: false)
+                              .setWorkAddress(widget.searchedAddress);
                         } else {
                           print('선택된 버튼: 기타');
+                          Provider.of<ItemListNotifier>(context, listen: false)
+                              .addAddress(widget.searchedAddress);
                         }
+
+                        // 확인 버튼을 누르면 AddressRegister 페이지로 이동
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("알림"),
+                              content: Text("저장되었습니다."),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            DefaultTabController(
+                                          length: 4 , // 필요한 탭 개수
+                                          child: AddressRegisterPage(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Text("확인"),
+                                ),
+                              ],
+                            );
+                          },
+                        ).then((_) {
+                          // 이동한 후에도 기존 페이지가 올바르게 표시되도록 setState를 호출합니다.
+                          setState(() {});
+                        });
                       }
                     },
                     child: Text('저장'),

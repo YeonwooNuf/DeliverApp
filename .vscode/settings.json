@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/Users/JangYeonWoo/Documents/GitHub/DeliveryApp/linux"
+    "cmake.sourceDirectory": "C:/GitHub/DeliveryApp/windows",
+    "cmake.generator": "Ninja"
 }
