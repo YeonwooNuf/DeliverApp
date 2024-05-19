@@ -14,6 +14,7 @@ class HomePage extends StatelessWidget {
         primaryColor: Colors.white,
       ),
       home: Scaffold(
+        resizeToAvoidBottomInset: false, // 키보드로 인한 화면 크기 조정 방지
         body: Directionality(
           textDirection: TextDirection.ltr,
           child: HomeScreen(),
