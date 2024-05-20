@@ -20,7 +20,7 @@ class ItemListNotifier extends ChangeNotifier {
   int _selectedIndex = -2;
 
   int get selectedIndex => _selectedIndex;
-  
+
   void setSelctedAddress(String selectedAddress) {
     _selectedAddress = selectedAddress;
     notifyListeners();

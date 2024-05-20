@@ -295,5 +295,4 @@ class _HeartIconButtonState extends State<HeartIconButton> {
     );
   }
 }
-}
 
