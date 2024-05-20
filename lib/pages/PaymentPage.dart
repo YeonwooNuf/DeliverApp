@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'PaymentMethod.dart';
 
 void main() => runApp(MyApp());
@@ -52,11 +53,7 @@ class _PaymentPageState extends State<PaymentPage> {
       context: context,
       builder: (BuildContext context) {
         return Container(
-
           height: 200,
-
-          height: screenWidth * 0.3,
-
           child: ListView(
             children: <Widget>[
               ListTile(
@@ -91,10 +88,7 @@ class _PaymentPageState extends State<PaymentPage> {
       context: context,
       builder: (BuildContext context) {
         return Container(
-
           height: 200,
-          height: screenWidth * 0.3,
-
           child: ListView(
             children: <Widget>[
               ListTile(
@@ -129,10 +123,7 @@ class _PaymentPageState extends State<PaymentPage> {
       context: context,
       builder: (BuildContext context) {
         return Container(
-
           height: 200,
-          height: screenWidth * 0.3,
-
           child: ListView(
             children: <Widget>[
               ListTile(
@@ -187,7 +178,6 @@ class _PaymentPageState extends State<PaymentPage> {
       body: SingleChildScrollView(
         child: Container(
           color: Colors.white,
-
           padding: EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,33 +193,13 @@ class _PaymentPageState extends State<PaymentPage> {
               SizedBox(height: 16),
               Text('시장을 여는 사람들 인하대점',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-
-          padding: EdgeInsets.all(screenWidth * 0.03),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('집 (으)로 배달', style: TextStyle(fontSize: screenWidth * 0.05)),
-              Center(
-                child: Text(
-                  '미추홀구 경인남길\n102번길 59-14',
-                  style: TextStyle(fontSize: screenWidth * 0.07),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(height: screenWidth * 0.05),
-              Text('시장을 여는 사람들 인하대점', style: TextStyle(fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold)),
-
               Divider(
                 color: Colors.grey,
                 thickness: 1,
               ),
               Container(
                 padding: EdgeInsets.only(bottom: 0),
-
                 child: Text('[2~3인 뼈없는 감자탕]', style: TextStyle(fontSize: 20)),
-
-                child: Text('[2~3인 뼈없는 감자탕]', style: TextStyle(fontSize: screenWidth * 0.06)),
-
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -237,11 +207,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.blue,
-
                       borderRadius: BorderRadius.circular(20),
-
-                      borderRadius: BorderRadius.circular(screenWidth * 0.04),
-
                     ),
                     child: Row(
                       children: <Widget>[
@@ -262,19 +228,12 @@ class _PaymentPageState extends State<PaymentPage> {
                   ),
                 ],
               ),
-
               Text('18,900원', style: TextStyle(fontSize: 20)),
-              Text('18,900원', style: TextStyle(fontSize: screenWidth * 0.06)),
-
               Divider(
                 color: Colors.grey,
                 thickness: 1,
               ),
-
               SizedBox(height: 16),
-
-              SizedBox(height: screenWidth * 0.05),
-
               Container(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
@@ -286,28 +245,19 @@ class _PaymentPageState extends State<PaymentPage> {
                   child: Text('+메뉴 추가'),
                 ),
               ),
-
               SizedBox(height: 16),
-
-              SizedBox(height: screenWidth * 0.05),
-
               Divider(
                 color: Colors.grey,
                 thickness: 1,
               ),
               Container(
                 alignment: Alignment.centerLeft,
-
                 padding: EdgeInsets.all(10),
-
-                padding: EdgeInsets.all(screenWidth * 0.025),
-
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       '요청사항',
-
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -324,29 +274,11 @@ class _PaymentPageState extends State<PaymentPage> {
                 child: Container(
                   width: 380,
                   height: 40,
-
-                      style: TextStyle(fontSize: screenWidth * 0.04, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: screenWidth * 0.02),
-                    Text(
-                      '가게 사장님에게',
-                      style: TextStyle(fontSize: screenWidth * 0.04),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: screenWidth * 0.02),
-              Center(
-                child: Container(
-                  width: screenWidth * 0.9,
-                  height: screenWidth * 0.1,
-
                   child: TextField(
                     textAlign: TextAlign.left,
                     decoration: InputDecoration(
                       hintText: '예) 견과류는 빼주세요',
                       hintStyle: TextStyle(color: Colors.grey),
-
                       filled: true,
                       fillColor: Color.fromARGB(255, 241, 239, 239),
                       border: OutlineInputBorder(),
@@ -356,17 +288,6 @@ class _PaymentPageState extends State<PaymentPage> {
                 ),
               ),
               SizedBox(height: 16),
-
-                      filled : true,
-                      fillColor: Color.fromARGB(255, 241, 239, 239),
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.only(left: screenWidth * 0.04),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: screenWidth * 0.04),
-
               Container(
                 alignment: Alignment.centerLeft,
                 child: Row(
@@ -377,7 +298,6 @@ class _PaymentPageState extends State<PaymentPage> {
                     ),
                     Text(
                       '일회용 수저/포크 받기',
-
                       style: TextStyle(fontSize: 16),
                     ),
                   ],
@@ -393,40 +313,18 @@ class _PaymentPageState extends State<PaymentPage> {
                 ),
               ),
               SizedBox(height: 8),
-
-                      style: TextStyle(fontSize: screenWidth * 0.032),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: screenWidth * 0.02),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: screenWidth * 0.08),
-                child: Text(
-                  '일회용품 사용을 줄이기 위해, 선택 시에만 제공됩니다.',
-                  style: TextStyle(fontSize: screenWidth * 0.012, color: Colors.grey),
-                ),
-              ),
-              SizedBox(height: screenWidth * 0.02),
-
               GestureDetector(
                 onTap: () {
                   _showSimpleDialog();
                 },
                 child: Container(
                   alignment: Alignment.centerLeft,
- 
                   padding: EdgeInsets.all(10),
-
-                  padding: EdgeInsets.all(screenWidth * 0.025),
-
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '배달 기사님에게',
-
                         style: TextStyle(fontSize: 18),
                       ),
                     ],
@@ -438,19 +336,6 @@ class _PaymentPageState extends State<PaymentPage> {
               Center(
                 child: Container(
                   width: 230,
-
-                        style: TextStyle(fontSize: screenWidth * 0.04),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: screenWidth * 0.02),
-              SizedBox(height: screenWidth * 0.02),
-              Center(
-                child: Container(
-                  width: screenWidth * 0.6,
-
                   child: DropdownButton<String>(
                     value: _selectedItem,
                     items: <String>[
@@ -476,28 +361,19 @@ class _PaymentPageState extends State<PaymentPage> {
                   ),
                 ),
               ),
-
               GestureDetector(
                 // GestureDetector를 사용하여 리스트를 클릭할 수 있게 함
-
-              GestureDetector( // GestureDetector를 사용하여 리스트를 클릭할 수 있게 함
-
                 onTap: () {
                   _showPaymentMethods(); // 결제 수단 표시
                 },
                 child: Container(
                   alignment: Alignment.centerLeft,
-
                   padding: EdgeInsets.all(10),
-
-                  padding: EdgeInsets.all(screenWidth * 0.025),
-
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '결제 수단',
-
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
@@ -507,14 +383,6 @@ class _PaymentPageState extends State<PaymentPage> {
                       Text(
                         '$_selectedPaymentMethod', // 선택된 결제 수단 표시
                         style: TextStyle(fontSize: 16),
-
-                        style: TextStyle(fontSize: screenWidth * 0.032, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: screenWidth * 0.02,),
-                      Text(
-                        '$_selectedPaymentMethod', // 선택된 결제 수단 표시
-                        style: TextStyle(fontSize: screenWidth * 0.032),
-
                       ),
                     ],
                   ),
@@ -530,11 +398,7 @@ class _PaymentPageState extends State<PaymentPage> {
       ),
       bottomNavigationBar: Container(
         width: double.infinity,
-
         height: 80,
-
-        height: screenHeight * 0.1,
-
         decoration: BoxDecoration(
           color: Colors.blue,
           boxShadow: [
@@ -549,10 +413,7 @@ class _PaymentPageState extends State<PaymentPage> {
         child: ElevatedButton(
           onPressed: () {
             // 버튼을 클릭했을 때 실행할 내용을 여기에 작성하세요.
-
             TotalPayment().bootpayTest(context);
-
-
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue, // 버튼의 배경색을 파란색으로 변경
@@ -564,8 +425,6 @@ class _PaymentPageState extends State<PaymentPage> {
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold), // 버튼의 글씨색을 흰색으로 변경
-
-            style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.04, fontWeight: FontWeight.bold), // 버튼의 글씨색을 흰색으로 변경
           ),
         ),
       ),
@@ -575,6 +434,4 @@ class _PaymentPageState extends State<PaymentPage> {
   _showSimpleDialog() {
     // Add your simple dialog logic here
   }
-  double get screenWidth => MediaQuery.of(context).size.width;
-  double get screenHeight => MediaQuery.of(context).size.height;
 }
