@@ -40,9 +40,9 @@ class HomeScreen extends StatelessWidget {
     // int _selectedIndex = Provider.of<ItemListNotifier>(context).selectedIndex;
 
     // 선택된 인덱스에 저장된 주소 받아오기
+    String selectedAddress = '';
     String _getSelectedAddressName(BuildContext context) {
       final itemListNotifier = Provider.of<ItemListNotifier>(context);
-      String selectedAddress = '';
 
       // _selectedIndex 값에 따라 선택된 주소의 이름을 설정합니다.
       switch (itemListNotifier.selectedIndex) {
@@ -58,7 +58,6 @@ class HomeScreen extends StatelessWidget {
                   '기타 주소가 없습니다.';
           break;
       }
-      
 
       String selectedAddressPrefix = selectedAddress.length >= 5
           ? selectedAddress.substring(0, 5)
@@ -69,8 +68,8 @@ class HomeScreen extends StatelessWidget {
     // 주소의 앞에 5글자만 표현하기
 
     Widget _appBar() {
-
-      String selectedAddress = Provider.of<ItemListNotifier>(context).selectedAddress;
+      String selectedAddress =
+          Provider.of<ItemListNotifier>(context).selectedAddress;
 
       return SafeArea(
         child: Container(
@@ -83,10 +82,13 @@ class HomeScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft, // 왼쪽 정렬
                 child: TextButton(
                   onPressed: () {
+                    // Add your desired logic here
+                    // For example, you can navigate to a new page
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddressRegisterPage()),
+                        builder: (context) => AddressRegisterPage(),
+                      ),
                     );
                   },
                   child: Row(
@@ -95,7 +97,7 @@ class HomeScreen extends StatelessWidget {
                       Icon(Icons.location_on, color: Colors.black),
                       SizedBox(width: 8), // 아이콘과 텍스트 사이에 간격 추가
                       Text(
-                        selectedAddress,
+                        selectedAddress, // Add the selected address value here
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 18, color: Colors.black),
