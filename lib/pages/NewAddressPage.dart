@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/AddressSearch.dart';
-import 'package:delivery/pages/AddressManagePage.dart';
-import 'package:provider/provider.dart';
-import 'package:delivery/main.dart';
 
-class HomeAddressPage extends StatefulWidget {
+class NewAddressPage extends StatefulWidget {
   @override
-  _HomeAddressPageState createState() => _HomeAddressPageState();
+  _NewAddressPageState createState() => _NewAddressPageState();
 }
 
-class _HomeAddressPageState extends State<HomeAddressPage> {
+class _NewAddressPageState extends State<NewAddressPage> {
   int _selectedIndex = -1;
 
   @override
@@ -17,7 +14,7 @@ class _HomeAddressPageState extends State<HomeAddressPage> {
     double buttonWidth = MediaQuery.of(context).size.width * 0.9; //버튼의 크기 = 화면넓이의 90%
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('집 주소 등록')), // 주소 등록 페이지 제목 추가
+        title: Center(child: Text('새 주소 추가')), // 주소 등록 페이지 제목 추가
         actions: [
           IconButton(
             icon: Icon(Icons.save),
