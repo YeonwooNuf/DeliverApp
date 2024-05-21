@@ -1,3 +1,4 @@
+import 'package:delivery/pages/MenuSearchPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -16,6 +17,7 @@ class _JapaneseState extends State<CategorySelect> {
   late String selectedValue = _items[0];
   final List<String> _titles = ["한식", "일식", "중식", "치킨", "피자", "아시아", "멕시칸"];
   late int _currentIndex; //초기탭 배열번호 선언
+  bool IsFilled = false;
 
   @override
   void initState() {
@@ -216,37 +218,44 @@ class _JapaneseState extends State<CategorySelect> {
   }
 
   //이미지 클릭 메서드
-  Widget _Image(String URL, String ShopName) {
+  Widget _Image(String image_URL, String storeName) {
     return Padding(
       padding: EdgeInsets.all(20),
       child: Column(
         children: [
           Stack(
             children: [
-              Container(
-                height: 150,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20), // 원하는 반지름 값으로 설정
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20), // 원하는 반지름 값으로 설정
-                  child: Image.asset(
-                    '${URL}',
-                    fit: BoxFit.cover, // 이미지를 컨테이너에 맞춤
-                    width: double.infinity, // 이미지가 컨테이너에 가득 차도록 가로 너비를 확장
-                    height: double.infinity, // 이미지가 컨테이너에 가득 차도록 세로 너비를 확장
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MenuSearchPage(
+                              image_URL: image_URL,
+                              storeName: storeName,
+                            )),
+                  );
+                },
+                child: Container(
+                  height: 150,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20), // 원하는 반지름 값으로 설정
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20), // 원하는 반지름 값으로 설정
+                    child: Image.asset(
+                      '${image_URL}',
+                      fit: BoxFit.fill, // 이미지를 컨테이너에 맞춤
+                      width: double.infinity, // 이미지가 컨테이너에 가득 차도록 가로 너비를 확장
+                      height: double.infinity, // 이미지가 컨테이너에 가득 차도록 세로 너비를 확장
+                    ),
                   ),
                 ),
               ),
               Positioned(
                 top: 0,
                 right: 0,
-                child: IconButton(
-                  icon: Icon(Icons.favorite_border),
-                  onPressed: () {
-                    // 하트 버튼이 클릭되었을 때의 동작 정의
-                  },
-                ),
+                child: HeartIconButton(),
               ),
             ],
           ),
@@ -254,7 +263,7 @@ class _JapaneseState extends State<CategorySelect> {
             height: 30,
             alignment: Alignment.centerLeft,
             child: Text(
-              '${ShopName}',
+              '${storeName}',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 20,
@@ -266,3 +275,28 @@ class _JapaneseState extends State<CategorySelect> {
     );
   }
 }
+
+//하트아이콘 기능 정의
+class HeartIconButton extends StatefulWidget {
+  @override
+  _HeartIconButtonState createState() => _HeartIconButtonState();
+}
+
+class _HeartIconButtonState extends State<HeartIconButton> {
+  bool isFilled = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: isFilled
+          ? Icon(Icons.favorite, color: Colors.red)
+          : Icon(Icons.favorite_border, color: Colors.white),
+      onPressed: () {
+        setState(() {
+          isFilled = !isFilled;
+        });
+      },
+    );
+  }
+}
+

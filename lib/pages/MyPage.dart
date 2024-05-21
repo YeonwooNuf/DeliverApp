@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:delivery/pages/DetailPage.dart';
 import 'package:delivery/pages/AddressManagePage.dart';
 import 'package:delivery/pages/FavoritePage.dart';
+import 'package:delivery/pages/LogoutPage.dart';
+import 'package:delivery/pages/LoginPage.dart';
 
 class MyPage extends StatelessWidget {
   @override
@@ -19,16 +21,13 @@ class DeliveryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('어플 이름'),
-      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: 80),
+            SizedBox(height: 70),
             Text(
               '장연우',
               style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
@@ -38,7 +37,7 @@ class DeliveryScreen extends StatelessWidget {
               '010-2995-3117',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 70),
+            SizedBox(height: 60),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -194,16 +193,17 @@ class DeliveryScreen extends StatelessWidget {
   }
 }
 
-class LogoutPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('로그아웃'),
-      ),
-      body: Center(
-        child: Text('로그아웃 페이지'),
-      ),
-    );
-  }
-}
+
+// class LogoutPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('로그아웃'),
+//       ),
+//       body: Center(
+//         child: Text('로그아웃 페이지'),
+//       ),
+//     );
+//   }
+// }
