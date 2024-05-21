@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:delivery/dto/user_dto.dart';
 import 'package:http/http.dart' as http;
 
+//서버로 user정보를 전달해서 저장하는 코드
 Future<void> saveUser(UserDto userDto) async {
   try {
-    // 서버 주소를 환경 변수로부터 동적으로 가져올 수도 있습니다.
-    final serverUrl = 'http://localhost:8080/api/users';
+    final serverUrl = 'http://localhost:8080/api/users/save-users';
 
     // HTTP POST 요청을 사용하여 사용자 데이터를 서버에 전송
     final response = await http.post(
@@ -20,18 +20,37 @@ Future<void> saveUser(UserDto userDto) async {
     if (response.statusCode == 201) {
       // 성공적으로 사용자 데이터를 서버에 전송한 경우
       print("User Data sent successfully");
-      // 여기서 원하는 작업을 수행할 수 있습니다. 예를 들어, 다음과 같이 페이지를 이동할 수 있습니다.
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      
     } else {
       // 서버에서 다른 상태 코드를 반환하는 경우
       print("Failed to send user data: ${response.statusCode}");
-      // 사용자에게 적절한 오류 메시지를 표시할 수 있습니다.
-      // 예: ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to send user data")));
+      
     }
   } catch (e) {
     // HTTP 요청 중 오류 발생
     print("Failed to send user data: $e");
-    // 사용자에게 적절한 오류 메시지를 표시할 수 있습니다.
-    // 예: ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to send user data: $e")));
+    
+  }
+}
+
+
+// 서버에서 아이디를 받아오는 코드
+Future<List<String>> getUserId() async {
+  final response = await http.get(
+    Uri.parse('http://localhost:8080/api/users/allUsers'),
+    headers: {'Content-Type': 'application/json'},
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = jsonDecode(response.body);
+    // userId 값만 추출하여 반환( 유저정보값은 서버에서 다 받아왔으니 다른 값들 필요할 때 함수 따로 만들어서 구현하기)
+    List<String> userId = data.map((user) => user['userId'].toString()).toList();
+    // List<String> password = data.map((user) => user['password'].toString()).toList();
+    // List<String> name = data.map((user) => user['name'].toString()).toList();
+    // List<String> phone = data.map((user) => user['phone'].toString()).toList();
+    // List<String> email = data.map((user) => user['email'].toString()).toList();
+    return userId;
+  } else {
+    throw Exception('Failed to fetch user IDs');
   }
 }
