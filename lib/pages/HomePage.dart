@@ -3,6 +3,10 @@ import 'package:delivery/pages/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/AddressRegisterPage.dart';
 import 'package:delivery/response/ExchangeRate.dart';
+import 'package:delivery/response/ExchangeRate.dart';
+import 'package:delivery/AddressChange.dart';
+import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
