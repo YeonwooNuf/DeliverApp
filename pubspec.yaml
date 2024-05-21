@@ -31,7 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^6.1.2
-
+  http: ^0.13.3
+  intl: ^0.17.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -73,6 +74,31 @@ flutter:
   - assets/images/kakao_login_large_narrow.png
   - assets/images/android_neutral_sq_SU@2x.png
   - assets/images/review.png
+  - assets/images/country/AED.png
+  - assets/images/country/AUD.png
+  - assets/images/country/BHD.png
+  - assets/images/country/BND.png
+  - assets/images/country/CAD.png
+  - assets/images/country/CHF.png
+  - assets/images/country/CNH.png
+  - assets/images/country/DKK.png
+  - assets/images/country/EUR.png
+  - assets/images/country/GBP.png
+  - assets/images/country/HKD.png
+  - assets/images/country/IDR(100).png
+  - assets/images/country/JPY(100).png
+  - assets/images/country/KRW.png
+  - assets/images/country/KWD.png
+  - assets/images/country/MYR.png
+  - assets/images/country/NOK.png
+  - assets/images/country/NZD.png
+  - assets/images/country/SAR.png
+  - assets/images/country/SEK.png
+  - assets/images/country/SGD.png
+  - assets/images/country/THB.png
+  - assets/images/country/USD.png
+
+
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

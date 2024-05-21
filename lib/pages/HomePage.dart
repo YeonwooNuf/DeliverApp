@@ -2,6 +2,7 @@ import 'package:delivery/category/CategorySelect.dart';
 import 'package:delivery/pages/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/AddressRegisterPage.dart';
+import 'package:delivery/response/ExchangeRate.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -40,7 +41,8 @@ class HomeScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddressRegisterPage()),
+                      MaterialPageRoute(
+                          builder: (context) => AddressRegisterPage()),
                     );
                   },
                   child: Row(
@@ -59,45 +61,46 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
               Container(
-              height: 60,
-              color: Colors.white,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                        onTap: () {
-                          // 검색 필드를 탭했을 때 SearchPage로 이동합니다.
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SearchPage()),
-                          );
-                        },
-                        style: TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                          hintText: '검색',
-                          hintStyle: TextStyle(color: Colors.grey, fontSize: 20),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(22),
+                height: 60,
+                color: Colors.white,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          onTap: () {
+                            // 검색 필드를 탭했을 때 SearchPage로 이동합니다.
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SearchPage()),
+                            );
+                          },
+                          style: TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            hintText: '검색',
+                            hintStyle:
+                                TextStyle(color: Colors.grey, fontSize: 20),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(22),
+                            ),
+                            prefixIcon: Icon(Icons.search, color: Colors.black),
                           ),
-                          prefixIcon: Icon(Icons.search, color: Colors.black),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
             ],
           ),
         ),
       );
     }
 
-//카테고리 정의하는 메서드
+    // 카테고리 정의하는 메서드
     Widget _roundedContainer(String image, String title, VoidCallback onTap) {
       double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
       return Expanded(
@@ -134,8 +137,86 @@ class HomeScreen extends StatelessWidget {
       );
     }
 
+    // 환율 이미지, 값 정의하는 함수
+    Widget exchangeRateImage(String imagePath, String firstText,
+        String secondText, double screenHeight, double screenWidth) {
+      return Container(
+        height: screenHeight * 0.1,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              Container(
+                height: screenHeight * 0.07,
+                width: screenWidth * 0.25,
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(
+                width: screenWidth * 0.025,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    firstText,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    secondText,
+                    style: TextStyle(
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // 환율 데이터를 가져오는 FutureBuilder 사용
+    Widget _exchangeRateContents(double screenHeight, double screenWidth) {
+      return FutureBuilder<List<ExchangeRate>>(
+        future: getExchangeRate(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No data available'));
+          } else {
+            final exchangeRates = snapshot.data!;
+            return ListView.builder(
+              shrinkWrap: true, // 부모의 크기에 맞춰 스크롤 크기를 조정
+              itemCount: exchangeRates.length,
+              itemBuilder: (context, index) {
+                final exchangeRate = exchangeRates[index];
+                return exchangeRateImage(
+                  'assets/images/country/${exchangeRate.curUnit}.png',
+                  '${exchangeRate.curUnit}-${exchangeRate.curName}',
+                  '${exchangeRate.ttb}원',
+                  screenHeight,
+                  screenWidth,
+                );
+              },
+            );
+          }
+        },
+      );
+    }
+
     Widget _contents() {
-      double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
+      double screenHeight = MediaQuery.of(context).size.height;
+      double screenWidth = MediaQuery.of(context).size.width;
       return Expanded(
         child: Container(
           color: Colors.white,
@@ -166,7 +247,6 @@ class HomeScreen extends StatelessWidget {
                                   builder: (context) =>
                                       CategorySelect(CategoryName: '일식')),
                             );
-                            // 클릭 시 수행할 동작 추가
                           }),
                           SizedBox(width: 8),
                           _roundedContainer('assets/images/jjajang.jpeg', '중식',
@@ -177,7 +257,6 @@ class HomeScreen extends StatelessWidget {
                                   builder: (context) =>
                                       CategorySelect(CategoryName: '중식')),
                             );
-                            // 클릭 시 수행할 동작 추가
                           }),
                           SizedBox(width: 8),
                           _roundedContainer('assets/images/chicken.jpeg', '치킨',
@@ -188,7 +267,6 @@ class HomeScreen extends StatelessWidget {
                                   builder: (context) =>
                                       CategorySelect(CategoryName: '치킨')),
                             );
-                            // 클릭 시 수행할 동작 추가
                           }),
                         ],
                       ),
@@ -200,8 +278,8 @@ class HomeScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CategorySelect(
-                                      CategoryName: '피자')), // 클릭 시 수행할 동작 추가
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '피자')),
                             );
                           }),
                           SizedBox(width: 8),
@@ -228,6 +306,37 @@ class HomeScreen extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 8),
+                      Container(
+                        height: screenHeight * 0.07,
+                        decoration: BoxDecoration(
+                          color: Color(0xFF004AAD),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20.0), // 왼쪽 위 모서리 둥글게
+                            topRight: Radius.circular(20.0), // 오른쪽 위 모서리 둥글게
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '실시간 환율(KRW)',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: screenHeight * 0.6,
+                        child: ClipRRect(
+                          // ClipRRect를 사용하여 모서리를 둥글게 만듭니다.
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20.0), // 아래 모서리 둥글게
+                            bottomRight: Radius.circular(20.0), // 아래 모서리 둥글게
+                          ),
+                          child:
+                              _exchangeRateContents(screenHeight, screenWidth),
+                        ),
+                      ),
                     ],
                   ),
                 )
@@ -247,4 +356,8 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+void main() {
+  runApp(HomePage());
 }
