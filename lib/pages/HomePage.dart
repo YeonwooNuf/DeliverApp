@@ -5,6 +5,9 @@ import 'package:delivery/pages/AddressRegisterPage.dart';
 import 'package:delivery/response/ExchangeRate.dart';
 import 'package:delivery/AddressChange.dart';
 import 'package:provider/provider.dart';
+import 'package:delivery/AddressChange.dart';
+import 'package:provider/provider.dart';
+
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
@@ -15,12 +18,13 @@ class HomePage extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: Colors.white,
+        primaryColor: const Color.fromARGB(255, 216, 214, 214),
       ),
       home: Scaffold(
+        resizeToAvoidBottomInset: false, // 키보드로 인한 화면 크기 조정 방지
         body: Directionality(
           textDirection: TextDirection.ltr,
-          child: HomeScreen(),
+          child: const HomeScreen(selectedIndex: 0),
         ),
       ),
     );
@@ -28,9 +32,49 @@ class HomePage extends StatelessWidget {
 }
 
 class HomeScreen extends StatelessWidget {
+  final int selectedIndex;
+  const HomeScreen({Key? key, required this.selectedIndex}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    // String? homeAddress = Provider.of<ItemListNotifier>(context).homeAddress;
+    // String? workAddress = Provider.of<ItemListNotifier>(context).workAddress;
+    // List<String> addresses = Provider.of<ItemListNotifier>(context).addresses;
+
+    // int _selectedIndex = Provider.of<ItemListNotifier>(context).selectedIndex;
+
+    // 선택된 인덱스에 저장된 주소 받아오기
+    String selectedAddress = '';
+    String _getSelectedAddressName(BuildContext context) {
+      final itemListNotifier = Provider.of<ItemListNotifier>(context);
+
+      // _selectedIndex 값에 따라 선택된 주소의 이름을 설정합니다.
+      switch (itemListNotifier.selectedIndex) {
+        case -2:
+          selectedAddress = itemListNotifier.homeAddress ?? '집 주소가 없습니다.';
+          break;
+        case -1:
+          selectedAddress = itemListNotifier.workAddress ?? '회사 주소가 없습니다.';
+          break;
+        default:
+          selectedAddress =
+              itemListNotifier.addresses[itemListNotifier.selectedIndex] ??
+                  '기타 주소가 없습니다.';
+          break;
+      }
+
+      String selectedAddressPrefix = selectedAddress.length >= 5
+          ? selectedAddress.substring(0, 5)
+          : selectedAddress;
+      return selectedAddressPrefix;
+    }
+
+    // 주소의 앞에 5글자만 표현하기
+
     Widget _appBar() {
+      String selectedAddress =
+          Provider.of<ItemListNotifier>(context).selectedAddress;
+
       return SafeArea(
         child: Container(
           width: double.infinity,
@@ -42,6 +86,8 @@ class HomeScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft, // 왼쪽 정렬
                 child: TextButton(
                   onPressed: () {
+                    // Add your desired logic here
+                    // For example, you can navigate to a new page
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -55,7 +101,7 @@ class HomeScreen extends StatelessWidget {
                       Icon(Icons.location_on, color: Colors.black),
                       SizedBox(width: 8), // 아이콘과 텍스트 사이에 간격 추가
                       Text(
-                        '집 주소',
+                        selectedAddress, // Add the selected address value here
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 18, color: Colors.black),
@@ -361,5 +407,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
-

@@ -1,3 +1,4 @@
+import 'package:delivery/pages/AddressRegisterPage.dart';
 import 'package:delivery/pages/FavoritePage.dart';
 import 'package:delivery/pages/HomePage.dart';
 import 'package:delivery/pages/MyPage.dart';

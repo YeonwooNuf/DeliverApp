@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'PaymentMethod.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -21,7 +23,6 @@ class _PaymentPageState extends State<PaymentPage> {
   bool isDisposableChecked = false;
   String? _selectedItem = '직접 받을게요 (부재 시 문 앞)';
   String? _selectedPaymentMethod = '결제 수단을 선택해주세요.';
-  
 
   void _decreaseQuantity() {
     setState(() {
@@ -190,7 +191,8 @@ class _PaymentPageState extends State<PaymentPage> {
                 ),
               ),
               SizedBox(height: 16),
-              Text('시장을 여는 사람들 인하대점', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('시장을 여는 사람들 인하대점',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Divider(
                 color: Colors.grey,
                 thickness: 1,
@@ -256,7 +258,8 @@ class _PaymentPageState extends State<PaymentPage> {
                   children: [
                     Text(
                       '요청사항',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
                     Text(
@@ -276,7 +279,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     decoration: InputDecoration(
                       hintText: '예) 견과류는 빼주세요',
                       hintStyle: TextStyle(color: Colors.grey),
-                      filled : true,
+                      filled: true,
                       fillColor: Color.fromARGB(255, 241, 239, 239),
                       border: OutlineInputBorder(),
                       contentPadding: EdgeInsets.only(left: 15),
@@ -358,7 +361,8 @@ class _PaymentPageState extends State<PaymentPage> {
                   ),
                 ),
               ),
-              GestureDetector( // GestureDetector를 사용하여 리스트를 클릭할 수 있게 함
+              GestureDetector(
+                // GestureDetector를 사용하여 리스트를 클릭할 수 있게 함
                 onTap: () {
                   _showPaymentMethods(); // 결제 수단 표시
                 },
@@ -370,9 +374,12 @@ class _PaymentPageState extends State<PaymentPage> {
                     children: [
                       Text(
                         '결제 수단',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
                       Text(
                         '$_selectedPaymentMethod', // 선택된 결제 수단 표시
                         style: TextStyle(fontSize: 16),
@@ -406,6 +413,7 @@ class _PaymentPageState extends State<PaymentPage> {
         child: ElevatedButton(
           onPressed: () {
             // 버튼을 클릭했을 때 실행할 내용을 여기에 작성하세요.
+            TotalPayment().bootpayTest(context);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue, // 버튼의 배경색을 파란색으로 변경
@@ -413,7 +421,10 @@ class _PaymentPageState extends State<PaymentPage> {
           ),
           child: Text(
             '18,900원 결제하기',
-            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold), // 버튼의 글씨색을 흰색으로 변경
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold), // 버튼의 글씨색을 흰색으로 변경
           ),
         ),
       ),
