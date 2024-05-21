@@ -3,8 +3,6 @@ import 'package:delivery/pages/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/AddressRegisterPage.dart';
 import 'package:delivery/response/ExchangeRate.dart';
-import 'package:delivery/response/ExchangeRate.dart';
-import 'package:delivery/AddressChange.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 
@@ -46,7 +44,8 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddressRegisterPage()),
+                          builder: (context) => AddressRegisterPage(),
+                          ),
                     );
                   },
                   child: Row(
@@ -362,6 +361,6 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-void main() {
-  runApp(HomePage());
-}
+// void main() {
+//   runApp(HomePage());
+// }
