@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/AddressChange.dart';
 import 'package:delivery/pages/AddressSearch.dart';
+import 'package:delivery/pages/AddressMapPage.dart';
 
 class AddressRegisterPage extends StatefulWidget {
   
@@ -51,6 +52,10 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
               child: ElevatedButton.icon(
                 onPressed: () {
                   // 현재 위치로 주소 찾기 기능 구현
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddressMapPage()),
+                  );
                 },
                 icon: Icon(Icons.my_location), // 현재 위치 아이콘 추가
                 label: Text('현재 위치로 주소 찾기'),
