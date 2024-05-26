@@ -1,3 +1,6 @@
+import 'package:delivery/main.dart';
+import 'package:delivery/pages/MyPage.dart';
+import 'package:delivery/service/sv_user.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/login/SignUpPage.dart';
 
@@ -20,6 +23,90 @@ class LoginPage extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     TextEditingController _idController = TextEditingController();
     TextEditingController _passwordController = TextEditingController();
+
+    Future<void> login() async {
+      String userId = _idController.text;
+      String password = _passwordController.text;
+
+      if (userId.isEmpty || password.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('입력 오류'),
+              content: Text('아이디와 비밀번호를 모두 입력해주세요.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('확인'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+      //로그인 기능 구현 (각 인덱스에 맞는 아이디와 비밀번호)
+      try {
+        List<String> userIds = await getUserId();
+        List<String> passwords = await getUserPassword();
+        List<String> phones = await getUserPhone();
+        List<String> names = await getUserName(); // 사용자 이름을 가져오는 함수
+        int index = userIds.indexOf(userId); // 입력한 아이디의 인덱스 찾기
+
+        if (index != -1 &&
+            passwords.length > index &&
+            passwords[index] == password) {
+          // 해당하는 아이디가 존재하고 비밀번호가 일치하는 경우
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => MainApp(name: names[index], phone: phones[index])),
+          );
+
+           MyPage(name: names[index], phone: phones[index]);
+          
+        } else {
+          // 아이디 또는 비밀번호가 올바르지 않은 경우
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('로그인 실패'),
+                content: Text('아이디 또는 비밀번호가 올바르지 않습니다.'),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('확인'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('서버 오류'),
+              content: Text('로그인 중 오류가 발생했습니다. 다시 시도해주세요.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('확인'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -52,15 +139,14 @@ class LoginPage extends StatelessWidget {
             SizedBox(height: screenHeight * 0.005), // 아이디와 비번 사이 간격
             TextField(
               controller: _passwordController,
+              obscureText: true, // 비밀번호 마스킹 처리
               decoration: InputDecoration(
                 labelText: '비밀번호',
               ),
             ),
             SizedBox(height: screenHeight * 0.02),
             GestureDetector(
-              onTap: () {
-                // 로그인 버튼을 누를 때 동작
-              },
+              onTap: login,
               child: Container(
                 width: screenWidth * 0.7,
                 decoration: BoxDecoration(

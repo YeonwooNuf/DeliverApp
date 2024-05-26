@@ -42,15 +42,104 @@ Future<List<String>> getUserId() async {
   );
 
   if (response.statusCode == 200) {
-    List<dynamic> data = jsonDecode(response.body);
+    List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
     // userId 값만 추출하여 반환( 유저정보값은 서버에서 다 받아왔으니 다른 값들 필요할 때 함수 따로 만들어서 구현하기)
+    
     List<String> userId = data.map((user) => user['userId'].toString()).toList();
-    // List<String> password = data.map((user) => user['password'].toString()).toList();
-    // List<String> name = data.map((user) => user['name'].toString()).toList();
-    // List<String> phone = data.map((user) => user['phone'].toString()).toList();
-    // List<String> email = data.map((user) => user['email'].toString()).toList();
+     
     return userId;
   } else {
     throw Exception('Failed to fetch user IDs');
   }
+
 }
+
+Future<List<String>> getUserNumber() async {
+  final response = await http.get(
+    Uri.parse('http://localhost:8080/api/users/allUsers'),
+    headers: {'Content-Type': 'application/json'},
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+    // userId 값만 추출하여 반환( 유저정보값은 서버에서 다 받아왔으니 다른 값들 필요할 때 함수 따로 만들어서 구현하기)
+    List<String> userNumber = data.map((user) => user['userNumber'].toString()).toList();
+    
+    return userNumber;
+  } else {
+    throw Exception('Failed to fetch user Number');
+  }
+
+}
+Future<List<String>> getUserPassword() async {
+  final response = await http.get(
+    Uri.parse('http://localhost:8080/api/users/allUsers'),
+    headers: {'Content-Type': 'application/json'},
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+    // userId 값만 추출하여 반환( 유저정보값은 서버에서 다 받아왔으니 다른 값들 필요할 때 함수 따로 만들어서 구현하기)
+    
+     List<String> password = data.map((user) => user['password'].toString()).toList();
+     
+    return password;
+  } else {
+    throw Exception('Failed to fetch user password');
+  }
+
+}
+Future<List<String>> getUserName() async {
+  final response = await http.get(
+    Uri.parse('http://localhost:8080/api/users/allUsers'),
+    headers: {'Content-Type': 'application/json'},
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+    // userId 값만 추출하여 반환( 유저정보값은 서버에서 다 받아왔으니 다른 값들 필요할 때 함수 따로 만들어서 구현하기)
+    
+     List<String> name = data.map((user) => user['name'].toString()).toList();
+     
+    return name;
+  } else {
+    throw Exception('Failed to fetch user name');
+  }
+
+}
+Future<List<String>> getUserPhone() async {
+  final response = await http.get(
+    Uri.parse('http://localhost:8080/api/users/allUsers'),
+    headers: {'Content-Type': 'application/json'},
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+    // userId 값만 추출하여 반환( 유저정보값은 서버에서 다 받아왔으니 다른 값들 필요할 때 함수 따로 만들어서 구현하기)
+    
+     List<String> phone = data.map((user) => user['phone'].toString()).toList();
+     
+    return phone;
+  } else {
+    throw Exception('Failed to fetch user phone');
+  }
+
+}
+Future<List<String>> getUserEmail() async {
+  final response = await http.get(
+    Uri.parse('http://localhost:8080/api/users/allUsers'),
+    headers: {'Content-Type': 'application/json'},
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = jsonDecode(utf8.decode(response.bodyBytes));
+    // userId 값만 추출하여 반환( 유저정보값은 서버에서 다 받아왔으니 다른 값들 필요할 때 함수 따로 만들어서 구현하기)
+    
+     List<String> email = data.map((user) => user['email'].toString()).toList();
+    return email;
+  } else {
+    throw Exception('Failed to fetch user email');
+  }
+
+}
+  

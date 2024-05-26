@@ -6,11 +6,17 @@ import 'package:delivery/pages/login/LogoutPage.dart';
 import 'package:delivery/pages/login/LoginPage.dart';
 
 class MyPage extends StatelessWidget {
+  //Mypage로 loginpage에서 이름과 전화번호를 전달해줌.
+   final String  name ;
+   final String  phone;
+
+   MyPage({required this.name, required this.phone}); // 생성자 추가
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '배달 앱',
-      home: DeliveryScreen(),
+      home: DeliveryScreen(name: name, phone: phone),
     );
   }
 }
@@ -18,6 +24,17 @@ class MyPage extends StatelessWidget {
 // 깃 커밋 테스트
 
 class DeliveryScreen extends StatelessWidget {
+
+   String name ;
+   String  phone;
+
+   DeliveryScreen({required this.name, required this.phone});
+
+   String formatPhoneNumber(String phoneNumber) {
+     // 전화번호 형식 변환(사이사이 - 추가되게)
+     return phoneNumber.substring(0, 3) + '-' + phoneNumber.substring(3, 7) + '-' + phoneNumber.substring(7);
+   }
+    
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,12 +46,12 @@ class DeliveryScreen extends StatelessWidget {
           children: [
             SizedBox(height: 70),
             Text(
-              '장연우',
+              '$name',
               style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 30),
             Text(
-              '010-2995-3117',
+              '${formatPhoneNumber(phone)}',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 60),
