@@ -2,18 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/AddressChange.dart';
 import 'package:delivery/pages/AddressRegisterPage.dart';
-import 'package:delivery/pages/MyPage.dart';
 
 class AddressInfo extends StatefulWidget {
   final String searchedAddress;
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '배달 앱',
-      home: AddressRegisterPage(),
-    );
-  }
 
   AddressInfo({Key? key, required this.searchedAddress}) : super(key: key);
 
@@ -30,7 +21,7 @@ class _AddressInfoState extends State<AddressInfo> {
   Color _locationColor = Colors.transparent;
 
   @override
-  StatefulWidget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('주소 상세 정보'),
@@ -41,7 +32,7 @@ class _AddressInfoState extends State<AddressInfo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '검색된 주소: ${widget.searchedAddress ?? '주소를 선택해주세요'}',
+              '검색된 주소: ${widget.searchedAddress}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -71,8 +62,7 @@ class _AddressInfoState extends State<AddressInfo> {
             ),
             SizedBox(height: 16.0),
             Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween, // 각 버튼 사이의 공간을 동일하게 분배
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: InkWell(
@@ -104,7 +94,7 @@ class _AddressInfoState extends State<AddressInfo> {
                     ),
                   ),
                 ),
-                SizedBox(width: 16.0), // 각 버튼 사이의 공간
+                SizedBox(width: 16.0),
                 Expanded(
                   child: InkWell(
                     onTap: () {
@@ -133,7 +123,7 @@ class _AddressInfoState extends State<AddressInfo> {
                     ),
                   ),
                 ),
-                SizedBox(width: 16.0), // 각 버튼 사이의 공간
+                SizedBox(width: 16.0),
                 Expanded(
                   child: InkWell(
                     onTap: () {
@@ -172,7 +162,6 @@ class _AddressInfoState extends State<AddressInfo> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      // 저장 버튼이 눌렸을 때의 동작
                       if (_homeColor == Colors.transparent &&
                           _workColor == Colors.transparent &&
                           _locationColor == Colors.transparent) {
@@ -214,7 +203,6 @@ class _AddressInfoState extends State<AddressInfo> {
                               .addAddress(widget.searchedAddress);
                         }
 
-                        // 확인 버튼을 누르면 AddressRegister 페이지로 이동
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -225,14 +213,10 @@ class _AddressInfoState extends State<AddressInfo> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            DefaultTabController(
-                                          length: 4 , // 필요한 탭 개수
-                                          child: AddressRegisterPage(),
-                                        ),
+                                        builder: (context) => AddressRegisterPage(),
                                       ),
                                     );
                                   },
@@ -242,7 +226,6 @@ class _AddressInfoState extends State<AddressInfo> {
                             );
                           },
                         ).then((_) {
-                          // 이동한 후에도 기존 페이지가 올바르게 표시되도록 setState를 호출합니다.
                           setState(() {});
                         });
                       }

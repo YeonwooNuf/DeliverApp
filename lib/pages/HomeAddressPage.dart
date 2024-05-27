@@ -3,6 +3,7 @@ import 'package:delivery/pages/AddressSearch.dart';
 import 'package:delivery/pages/AddressManagePage.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/main.dart';
+import 'package:delivery/pages/AddressMapPage.dart';
 
 class HomeAddressPage extends StatefulWidget {
   @override
@@ -53,6 +54,10 @@ class _HomeAddressPageState extends State<HomeAddressPage> {
               child: ElevatedButton.icon(
                 onPressed: () {
                   // 현재 위치로 주소 찾기 기능 구현
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddressMapPage()),
+                  );
                 },
                 icon: Icon(Icons.my_location), // 현재 위치 아이콘 추가
                 label: Text('현재 위치로 주소 찾기'),
