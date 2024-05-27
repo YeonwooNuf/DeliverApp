@@ -2,9 +2,7 @@ import 'package:delivery/category/CategorySelect.dart';
 import 'package:delivery/pages/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/AddressRegisterPage.dart';
-import 'package:delivery/response/ExchangeRate.dart';
-import 'package:delivery/AddressChange.dart';
-import 'package:provider/provider.dart';
+import 'package:delivery/service/sv_ExchangeRate.dart';
 import 'package:delivery/AddressChange.dart';
 import 'package:provider/provider.dart';
 
@@ -79,7 +77,7 @@ class HomeScreen extends StatelessWidget {
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(color: Colors.white),
-          padding: const EdgeInsets.only(left: 16.0), // 좌측에 여백 추가
+          padding: const EdgeInsets.all(8), // 좌측에 여백 추가
           child: Column(
             children: [
               Align(
@@ -92,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AddressRegisterPage(),
-                        ),
+                      ),
                     );
                   },
                   child: Row(
@@ -119,24 +117,28 @@ class HomeScreen extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          onTap: () {
-                            // 검색 필드를 탭했을 때 SearchPage로 이동합니다.
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchPage()),
-                            );
-                          },
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: '검색',
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(22),
+                        child: Center(
+                          child: TextField(
+                            onTap: () {
+                              // 검색 필드를 탭했을 때 SearchPage로 이동합니다.
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SearchPage(),
+                                ),
+                              );
+                            },
+                            style: TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              hintText: '검색',
+                              hintStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              prefixIcon:
+                                  Icon(Icons.search, color: Colors.black),
                             ),
-                            prefixIcon: Icon(Icons.search, color: Colors.black),
                           ),
                         ),
                       ),
@@ -253,7 +255,7 @@ class HomeScreen extends StatelessWidget {
                 return exchangeRateImage(
                   'assets/images/country/${exchangeRate.curUnit}.png',
                   '${exchangeRate.curUnit}-${exchangeRate.curName}',
-                  '${exchangeRate.ttb}원',
+                  '1${exchangeRate.curUnit} - ${exchangeRate.ttb}원',
                   screenHeight,
                   screenWidth,
                 );
@@ -406,4 +408,8 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+void main() {
+  runApp(HomePage());
 }

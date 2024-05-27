@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+
+//서버에서 환율 받아오는 코드
 class ExchangeRate {
   final int result;
   final String curUnit;
