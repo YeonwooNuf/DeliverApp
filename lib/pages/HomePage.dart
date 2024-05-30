@@ -5,6 +5,7 @@ import 'package:delivery/pages/AddressRegisterPage.dart';
 import 'package:delivery/service/sv_ExchangeRate.dart';
 import 'package:delivery/AddressChange.dart';
 import 'package:provider/provider.dart';
+import 'package:delivery/pages/AddressInfo.dart';
 
 import 'package:get/get.dart';
 
@@ -35,43 +36,15 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // String? homeAddress = Provider.of<ItemListNotifier>(context).homeAddress;
-    // String? workAddress = Provider.of<ItemListNotifier>(context).workAddress;
-    // List<String> addresses = Provider.of<ItemListNotifier>(context).addresses;
-
-    // int _selectedIndex = Provider.of<ItemListNotifier>(context).selectedIndex;
 
     // 선택된 인덱스에 저장된 주소 받아오기
     String selectedAddress = '';
-    String _getSelectedAddressName(BuildContext context) {
-      final itemListNotifier = Provider.of<ItemListNotifier>(context);
-
-      // _selectedIndex 값에 따라 선택된 주소의 이름을 설정합니다.
-      switch (itemListNotifier.selectedIndex) {
-        case -2:
-          selectedAddress = itemListNotifier.homeAddress ?? '집 주소가 없습니다.';
-          break;
-        case -1:
-          selectedAddress = itemListNotifier.workAddress ?? '회사 주소가 없습니다.';
-          break;
-        default:
-          selectedAddress =
-              itemListNotifier.addresses[itemListNotifier.selectedIndex] ??
-                  '기타 주소가 없습니다.';
-          break;
-      }
-
-      String selectedAddressPrefix = selectedAddress.length >= 5
-          ? selectedAddress.substring(0, 5)
-          : selectedAddress;
-      return selectedAddressPrefix;
-    }
-
-    // 주소의 앞에 5글자만 표현하기
 
     Widget _appBar() {
       String selectedAddress =
           Provider.of<ItemListNotifier>(context).selectedAddress;
+
+    String? addressType = Provider.of<ItemListNotifier>(context).addressType;
 
       return SafeArea(
         child: Container(
@@ -84,8 +57,6 @@ class HomeScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft, // 왼쪽 정렬
                 child: TextButton(
                   onPressed: () {
-                    // Add your desired logic here
-                    // For example, you can navigate to a new page
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -99,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                       Icon(Icons.location_on, color: Colors.black),
                       SizedBox(width: 8), // 아이콘과 텍스트 사이에 간격 추가
                       Text(
-                        selectedAddress, // Add the selected address value here
+                        addressType, // Add the selected address value here
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 18, color: Colors.black),
@@ -152,7 +123,7 @@ class HomeScreen extends StatelessWidget {
       );
     }
 
-    // 카테고리 정의하는 메서드
+    //카테고리 정의하는 메서드
     Widget _roundedContainer(String image, String title, VoidCallback onTap) {
       double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
       return Expanded(

@@ -9,16 +9,49 @@ class AddressInfo extends StatefulWidget {
   AddressInfo({Key? key, required this.searchedAddress}) : super(key: key);
 
   @override
-  _AddressInfoState createState() => _AddressInfoState();
+  AddressInfoState createState() => AddressInfoState();
 }
 
-class _AddressInfoState extends State<AddressInfo> {
-  String _detailAddress = '';
-  String _directions = '';
+class AddressInfoState extends State<AddressInfo> {
+  String detailAddress = '';
+  String directions = '';
+  String alias = '';
 
   Color _homeColor = Colors.transparent;
   Color _workColor = Colors.transparent;
   Color _locationColor = Colors.transparent;
+
+  TextEditingController _detailAddressController = TextEditingController();
+  TextEditingController _directionsController = TextEditingController();
+  TextEditingController _aliasController = TextEditingController();
+
+  bool _showAliasTextField = false; // 기타 버튼을 눌렀을 때 TextField를 보여줄지 여부
+
+  @override
+  void initState() {
+    super.initState();
+    _detailAddressController.addListener(() {
+      setState(() {
+        detailAddress = _detailAddressController.text;
+      });
+    });
+    _directionsController.addListener(() {
+      setState(() {
+        directions = _directionsController.text;
+      });
+    });
+    _aliasController.addListener(() {
+      setState(() {
+        alias = _aliasController.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _aliasController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +78,7 @@ class _AddressInfoState extends State<AddressInfo> {
               ),
               onChanged: (value) {
                 setState(() {
-                  _detailAddress = value;
+                  detailAddress = value;
                 });
               },
             ),
@@ -56,10 +89,23 @@ class _AddressInfoState extends State<AddressInfo> {
               ),
               onChanged: (value) {
                 setState(() {
-                  _directions = value;
+                  directions = value;
                 });
               },
             ),
+            SizedBox(height: 16.0),
+            if (_locationColor == Colors.black12)
+              TextField(
+                controller: _aliasController,
+                decoration: InputDecoration(
+                  hintText: '주소의 별칭을 입력해주세요',
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    alias = value; // 입력받은 별칭을 저장합니다.
+                  });
+                },
+              ),
             SizedBox(height: 16.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,8 +118,6 @@ class _AddressInfoState extends State<AddressInfo> {
                         _workColor = Colors.transparent;
                         _locationColor = Colors.transparent;
                       });
-                      Provider.of<ItemListNotifier>(context, listen: false)
-                          .setHomeAddress(widget.searchedAddress);
                     },
                     splashColor: Colors.grey,
                     borderRadius: BorderRadius.circular(8),
@@ -131,6 +175,8 @@ class _AddressInfoState extends State<AddressInfo> {
                         _homeColor = Colors.transparent;
                         _workColor = Colors.transparent;
                         _locationColor = Colors.black12;
+                        _showAliasTextField =
+                            true; // 기타 버튼을 눌렀을 때 TextField 보이기
                       });
                     },
                     splashColor: Colors.grey,
@@ -183,24 +229,28 @@ class _AddressInfoState extends State<AddressInfo> {
                           },
                         );
                       } else {
-                        print('상세주소 : $_detailAddress');
-                        print('길 안내 : $_directions');
+                        String combinedAddress =
+                            widget.searchedAddress + ' , ' + detailAddress;
+                        print('상세주소 : $detailAddress');
+                        print('길 안내 : $directions');
                         if (_homeColor == Colors.black12) {
                           print('선택된 버튼: 집');
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .removeHomeAddress();
                           Provider.of<ItemListNotifier>(context, listen: false)
-                              .setHomeAddress(widget.searchedAddress);
+                              .setHomeAddress(combinedAddress);
                         } else if (_workColor == Colors.black12) {
                           print('선택된 버튼: 회사');
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .removeWorkAddress();
                           Provider.of<ItemListNotifier>(context, listen: false)
-                              .setWorkAddress(widget.searchedAddress);
+                              .setWorkAddress(combinedAddress);
                         } else {
                           print('선택된 버튼: 기타');
+                          final alias =
+                              _aliasController.text; // TextField에서 입력한 별칭 가져오기
                           Provider.of<ItemListNotifier>(context, listen: false)
-                              .addAddress(widget.searchedAddress);
+                              .addAddress(combinedAddress);
                         }
 
                         showDialog(
@@ -216,7 +266,8 @@ class _AddressInfoState extends State<AddressInfo> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => AddressRegisterPage(),
+                                        builder: (context) =>
+                                            AddressRegisterPage(),
                                       ),
                                     );
                                   },
@@ -225,9 +276,7 @@ class _AddressInfoState extends State<AddressInfo> {
                               ],
                             );
                           },
-                        ).then((_) {
-                          setState(() {});
-                        });
+                        );
                       }
                     },
                     child: Text('저장'),
