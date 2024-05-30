@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-
 import 'package:bootpay/bootpay.dart';
 import 'package:bootpay/model/extra.dart';
 import 'package:bootpay/model/item.dart';
@@ -9,14 +8,21 @@ import 'package:bootpay/model/stat_item.dart';
 import 'package:bootpay/model/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:delivery/product/productInfo.dart';
+import 'package:delivery/product/productService.dart';
 
 class ItemListNotifier extends ChangeNotifier {
   List<String> _addresses = [
     '인하대,인하공전,정석항공고 인천광역시 미추홀구 인하로 100 수준원점',
     '인천광역시 미추홀구 인하로105번길 43 302호'
-    
   ];
+
   List<String> get addresses => _addresses;
+
+  final ProductService _productService = ProductService();
+  List<Product> _products = [];
+
+  List<Product> get products => _products;
 
   // List<Item> _itemList = [];
 
@@ -35,7 +41,11 @@ class ItemListNotifier extends ChangeNotifier {
   String get selectedAddress => _selectedAddress;
 
   int selectedIndex = -2;
-  //int get selectedIndex => _selectedIndex;
+
+  Future<void> fetchProducts() async {
+    _products = await _productService.fetchProducts();
+    notifyListeners();
+  }
 
   void setSelctedAddress(String selectedAddress) {
     _selectedAddress = selectedAddress;

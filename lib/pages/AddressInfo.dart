@@ -9,10 +9,10 @@ class AddressInfo extends StatefulWidget {
   AddressInfo({Key? key, required this.searchedAddress}) : super(key: key);
 
   @override
-  _AddressInfoState createState() => _AddressInfoState();
+  AddressInfoState createState() => AddressInfoState();
 }
 
-class _AddressInfoState extends State<AddressInfo> {
+class AddressInfoState extends State<AddressInfo> {
   String detailAddress = '';
   String directions = '';
   String alias = '';
@@ -118,8 +118,6 @@ class _AddressInfoState extends State<AddressInfo> {
                         _workColor = Colors.transparent;
                         _locationColor = Colors.transparent;
                       });
-                      Provider.of<ItemListNotifier>(context, listen: false)
-                          .setHomeAddress(widget.searchedAddress);
                     },
                     splashColor: Colors.grey,
                     borderRadius: BorderRadius.circular(8),
@@ -231,6 +229,8 @@ class _AddressInfoState extends State<AddressInfo> {
                           },
                         );
                       } else {
+                        String combinedAddress =
+                            widget.searchedAddress + ' , ' + detailAddress;
                         print('상세주소 : $detailAddress');
                         print('길 안내 : $directions');
                         if (_homeColor == Colors.black12) {
@@ -238,17 +238,19 @@ class _AddressInfoState extends State<AddressInfo> {
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .removeHomeAddress();
                           Provider.of<ItemListNotifier>(context, listen: false)
-                              .setHomeAddress(widget.searchedAddress);
+                              .setHomeAddress(combinedAddress);
                         } else if (_workColor == Colors.black12) {
                           print('선택된 버튼: 회사');
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .removeWorkAddress();
                           Provider.of<ItemListNotifier>(context, listen: false)
-                              .setWorkAddress(widget.searchedAddress);
+                              .setWorkAddress(combinedAddress);
                         } else {
                           print('선택된 버튼: 기타');
+                          final alias =
+                              _aliasController.text; // TextField에서 입력한 별칭 가져오기
                           Provider.of<ItemListNotifier>(context, listen: false)
-                              .addAddress(widget.searchedAddress);
+                              .addAddress(combinedAddress);
                         }
 
                         showDialog(
@@ -264,7 +266,8 @@ class _AddressInfoState extends State<AddressInfo> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => AddressRegisterPage(),
+                                        builder: (context) =>
+                                            AddressRegisterPage(),
                                       ),
                                     );
                                   },

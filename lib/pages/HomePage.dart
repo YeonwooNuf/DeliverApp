@@ -49,7 +49,7 @@ class HomeScreen extends StatelessWidget {
         child: Container(
           width: double.infinity,
           decoration: BoxDecoration(color: Colors.white),
-          padding: const EdgeInsets.only(left: 16.0), // 좌측에 여백 추가
+          padding: const EdgeInsets.all(8), // 좌측에 여백 추가
           child: Column(
             children: [
               Align(
@@ -87,24 +87,28 @@ class HomeScreen extends StatelessWidget {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          onTap: () {
-                            // 검색 필드를 탭했을 때 SearchPage로 이동합니다.
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SearchPage()),
-                            );
-                          },
-                          style: TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: '검색',
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 20),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(22),
+                        child: Center(
+                          child: TextField(
+                            onTap: () {
+                              // 검색 필드를 탭했을 때 SearchPage로 이동합니다.
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SearchPage(),
+                                ),
+                              );
+                            },
+                            style: TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              hintText: '검색',
+                              hintStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 20),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              prefixIcon:
+                                  Icon(Icons.search, color: Colors.black),
                             ),
-                            prefixIcon: Icon(Icons.search, color: Colors.black),
                           ),
                         ),
                       ),
@@ -154,7 +158,82 @@ class HomeScreen extends StatelessWidget {
         ),
       );
     }
+    // 환율 이미지, 값 정의하는 함수
+    Widget exchangeRateImage(String imagePath, String firstText,
+        String secondText, double screenHeight, double screenWidth) {
+      return Container(
+        height: screenHeight * 0.1,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              Container(
+                height: screenHeight * 0.07,
+                width: screenWidth * 0.25,
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(
+                width: screenWidth * 0.025,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    firstText,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    secondText,
+                    style: TextStyle(
+                      fontSize: 12.0,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
+    // 환율 데이터를 가져오는 FutureBuilder 사용
+    Widget _exchangeRateContents(double screenHeight, double screenWidth) {
+      return FutureBuilder<List<ExchangeRate>>(
+        future: getExchangeRate(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No data available'));
+          } else {
+            final exchangeRates = snapshot.data!;
+            return ListView.builder(
+              shrinkWrap: true, // 부모의 크기에 맞춰 스크롤 크기를 조정
+              itemCount: exchangeRates.length,
+              itemBuilder: (context, index) {
+                final exchangeRate = exchangeRates[index];
+                return exchangeRateImage(
+                  'assets/images/country/${exchangeRate.curUnit}.png',
+                  '${exchangeRate.curUnit}-${exchangeRate.curName}',
+                  '1${exchangeRate.curUnit} - ${exchangeRate.ttb}원',
+                  screenHeight,
+                  screenWidth,
+                );
+              },
+            );
+          }
+        },
+      );
+    }
     Widget _contents() {
       double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
       return Expanded(
@@ -268,4 +347,7 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+void main() {
+  runApp(HomePage());
 }
