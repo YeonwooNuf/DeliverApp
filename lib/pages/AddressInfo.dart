@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/AddressChange.dart';
 import 'package:delivery/pages/AddressRegisterPage.dart';
-import 'package:delivery/pages/MyPage.dart';
 
 class AddressInfo extends StatefulWidget {
   final String searchedAddress;
@@ -66,7 +65,7 @@ class AddressInfoState extends State<AddressInfo> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '검색된 주소: ${widget.searchedAddress ?? '주소를 선택해주세요'}',
+              '검색된 주소: ${widget.searchedAddress}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16,
@@ -109,8 +108,7 @@ class AddressInfoState extends State<AddressInfo> {
               ),
             SizedBox(height: 16.0),
             Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween, // 각 버튼 사이의 공간을 동일하게 분배
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: InkWell(
@@ -140,7 +138,7 @@ class AddressInfoState extends State<AddressInfo> {
                     ),
                   ),
                 ),
-                SizedBox(width: 16.0), // 각 버튼 사이의 공간
+                SizedBox(width: 16.0),
                 Expanded(
                   child: InkWell(
                     onTap: () {
@@ -169,7 +167,7 @@ class AddressInfoState extends State<AddressInfo> {
                     ),
                   ),
                 ),
-                SizedBox(width: 16.0), // 각 버튼 사이의 공간
+                SizedBox(width: 16.0),
                 Expanded(
                   child: InkWell(
                     onTap: () {
@@ -210,7 +208,6 @@ class AddressInfoState extends State<AddressInfo> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      // 저장 버튼이 눌렸을 때의 동작
                       if (_homeColor == Colors.transparent &&
                           _workColor == Colors.transparent &&
                           _locationColor == Colors.transparent) {
@@ -256,7 +253,6 @@ class AddressInfoState extends State<AddressInfo> {
                               .addAddress(combinedAddress);
                         }
 
-                        // 확인 버튼을 누르면 AddressRegister 페이지로 이동
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -267,7 +263,7 @@ class AddressInfoState extends State<AddressInfo> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
