@@ -95,10 +95,10 @@ class TotalPayment extends StatelessWidget {
       },
       onDone: (String data) {
         print('------- onDone: $data');
-        Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyPage())
-        );
+        // Navigator.push(
+        //           context,
+        //           MaterialPageRoute(builder: (context) => MyPage()),
+        // );
       },
     );
   }
