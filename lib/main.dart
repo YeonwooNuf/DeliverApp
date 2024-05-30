@@ -24,7 +24,7 @@ void main() {
 
 class MainApp extends StatelessWidget {
 
-  // mainpage로 loginpage에서 이름과 전화번호를 전달해줌.
+  // MainPage로 LoginPage의 이름과 전화번호를 전달해줌.
   final String name;
   final String phone;
 
