@@ -44,7 +44,11 @@ dependencies:
   google_maps_flutter: ^2.6.1
   location: ^6.0.2
   geolocator: ^11.0.0
-  geocoding: ^3.0.0
+  geocoding: ^2.0.4
+  flutter_google_places: ^0.3.0
+  google_maps_webservice: ^0.0.20-nullsafety.5
+  get: ^4.6.5
+  bootpay: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -79,7 +83,6 @@ flutter:
   - assets/images/pho.jpeg
   - assets/images/pizza.jpeg
   - assets/images/sushi.jpeg
-
   - assets/images/오토바이1.png
   - assets/images/kakao_login_large_narrow.png
   - assets/images/android_neutral_sq_SU@2x.png
@@ -89,7 +92,6 @@ flutter:
   - assets/images/2.png
   - assets/images/3.png
   - assets/images/4.png
-  
   - assets/images/country/AED.png
   - assets/images/country/AUD.png
   - assets/images/country/BHD.png
