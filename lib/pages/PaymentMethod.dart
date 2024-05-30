@@ -6,6 +6,8 @@ import 'package:bootpay/model/stat_item.dart';
 import 'package:bootpay/model/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:delivery/AddressChange.dart';
 
 class TotalPayment extends StatelessWidget {
   // You can ask Get to find a Controller that is being used by another page and redirect you to it.
@@ -22,17 +24,13 @@ class TotalPayment extends StatelessWidget {
             child: Center(
                 child: TextButton(
                     onPressed: () => bootpayTest(context),
-                    child: const Text('통합결제 테스트', style: TextStyle(fontSize: 16.0))
-                )
-            )
-        )
-    );
+                    child: const Text('통합결제 테스트',
+                        style: TextStyle(fontSize: 16.0))))));
   }
 
   void bootpayTest(BuildContext context) {
-
     Payload payload = getPayload();
-    if(kIsWeb) {
+    if (kIsWeb) {
       payload.extra?.openType = "iframe";
     }
 
@@ -80,7 +78,14 @@ class TotalPayment extends StatelessWidget {
   }
 
   Payload getPayload() {
+
+  //Payload getPayload(BuildContext context) {
     Payload payload = Payload();
+    // final itemListNotifier = Provider.of<ItemListNotifier>(context, listen: false);
+    // List<Item> itemList = itemListNotifier.itemList;
+
+    double totalPrice = 0;
+
     Item item1 = Item();
     item1.name = "미키 '마우스"; // 주문정보에 담길 상품명
     item1.qty = 1; // 해당 상품의 주문 수량
@@ -94,10 +99,15 @@ class TotalPayment extends StatelessWidget {
     item2.price = 500; // 상품의 가격
     List<Item> itemList = [item1, item2];
 
-    payload.webApplicationId = webApplicationId; // web application id
-    payload.androidApplicationId = androidApplicationId; // android application id
-    payload.iosApplicationId = iosApplicationId; // ios application id
 
+    for (Item item in itemList) {
+      totalPrice += item.price! * item.qty!;
+    }
+
+    payload.webApplicationId = webApplicationId; // web application id
+    payload.androidApplicationId =
+        androidApplicationId; // android application id
+    payload.iosApplicationId = iosApplicationId; // ios application id
 
     payload.pg = '나이스페이';
 
@@ -105,17 +115,17 @@ class TotalPayment extends StatelessWidget {
     // payload.method = '카드';
     // payload.methods = ['card', 'phone', 'vbank', 'bank', 'kakao'];
     payload.orderName = "테스트 상품"; //결제할 상품명
-    payload.price = 1000.0; //정기결제시 0 혹은 주석
+    payload.price = totalPrice;
 
-
-    payload.orderId = DateTime.now().millisecondsSinceEpoch.toString(); //주문번호, 개발사에서 고유값으로 지정해야함
-
+    payload.orderId = DateTime.now()
+        .millisecondsSinceEpoch
+        .toString(); //주문번호, 개발사에서 고유값으로 지정해야함
 
     payload.metadata = {
-      "callbackParam1" : "value12",
-      "callbackParam2" : "value34",
-      "callbackParam3" : "value56",
-      "callbackParam4" : "value78",
+      "callbackParam1": "value12",
+      "callbackParam2": "value34",
+      "callbackParam3": "value56",
+      "callbackParam4": "value78",
     }; // 전달할 파라미터, 결제 후 되돌려 주는 값
     payload.items = itemList; // 상품정보 배열
 
