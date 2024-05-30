@@ -12,7 +12,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ItemListNotifier()),
+        ChangeNotifierProvider(create: (_) => ItemListNotifier()..fetchProducts()),
       ],
       child: MyApp(),
     ),

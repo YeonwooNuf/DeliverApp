@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
-
 import 'PaymentMethod.dart';
+import 'package:delivery/AddressChange.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ItemListNotifier()..fetchProducts()),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -46,111 +56,6 @@ class _PaymentPageState extends State<PaymentPage> {
     setState(() {
       isDisposableChecked = value ?? false;
     });
-  }
-
-  void _showPaymentMethods() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 200,
-          child: ListView(
-            children: <Widget>[
-              ListTile(
-                title: Text('신용/체크카드'),
-                onTap: () {
-                  setState(() {
-                    _selectedPaymentMethod = '신용/체크카드';
-                  });
-                  Navigator.pop(context);
-                  _showCreditCardOptions(); // 새로운 드롭다운 메뉴 표시
-                },
-              ),
-              ListTile(
-                title: Text('계좌이체'),
-                onTap: () {
-                  setState(() {
-                    _selectedPaymentMethod = '계좌이체';
-                  });
-                  Navigator.pop(context);
-                  _showCreditCardOption(); // 새로운 드롭다운 메뉴 표시
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _showCreditCardOptions() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 200,
-          child: ListView(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.credit_card), // 여기에 아이콘 추가
-                title: Text('KB국민카드 ****932*'),
-                onTap: () {
-                  setState(() {
-                    _selectedPaymentMethod = 'KB국민카드 ****932*';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.credit_card), // 여기에 아이콘 추가
-                title: Text('신한카드 ****956*'),
-                onTap: () {
-                  setState(() {
-                    _selectedPaymentMethod = '신한카드 ****956*';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _showCreditCardOption() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 200,
-          child: ListView(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.credit_card), // 여기에 아이콘 추가
-                title: Text('KB Pay'),
-                onTap: () {
-                  setState(() {
-                    _selectedPaymentMethod = 'KB PAY';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.credit_card), // 여기에 아이콘 추가
-                title: Text('카카오페이'),
-                onTap: () {
-                  setState(() {
-                    _selectedPaymentMethod = '카카오페이';
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -358,33 +263,6 @@ class _PaymentPageState extends State<PaymentPage> {
                         _selectedItem = newValue;
                       });
                     },
-                  ),
-                ),
-              ),
-              GestureDetector(
-                // GestureDetector를 사용하여 리스트를 클릭할 수 있게 함
-                onTap: () {
-                  _showPaymentMethods(); // 결제 수단 표시
-                },
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '결제 수단',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        '$_selectedPaymentMethod', // 선택된 결제 수단 표시
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
                   ),
                 ),
               ),

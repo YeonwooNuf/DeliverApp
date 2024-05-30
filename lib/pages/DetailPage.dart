@@ -1,4 +1,7 @@
+import 'package:delivery/AddressChange.dart';
 import 'package:flutter/material.dart';
+import 'package:delivery/pages/FavoritePage.dart';
+import 'package:provider/provider.dart';
 
 class DetailPage extends StatefulWidget {
   @override
@@ -10,10 +13,11 @@ class Review {
   
   Review({required this.imagePath, required this.text});
 }
+
 class _DetailPageState extends State<DetailPage> {
   String displayText = '';
   bool showImage = false;
-  
+
   @override
   Widget build(BuildContext context) {
     double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
