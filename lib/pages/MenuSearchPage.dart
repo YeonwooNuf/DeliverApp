@@ -22,7 +22,7 @@ class MenuSearchPage extends StatelessWidget {
                       //이미지 부분
                       height: MediaQuery.of(context).size.height *
                           0.32, // 화면의 절반 높이
-                      child: Image.asset(
+                      child: Image.network(
                         '${image_URL}',
                         fit: BoxFit.fill, // 이미지를 컨테이너에 맞춤
                         width: double.infinity, // 이미지가 컨테이너에 가득 차도록 가로 너비를 확장
