@@ -1,5 +1,4 @@
 import 'package:delivery/pages/MenuSearchPage.dart';
-import 'package:delivery/service/sv_menu.dart';
 import 'package:delivery/service/sv_store.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,15 +16,17 @@ class _JapaneseState extends State<CategorySelect> {
   var currentValue = '1'; //드롭다운메뉴 변수
   final List<String> _items = <String>['가나다순', '신규매장순']; //드롭다운메뉴
   late String selectedValue = _items[0];
-  final List<String> _titles = ["한식", "일식", "중식", "치킨", "피자", "아시아", "멕시칸"];
+  final List<String> _titles = ["한식", "일식", "중국집", "치킨", "피자", "햄버거", "분식", "족발"];
   late int _currentIndex; //초기탭 배열번호 선언
   bool IsFilled = false;
 
+  //매장정보 따로 받아옴.
   late List<Map<String, dynamic>> _storeId = []; 
   late List<Map<String, dynamic>> _storeName = []; 
   late List<Map<String, dynamic>> _storeAddress = []; 
   late List<Map<String, dynamic>> _storeCategory = []; 
-  late List<Map<String, dynamic>> _storeImg = []; 
+  late List<Map<String, dynamic>> _storeImg = [];
+   
   late List<Map<String, dynamic>> _allStores= []; // 매장 정보 전체 받아옴
 
   @override
@@ -35,7 +36,6 @@ class _JapaneseState extends State<CategorySelect> {
         _titles.indexOf(widget.CategoryName); // initState 메서드 내에서 호출
     _fetchStoreData(); // 데이터 불러오기
   }
-
   // 스토어 데이터를 불러오는 비동기 함수
   Future<void> _fetchStoreData() async {
     _storeId = await getStoreId();
@@ -44,6 +44,7 @@ class _JapaneseState extends State<CategorySelect> {
     _storeCategory = await getCategory();
     _storeImg = await getStoreImg();
     _allStores = await getAllStores();
+
     
     print('매장정보들:');
     _allStores.forEach((store) {
@@ -58,7 +59,7 @@ class _JapaneseState extends State<CategorySelect> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 7,
+      length: 8,
       initialIndex: _currentIndex, // 초기 탭
       child: Scaffold(
         appBar: AppBar(
@@ -93,11 +94,12 @@ class _JapaneseState extends State<CategorySelect> {
                   tabs: const [
                     Tab(text: "한식"),
                     Tab(text: "일식"),
-                    Tab(text: "중식"),
+                    Tab(text: "중국집"),
                     Tab(text: "치킨"),
                     Tab(text: "피자"),
-                    Tab(text: "아시아"),
-                    Tab(text: "멕시칸"),
+                    Tab(text: "햄버거"),
+                    Tab(text: "분식"),
+                    Tab(text: "족발"),
                   ],
                   indicatorColor: Colors.grey, // 여기서 선의 색상을 설정합니다
                   onTap: (index) {
@@ -170,7 +172,7 @@ class _JapaneseState extends State<CategorySelect> {
   }
 
   // 이미지 클릭 메서드
-  Widget _Image(String image_URL, String storeName) {
+  Widget _Image(String image_URL, String storeName, int storeId) {
     return Padding(
       padding: EdgeInsets.all(20),
       child: Column(
@@ -185,6 +187,7 @@ class _JapaneseState extends State<CategorySelect> {
                       builder: (context) => MenuSearchPage(
                         image_URL: image_URL,
                         storeName: storeName,
+                        storeId: storeId
                       ),
                     ),
                   );
@@ -245,7 +248,7 @@ class _JapaneseState extends State<CategorySelect> {
           break;
         case 2: // 중식
           filteredStoreData = _allStores
-              .where((store) => store['category'] == '중식')
+              .where((store) => store['category'] == '중국집')
               .toList();
           break;
         case 3: // 치킨
@@ -260,12 +263,17 @@ class _JapaneseState extends State<CategorySelect> {
           break;
         case 5: // 아시아
           filteredStoreData = _allStores
-              .where((store) => store['category'] == '아시아')
+              .where((store) => store['category'] == '햄버거')
               .toList();
           break;
         case 6: // 멕시칸
           filteredStoreData = _allStores
-              .where((store) => store['category'] == '멕시칸')
+              .where((store) => store['category'] == '분식')
+              .toList();
+          break;
+          case 7: // 멕시칸
+          filteredStoreData = _allStores
+              .where((store) => store['category'] == '족발')
               .toList();
           break;
         default:
@@ -293,6 +301,7 @@ class _JapaneseState extends State<CategorySelect> {
           return _Image(
             storeImg, // 이미지 URL
             storeName, // 스토어 이름
+            storeId
           );
         }),
       );
