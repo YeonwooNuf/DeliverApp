@@ -305,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               }),
                               SizedBox(width: 8),
-                              _roundedContainer('assets/images/Japanese.png', '일식', () {
+                              _roundedContainer('assets/images/Japanese.png', '일식/돈까스', () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
