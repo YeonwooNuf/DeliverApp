@@ -136,6 +136,8 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
                     style: TextStyle(
                       fontSize: 30, // 텍스트 크기
                       color: Colors.black, // 텍스트 색상
+                      fontFamily: "MangoDdobak",
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),

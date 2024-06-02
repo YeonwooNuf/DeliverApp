@@ -40,6 +40,7 @@ class OrderHistoryPage extends StatelessWidget {
         title: Text(
           '과거주문내역',
           style: TextStyle(
+            fontFamily: 'MangoDdobak',
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -58,6 +59,7 @@ class OrderHistoryPage extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: '검색어를 입력하세요',
                 hintStyle: TextStyle(
+                  fontFamily: 'MangoDdobak',
                   color: Colors.grey,
                 ),
                 prefixIcon: Icon(
@@ -104,14 +106,16 @@ class OrderHistoryPage extends StatelessWidget {
                     Text(
                       order['restaurantName']!,
                       style: TextStyle(
+                        fontFamily: 'MangoDdobak',
                         color: Colors.black,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                         fontSize: screenWidth * 0.05,
                       ),
                     ),
                     Text(
                       order['orderTime']!,
                       style: TextStyle(
+                        fontFamily: 'MangoDdobak',
                         color: Colors.grey,
                         fontSize: screenWidth * 0.035,
                       ),
@@ -119,6 +123,7 @@ class OrderHistoryPage extends StatelessWidget {
                     Text(
                       order['orderStatus']!,
                       style: TextStyle(
+                        fontFamily: 'MangoDdobak',
                         color: Colors.black,
                         fontSize: screenWidth * 0.035,
                       ),
@@ -145,6 +150,8 @@ class OrderHistoryPage extends StatelessWidget {
               Text(
                 order['orderItem']!,
                 style: TextStyle(
+                  fontFamily: 'MangoDdobak',
+                  fontWeight: FontWeight.w500,
                   fontSize: screenWidth * 0.04,
                   color: Colors.black,
                 ),
@@ -153,6 +160,8 @@ class OrderHistoryPage extends StatelessWidget {
               Text(
                 order['orderDetails']!,
                 style: TextStyle(
+                  fontFamily: 'MangoDdobak',
+                  fontWeight: FontWeight.w500,
                   fontSize: screenWidth * 0.04,
                   color: Colors.black,
                 ),
@@ -161,8 +170,9 @@ class OrderHistoryPage extends StatelessWidget {
               Text(
                 order['orderTotal']!,
                 style: TextStyle(
+                  fontFamily: 'MangoDdobak',
                   fontSize: screenWidth * 0.04,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                   color: Colors.black,
                 ),
               ),
@@ -188,6 +198,7 @@ class OrderHistoryPage extends StatelessWidget {
                 child: Text(
                   '리뷰 쓰기',
                   style: TextStyle(
+                    fontFamily: 'MangoDdobak',
                     color: Colors.white,
                   ),
                 ),

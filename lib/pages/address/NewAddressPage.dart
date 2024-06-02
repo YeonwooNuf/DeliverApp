@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:delivery/pages/AddressSearch.dart';
+import 'package:delivery/pages/address/AddressSearch.dart';
 
 class NewAddressPage extends StatefulWidget {
   @override
@@ -32,7 +32,10 @@ class _NewAddressPageState extends State<NewAddressPage> {
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search), // 돋보기 아이콘 추가
                 hintText: '도로명, 건물 또는 지번으로 검색',
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.w700, // FontWeight 추가
+                ),
               ),
             ), 
             SizedBox(height: 20), // 검색창 아래 간격 조정

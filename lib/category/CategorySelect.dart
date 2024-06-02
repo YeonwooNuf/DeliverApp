@@ -75,7 +75,11 @@ class _JapaneseState extends State<CategorySelect> {
           title: Center(
             child: Text(
               _titles[_currentIndex], //탭을 누를때마다 타이틀 변경되게 함.
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(
+                color: Colors.black,
+                fontFamily: 'MangoDdobak',
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           actions: [
@@ -153,7 +157,8 @@ class _JapaneseState extends State<CategorySelect> {
           color: Colors.black,
         ),
         iconSize: 24,
-        style: const TextStyle(color: Colors.black),
+        style: const TextStyle(color: Colors.black,
+        ),
         underline: Container(), // 밑줄 감추기
         dropdownColor: Colors.white,
         onChanged: (String? newValue) {
@@ -220,6 +225,7 @@ class _JapaneseState extends State<CategorySelect> {
             storeName,
             style: TextStyle(
               color: Colors.black,
+              fontWeight: FontWeight.w700,
               fontSize: 20,
             ),
           ),
@@ -334,5 +340,3 @@ class _HeartIconButtonState extends State<HeartIconButton> {
     );
   }
 }
-
-

@@ -1,4 +1,3 @@
-import 'package:delivery/AddressChange.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -65,7 +64,7 @@ class _FavoritePageState extends State<FavoritePage> {
         // ),
         title: Text(
           '즐겨찾기',
-          style: TextStyle(color: Colors.black), // 텍스트 색상 변경
+          style: TextStyle(color: Colors.black, fontFamily: "MangoDdobak", fontWeight: FontWeight.w700), // 텍스트 색상 변경
         ),
         centerTitle: true,
         backgroundColor: Colors.white, // 배경색 변경
@@ -98,7 +97,7 @@ class _FavoritePageState extends State<FavoritePage> {
                           children: [
                             Text(
                               value,
-                              style: TextStyle(color: Colors.black, fontSize: screenWidth * 0.04),
+                              style: TextStyle(color: Colors.black, fontSize: screenWidth * 0.04, fontFamily: "MangoDdobak", fontWeight: FontWeight.w700),
                             ),
                             SizedBox(width: screenWidth * 0.01), // 아이콘과 텍스트 사이 간격
                             // Icon(Icons.arrow_drop_down, color: Colors.black), // 필터 아이콘
@@ -123,7 +122,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 // 다음 항목의 인덱스 업데이트
                 currentIndex = (currentIndex + 1) % favoriteData.length;
               },
-              child: Text('즐겨찾기 추가'),
+              child: Text('즐겨찾기 추가', style: TextStyle(fontFamily: "MangoDdobak", fontWeight: FontWeight.w700)), // 폰트 설정 추가
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue, // 버튼의 배경색을 파란색으로 변경
                 textStyle: TextStyle(fontSize: screenWidth * 0.04), // 버튼 텍스트 크기 조정
