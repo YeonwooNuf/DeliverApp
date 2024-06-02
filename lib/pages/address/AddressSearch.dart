@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:delivery/pages/AddressInfo.dart';
+import 'package:delivery/pages/address/AddressInfo.dart';
 
 class AddressSearch extends StatefulWidget {
   @override
@@ -129,10 +129,10 @@ class _AddressSearchState extends State<AddressSearch> {
           },
         ),
         title: Text(
-          '주소 검색',
+          '주소 설정',
           style: TextStyle(
             color: Colors.black,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w700,
           ),
         ),
         centerTitle: true,
@@ -154,6 +154,7 @@ class _AddressSearchState extends State<AddressSearch> {
                       hintText: '도로명, 건물명 또는 지번으로 검색하세요',
                       hintStyle: TextStyle(
                         color: Colors.grey,
+                        fontWeight: FontWeight.w700,
                       ),
                       prefixIcon: Icon(
                         Icons.search,
@@ -173,8 +174,9 @@ class _AddressSearchState extends State<AddressSearch> {
                   onPressed: _searchAddress,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    textStyle: TextStyle(fontWeight: FontWeight.w700),
                   ),
-                  child: Text('검색'),
+                  child: Text('검색',),
                 ),
               ],
             ),

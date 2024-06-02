@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:delivery/pages/NewAddressPage.dart';
+import 'package:delivery/pages/address/NewAddressPage.dart';
 import 'package:delivery/AddressChange.dart';
 
 class AddressManagePage extends StatefulWidget {
@@ -53,9 +53,10 @@ class _AddressManagePageState extends State<AddressManagePage> {
                       '새 주소 추가',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
+                        fontSize: 20,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700, // 여기에 FontWeight.w700 추가
+                      ),
                     ),
                   ),
                 ],
@@ -88,75 +89,75 @@ class _AddressManagePageState extends State<AddressManagePage> {
   }
 
   Widget _buildAddressList() {
-  return Consumer<ItemListNotifier>(
-    builder: (context, notifier, child) {
-      String? homeAddress = notifier.homeAddress;
-      String? workAddress = notifier.workAddress;
-      List<String> addresses = notifier.addresses;
+    return Consumer<ItemListNotifier>(
+      builder: (context, notifier, child) {
+        String? homeAddress = notifier.homeAddress;
+        String? workAddress = notifier.workAddress;
+        List<String> addresses = notifier.addresses;
 
-      return SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20), // 주소 목록 위 간격 조정
-            Text(
-              '    집',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20), // 주소 목록 위 간격 조정
+              Text(
+                '    집',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                ),
               ),
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text(homeAddress ?? '집 주소가 없습니다.'),
-              onTap: () {
-                setState(() {});
-              },
-            ),
-            SizedBox(height: 10), // 주소 목록과 간격 조정
-            Text(
-              '    회사',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
+              ListTile(
+                leading: Icon(Icons.home),
+                title: Text(homeAddress ?? '집 주소가 없습니다.', style: TextStyle(fontWeight: FontWeight.w700)), // FontWeight.w700 추가
+                onTap: () {
+                  setState(() {});
+                },
               ),
-            ),
-            ListTile(
-              leading: Icon(Icons.work),
-              title: Text(workAddress ?? '회사 주소가 없습니다.'),
-              onTap: () {
-                setState(() {});
-              },
-            ),
-            SizedBox(height: 10), // 주소 목록 아래 간격 조정
-            Text(
-              '    기타',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 17,
+              SizedBox(height: 10), // 주소 목록과 간격 조정
+              Text(
+                '    회사',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                ),
               ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(), // 스크롤을 막기 위해 physics를 NeverScrollableScrollPhysics로 설정
-              itemCount: addresses.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(Icons.location_on),
-                  title: Text(addresses[index]),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      notifier.removeAddress(index);
-                    },
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
+              ListTile(
+                leading: Icon(Icons.work),
+                title: Text(workAddress ?? '회사 주소가 없습니다.', style: TextStyle(fontWeight: FontWeight.w700)), // FontWeight.w700 추가
+                onTap: () {
+                  setState(() {});
+                },
+              ),
+              SizedBox(height: 10), // 주소 목록 아래 간격 조정
+              Text(
+                '    기타',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(), // 스크롤을 막기 위해 physics를 NeverScrollableScrollPhysics로 설정
+                itemCount: addresses.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: Icon(Icons.location_on),
+                    title: Text(addresses[index], style: TextStyle(fontWeight: FontWeight.w700)), // FontWeight.w700 추가
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        notifier.removeAddress(index);
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }

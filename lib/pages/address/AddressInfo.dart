@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/AddressChange.dart';
-import 'package:delivery/pages/AddressRegisterPage.dart';
+import 'package:delivery/pages/address/AddressRegisterPage.dart';
 
 class AddressInfo extends StatefulWidget {
   final String searchedAddress;
@@ -57,7 +57,10 @@ class AddressInfoState extends State<AddressInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('주소 상세 정보'),
+        title: Text('주소 상세 정보',
+        style: TextStyle(
+        fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
+      ),),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -76,6 +79,9 @@ class AddressInfoState extends State<AddressInfo> {
               decoration: InputDecoration(
                 hintText: '상세주소 (아파트/동/호)',
               ),
+              style: TextStyle(
+            fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
+              ),
               onChanged: (value) {
                 setState(() {
                   detailAddress = value;
@@ -86,6 +92,9 @@ class AddressInfoState extends State<AddressInfo> {
             TextField(
               decoration: InputDecoration(
                 hintText: '길 안내 (예: 1층에 메가커피가 있는 건물, 공동현관 비밀번호 #1234)',
+              ),
+              style: TextStyle(
+                fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
               ),
               onChanged: (value) {
                 setState(() {
@@ -99,6 +108,9 @@ class AddressInfoState extends State<AddressInfo> {
                 controller: _aliasController,
                 decoration: InputDecoration(
                   hintText: '주소의 별칭을 입력해주세요',
+                ),
+                style: TextStyle(
+                  fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
                 ),
                 onChanged: (value) {
                   setState(() {

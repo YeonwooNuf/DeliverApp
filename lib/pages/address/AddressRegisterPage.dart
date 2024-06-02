@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/AddressChange.dart';
-import 'package:delivery/pages/AddressSearch.dart';
+import 'package:delivery/pages/address/AddressSearch.dart';
 import 'package:delivery/pages/HomePage.dart';
-
-import 'package:delivery/pages/AddressMapPage.dart';
+import 'package:delivery/pages/address/AddressMapPage.dart';
 
 class AddressRegisterPage extends StatefulWidget {
   @override
@@ -20,7 +19,12 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
         MediaQuery.of(context).size.width * 0.9; //버튼의 크기 = 화면넓이의 90%
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('주소 등록')), // 주소 등록 페이지 제목 추가
+        title: Center(child: Text('주소 등록',
+        style: TextStyle(
+            fontWeight: FontWeight.w700,
+            ),
+          )
+        ), // 주소 등록 페이지 제목 추가
       ),
       body: SafeArea(
         child: Column(
@@ -43,7 +47,7 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search), // 돋보기 아이콘 추가
                 hintText: '도로명, 건물 또는 지번으로 검색',
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700), // FontWeight.w700 추가
               ),
             ),
             SizedBox(height: 20), // 검색창 아래 간격 조정
@@ -58,7 +62,7 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
                   );
                 },
                 icon: Icon(Icons.my_location), // 현재 위치 아이콘 추가
-                label: Text('현재 위치로 주소 찾기'),
+                label: Text('현재 위치로 주소 찾기', style: TextStyle(fontWeight: FontWeight.w500)), // FontWeight.w500 추가
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromRGBO(255, 245, 245, 100),
                   foregroundColor: Colors.black,
@@ -91,13 +95,13 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
         Text(
           '    집',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
             fontSize: 17,
           ),
         ),
         ListTile(
           leading: Icon(Icons.home),
-          title: Text(homeAddress ?? '집 주소가 없습니다.'),
+          title: Text(homeAddress ?? '집 주소가 없습니다.', style: TextStyle(fontWeight: FontWeight.w500)), // FontWeight.w700 추가
           trailing: selectedIndex == -2
               ? Icon(Icons.check_circle, color: Colors.blue)
               : null, // _selectedIndex 값이 -2이면 check 아이콘 표시
@@ -113,14 +117,13 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
         SizedBox(height: 10), // 주소 목록과 간격 조정
         Text(
           '    회사',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
+          style: TextStyle(fontWeight: FontWeight.w500,
             fontSize: 17,
           ),
         ),
         ListTile(
           leading: Icon(Icons.work),
-          title: Text(workAddress ?? '회사 주소가 없습니다.'),
+          title: Text(workAddress ?? '회사 주소가 없습니다.', style: TextStyle(fontWeight: FontWeight.w500)), // FontWeight.w700 추가
           trailing: selectedIndex == -1
               ? Icon(Icons.check_circle, color: Colors.blue)
               : null, // _selectedIndex 값이 -1이면 check 아이콘 표시
@@ -139,7 +142,7 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
         Text(
           '    기타',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w500,
             fontSize: 17,
           ),
         ),
@@ -151,7 +154,7 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
               itemBuilder: (context, index) {
                 return ListTile(
                   leading: Icon(Icons.location_on),
-                  title: Text(addresses[index]),
+                  title: Text(addresses[index], style: TextStyle(fontWeight: FontWeight.w500)), // FontWeight.w500 추가
                   trailing: selectedIndex == index
                       ? Icon(Icons.check_circle, color: Colors.blue)
                       : null, // 선택한 주소에만 check 아이콘 표시
@@ -174,3 +177,5 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
     );
   }
 }
+
+           

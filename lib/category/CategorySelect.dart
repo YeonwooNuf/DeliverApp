@@ -15,7 +15,7 @@ class _JapaneseState extends State<CategorySelect> {
   var currentValue = '1'; //드롭다운메뉴 변수
   final List<String> _items = <String>['가나다순', '신규매장순']; //드롭다운메뉴
   late String selectedValue = _items[0];
-  final List<String> _titles = ["한식", "일식", "중식", "치킨", "피자", "아시아", "멕시칸"];
+  final List<String> _titles = ["한식", "일식", "중국집", "치킨", "피자", "햄버거", "분식","족발"];
   late int _currentIndex; //초기탭 배열번호 선언
   bool IsFilled = false;
 
@@ -29,7 +29,7 @@ class _JapaneseState extends State<CategorySelect> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 7,
+      length: 8,
       initialIndex: _currentIndex, // 초기 탭
       child: Scaffold(
         appBar: AppBar(
@@ -45,7 +45,11 @@ class _JapaneseState extends State<CategorySelect> {
           title: Center(
             child: Text(
               _titles[_currentIndex], //탭을 누를때마다 타이틀 변경되게 함.
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(
+                color: Colors.black,
+                fontFamily: 'MangoDdobak',
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           actions: [
@@ -63,12 +67,13 @@ class _JapaneseState extends State<CategorySelect> {
                   isScrollable: true,
                   tabs: const [
                     Tab(text: "한식"),
-                    Tab(text: "일식"),
-                    Tab(text: "중식"),
+                    Tab(text: "일식/돈까스"),
+                    Tab(text: "중국집"),
                     Tab(text: "치킨"),
                     Tab(text: "피자"),
-                    Tab(text: "아시아"),
-                    Tab(text: "멕시칸"),
+                    Tab(text: "햄버거"),
+                    Tab(text: "분식"),
+                    Tab(text: "족발"),
                   ],
                   indicatorColor: Colors.grey, // 여기서 선의 색상을 설정합니다
                   onTap: (index) {
@@ -180,7 +185,7 @@ class _JapaneseState extends State<CategorySelect> {
     );
   }
 
-//맨위에 있는 필터 메서드
+  //맨위에 있는 필터 메서드
   Widget _Filter() {
     return Container(
       height: 30,
@@ -199,7 +204,8 @@ class _JapaneseState extends State<CategorySelect> {
           color: Colors.black,
         ),
         iconSize: 24,
-        style: const TextStyle(color: Colors.black),
+        style: const TextStyle(color: Colors.black,
+        ),
         underline: Container(), // 밑줄 감추기
         dropdownColor: Colors.white,
         onChanged: (String? newValue) {
@@ -266,6 +272,7 @@ class _JapaneseState extends State<CategorySelect> {
               '${storeName}',
               style: TextStyle(
                 color: Colors.black,
+                fontWeight: FontWeight.w700,
                 fontSize: 20,
               ),
             ),
