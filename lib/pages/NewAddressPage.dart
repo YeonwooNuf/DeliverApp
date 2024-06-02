@@ -7,7 +7,6 @@ class NewAddressPage extends StatefulWidget {
 }
 
 class _NewAddressPageState extends State<NewAddressPage> {
-  int _selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -15,14 +14,6 @@ class _NewAddressPageState extends State<NewAddressPage> {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text('새 주소 추가')), // 주소 등록 페이지 제목 추가
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              // 저장 기능 구현
-            },
-          ),
-        ],
       ),
       
       body: SafeArea(
@@ -33,7 +24,7 @@ class _NewAddressPageState extends State<NewAddressPage> {
             TextField(
               onTap: () {
                 // 도로명, 건물 또는 지번으로 검색 기능 구현
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => AddressSearch()),
                 );

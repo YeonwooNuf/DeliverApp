@@ -36,14 +36,17 @@ dependencies:
   bootpay: ^4.2.1
   get: ^4.6.5
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   google_maps_flutter: ^2.6.1
   location: ^6.0.2
   geolocator: ^11.0.0
-  geocoding: ^3.0.0
+  geocoding: ^2.0.4
+  flutter_google_places: ^0.3.0
+  google_maps_webservice: ^0.0.20-nullsafety.5
+  get: ^4.6.5
+  bootpay: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +81,13 @@ flutter:
   - assets/images/pho.jpeg
   - assets/images/pizza.jpeg
   - assets/images/sushi.jpeg
+
+  - assets/images/review.png
+  - assets/images/food1.jpg
+  - assets/images/1.png
+  - assets/images/2.png
+  - assets/images/3.png
+  - assets/images/4.png
   - assets/images/country/AED.png
   - assets/images/country/AUD.png
   - assets/images/country/BHD.png

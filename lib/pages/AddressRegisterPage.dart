@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/AddressChange.dart';
 import 'package:delivery/pages/AddressSearch.dart';
+import 'package:delivery/pages/HomePage.dart';
+
 import 'package:delivery/pages/AddressMapPage.dart';
 
 class AddressRegisterPage extends StatefulWidget {
-  
   @override
   _AddressRegisterPageState createState() => _AddressRegisterPageState();
 }
@@ -34,9 +35,8 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
                   MaterialPageRoute(builder: (context) => AddressSearch()),
                 ).then((value) {
                   if (value != null) {
-                    setState(() {
-                      _selectedIndex = value;
-                    });
+                    Provider.of<ItemListNotifier>(context, listen: false)
+                        .setSelectedIndex(value);
                   }
                 });
               },
@@ -77,11 +77,12 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
   }
 
   Widget _buildAddressList(BuildContext context) {
-
     // 주소 목록을 가져오는 예시 함수
     String? homeAddress = Provider.of<ItemListNotifier>(context).homeAddress;
     String? workAddress = Provider.of<ItemListNotifier>(context).workAddress;
     List<String> addresses = Provider.of<ItemListNotifier>(context).addresses;
+    String addressType = Provider.of<ItemListNotifier>(context).addressType;
+    int selectedIndex = Provider.of<ItemListNotifier>(context).selectedIndex;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,13 +98,16 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
         ListTile(
           leading: Icon(Icons.home),
           title: Text(homeAddress ?? '집 주소가 없습니다.'),
-          trailing: _selectedIndex == -2
+          trailing: selectedIndex == -2
               ? Icon(Icons.check_circle, color: Colors.blue)
               : null, // _selectedIndex 값이 -2이면 check 아이콘 표시
           onTap: () {
-            setState(() {
-              _selectedIndex = -2; // 집 주소 선택을 나타내는 값으로 변경
-            });
+            Provider.of<ItemListNotifier>(context, listen: false)
+                .setSelectedIndex(-2);
+            // Provider를 통해 selectedIndex 설정
+            Provider.of<ItemListNotifier>(context, listen: false)
+                .setAddressType('집');
+            // Provider를 통해 addressType 설정
           },
         ),
         SizedBox(height: 10), // 주소 목록과 간격 조정
@@ -117,13 +121,16 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
         ListTile(
           leading: Icon(Icons.work),
           title: Text(workAddress ?? '회사 주소가 없습니다.'),
-          trailing: _selectedIndex == -1
+          trailing: selectedIndex == -1
               ? Icon(Icons.check_circle, color: Colors.blue)
               : null, // _selectedIndex 값이 -1이면 check 아이콘 표시
           onTap: () {
-            setState(() {
-              _selectedIndex = -1; // 회사 주소 선택을 나타내는 값으로 변경
-            });
+            Provider.of<ItemListNotifier>(context, listen: false)
+                .setSelectedIndex(-1);
+            // Provider를 통해 selectedIndex 설정
+            Provider.of<ItemListNotifier>(context, listen: false)
+                .setAddressType('회사');
+            // Provider를 통해 addressType 설정
           },
         ),
         SizedBox(height: 10), // 주소 목록 아래 간격 조정
@@ -145,13 +152,17 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
                 return ListTile(
                   leading: Icon(Icons.location_on),
                   title: Text(addresses[index]),
-                  trailing: _selectedIndex == index
+                  trailing: selectedIndex == index
                       ? Icon(Icons.check_circle, color: Colors.blue)
                       : null, // 선택한 주소에만 check 아이콘 표시
                   onTap: () {
                     setState(() {
-                      _selectedIndex =
-                          index; // 선택한 주소의 인덱스로 _selectedIndex 값 변경
+                      Provider.of<ItemListNotifier>(context, listen: false)
+                          .setSelectedIndex(index);
+                      // Provider를 통해 selectedIndex 설정
+                      Provider.of<ItemListNotifier>(context, listen: false)
+                          .setAddressType('기타');
+                      // Provider를 통해 addressType 설정
                     });
                   },
                 );

@@ -4,10 +4,15 @@ import 'package:bootpay/model/item.dart';
 import 'package:bootpay/model/payload.dart';
 import 'package:bootpay/model/stat_item.dart';
 import 'package:bootpay/model/user.dart';
+import 'package:delivery/pages/MyPage.dart';
+import 'package:delivery/pages/PaymentPage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/AddressChange.dart';
+
+import 'package:delivery/product/productInfo.dart';
+import 'package:delivery/product/productService.dart';
 
 class TotalPayment extends StatelessWidget {
   // You can ask Get to find a Controller that is being used by another page and redirect you to it.
@@ -17,19 +22,47 @@ class TotalPayment extends StatelessWidget {
   String iosApplicationId = '6638af18906692af33768591';
 
   @override
-  Widget build(context) {
-    // Access the updated count variable
+  Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-            child: Center(
-                child: TextButton(
-                    onPressed: () => bootpayTest(context),
-                    child: const Text('통합결제 테스트',
-                        style: TextStyle(fontSize: 16.0))))));
+      appBar: AppBar(
+        title: Text('통합 결제'),
+      ),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              TextButton(
+                onPressed: () => bootpayTest(context),
+                child: const Text('통합결제 테스트', style: TextStyle(fontSize: 16.0)),
+              ),
+              // Consumer<ItemListNotifier>(
+              //   builder: (context, itemListNotifier, child) {
+              //     if (itemListNotifier.products.isEmpty) {
+              //       return CircularProgressIndicator();
+              //     }
+              //     return ListView.builder(
+              //       shrinkWrap: true,
+              //       itemCount: itemListNotifier.products.length,
+              //       itemBuilder: (context, index) {
+              //         Product product = itemListNotifier.products[index];
+              //         return ListTile(
+              //           title: Text(product.productName),
+              //           subtitle: Text('Price: ${product.price}, Qty: ${product.qty}'),
+              //         );
+              //       },
+              //     );
+              //   },
+              // ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void bootpayTest(BuildContext context) {
-    Payload payload = getPayload();
+    Payload payload = getPayload(context);
     if (kIsWeb) {
       payload.extra?.openType = "iframe";
     }
@@ -48,60 +81,57 @@ class TotalPayment extends StatelessWidget {
       onClose: () {
         print('------- onClose');
         Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출
-        //TODO - 원하시는 라우터로 페이지 이동
+        Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PaymentPage())
+        );
       },
       onIssued: (String data) {
         print('------- onIssued: $data');
       },
       onConfirm: (String data) {
         print('------- onConfirm: $data');
-        /**
-            1. 바로 승인하고자 할 때
-            return true;
-         **/
-        /***
-            2. 비동기 승인 하고자 할 때
-            checkQtyFromServer(data);
-            return false;
-         ***/
-        /***
-            3. 서버승인을 하고자 하실 때 (클라이언트 승인 X)
-            return false; 후에 서버에서 결제승인 수행
-         */
-        // checkQtyFromServer(data);
         return true;
       },
       onDone: (String data) {
         print('------- onDone: $data');
+        // Navigator.push(
+        //           context,
+        //           MaterialPageRoute(builder: (context) => MyPage()),
+        // );
       },
     );
   }
 
-  Payload getPayload() {
-
-  //Payload getPayload(BuildContext context) {
+  //Payload getPayload() {
+  Payload getPayload(BuildContext context) {
     Payload payload = Payload();
-    // final itemListNotifier = Provider.of<ItemListNotifier>(context, listen: false);
-    // List<Item> itemList = itemListNotifier.itemList;
 
-    double totalPrice = 0;
+    final itemListNotifier =
+        Provider.of<ItemListNotifier>(context, listen: false);
 
-    Item item1 = Item();
-    item1.name = "미키 '마우스"; // 주문정보에 담길 상품명
-    item1.qty = 1; // 해당 상품의 주문 수량
-    item1.id = "ITEM_CODE_MOUSE"; // 해당 상품의 고유 키
-    item1.price = 500; // 상품의 가격
+    List<Item> itemList = _convertProductsToItems(itemListNotifier.products);
 
-    Item item2 = Item();
-    item2.name = "키보드"; // 주문정보에 담길 상품명
-    item2.qty = 1; // 해당 상품의 주문 수량
-    item2.id = "ITEM_CODE_KEYBOARD"; // 해당 상품의 고유 키
-    item2.price = 500; // 상품의 가격
-    List<Item> itemList = [item1, item2];
+    int totalPrice = 0;
 
+    // Item item1 = Item();
+    // item1.name = "미키 '마우스"; // 주문정보에 담길 상품명
+    // item1.qty = 1; // 해당 상품의 주문 수량
+    // item1.id = "ITEM_CODE_MOUSE"; // 해당 상품의 고유 키
+    // item1.price = 500; // 상품의 가격
+
+    // Item item2 = Item();
+    // item2.name = "키보드"; // 주문정보에 담길 상품명
+    // item2.qty = 1; // 해당 상품의 주문 수량
+    // item2.id = "ITEM_CODE_KEYBOARD"; // 해당 상품의 고유 키
+    // item2.price = 500; // 상품의 가격
+    // List<Item> itemList2 = [item1, item2];
 
     for (Item item in itemList) {
       totalPrice += item.price! * item.qty!;
+      if (totalPrice == 0) {
+        totalPrice = 0;
+      }
     }
 
     payload.webApplicationId = webApplicationId; // web application id
@@ -147,5 +177,15 @@ class TotalPayment extends StatelessWidget {
     payload.user = user;
     payload.extra = extra;
     return payload;
+  }
+
+  List<Item> _convertProductsToItems(List<Product> products) {
+    return products.map((product) {
+      return Item()
+        ..name = product.productName
+        ..qty = product.qty
+        ..id = product.productId.toString()
+        ..price = product.price;
+    }).toList();
   }
 }
