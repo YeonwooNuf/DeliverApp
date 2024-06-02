@@ -101,7 +101,7 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
         ),
         ListTile(
           leading: Icon(Icons.home),
-          title: Text(homeAddress ?? '집 주소가 없습니다.', style: TextStyle(fontWeight: FontWeight.w700)), // FontWeight.w700 추가
+          title: Text(homeAddress ?? '집 주소가 없습니다.', style: TextStyle(fontWeight: FontWeight.w500)), // FontWeight.w700 추가
           trailing: selectedIndex == -2
               ? Icon(Icons.check_circle, color: Colors.blue)
               : null, // _selectedIndex 값이 -2이면 check 아이콘 표시
@@ -123,7 +123,7 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
         ),
         ListTile(
           leading: Icon(Icons.work),
-          title: Text(workAddress ?? '회사 주소가 없습니다.', style: TextStyle(fontWeight: FontWeight.w700)), // FontWeight.w700 추가
+          title: Text(workAddress ?? '회사 주소가 없습니다.', style: TextStyle(fontWeight: FontWeight.w500)), // FontWeight.w700 추가
           trailing: selectedIndex == -1
               ? Icon(Icons.check_circle, color: Colors.blue)
               : null, // _selectedIndex 값이 -1이면 check 아이콘 표시
@@ -154,7 +154,7 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
               itemBuilder: (context, index) {
                 return ListTile(
                   leading: Icon(Icons.location_on),
-                  title: Text(addresses[index], style: TextStyle(fontWeight: FontWeight.w700)), // FontWeight.w700 추가
+                  title: Text(addresses[index], style: TextStyle(fontWeight: FontWeight.w500)), // FontWeight.w500 추가
                   trailing: selectedIndex == index
                       ? Icon(Icons.check_circle, color: Colors.blue)
                       : null, // 선택한 주소에만 check 아이콘 표시
