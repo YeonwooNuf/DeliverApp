@@ -2,9 +2,9 @@ import 'package:delivery/category/CategorySelect.dart';
 import 'package:delivery/pages/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/AddressRegisterPage.dart';
+import 'package:delivery/service/sv_ExchangeRate.dart';
 import 'package:delivery/AddressChange.dart';
 import 'package:provider/provider.dart';
-import 'package:delivery/pages/AddressInfo.dart';
 
 import 'package:get/get.dart';
 
@@ -35,15 +35,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // String? homeAddress = Provider.of<ItemListNotifier>(context).homeAddress;
+    // String? workAddress = Provider.of<ItemListNotifier>(context).workAddress;
+    // List<String> addresses = Provider.of<ItemListNotifier>(context).addresses;
 
-    // 선택된 인덱스에 저장된 주소 받아오기
     String selectedAddress = '';
 
     Widget _appBar() {
       String selectedAddress =
           Provider.of<ItemListNotifier>(context).selectedAddress;
 
-    String? addressType = Provider.of<ItemListNotifier>(context).addressType;
+          String? addressType = Provider.of<ItemListNotifier>(context).addressType;
 
       return SafeArea(
         child: Container(
@@ -56,6 +58,8 @@ class HomeScreen extends StatelessWidget {
                 alignment: Alignment.centerLeft, // 왼쪽 정렬
                 child: TextButton(
                   onPressed: () {
+                    // Add your desired logic here
+                    // For example, you can navigate to a new page
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -122,7 +126,7 @@ class HomeScreen extends StatelessWidget {
       );
     }
 
-    //카테고리 정의하는 메서드
+    // 카테고리 정의하는 메서드
     Widget _roundedContainer(String image, String title, VoidCallback onTap) {
       double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
       return Expanded(
@@ -158,6 +162,7 @@ class HomeScreen extends StatelessWidget {
         ),
       );
     }
+
     // 환율 이미지, 값 정의하는 함수
     Widget exchangeRateImage(String imagePath, String firstText,
         String secondText, double screenHeight, double screenWidth) {
@@ -234,8 +239,10 @@ class HomeScreen extends StatelessWidget {
         },
       );
     }
+
     Widget _contents() {
-      double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
+      double screenHeight = MediaQuery.of(context).size.height;
+      double screenWidth = MediaQuery.of(context).size.width;
       return Expanded(
         child: Container(
           color: Colors.white,
@@ -266,7 +273,6 @@ class HomeScreen extends StatelessWidget {
                                   builder: (context) =>
                                       CategorySelect(CategoryName: '일식')),
                             );
-                            // 클릭 시 수행할 동작 추가
                           }),
                           SizedBox(width: 8),
                           _roundedContainer('assets/images/jjajang.jpeg', '중식',
@@ -277,7 +283,6 @@ class HomeScreen extends StatelessWidget {
                                   builder: (context) =>
                                       CategorySelect(CategoryName: '중식')),
                             );
-                            // 클릭 시 수행할 동작 추가
                           }),
                           SizedBox(width: 8),
                           _roundedContainer('assets/images/chicken.jpeg', '치킨',
@@ -288,7 +293,6 @@ class HomeScreen extends StatelessWidget {
                                   builder: (context) =>
                                       CategorySelect(CategoryName: '치킨')),
                             );
-                            // 클릭 시 수행할 동작 추가
                           }),
                         ],
                       ),
@@ -300,8 +304,8 @@ class HomeScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CategorySelect(
-                                      CategoryName: '피자')), // 클릭 시 수행할 동작 추가
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '피자')),
                             );
                           }),
                           SizedBox(width: 8),
@@ -328,6 +332,37 @@ class HomeScreen extends StatelessWidget {
                         ],
                       ),
                       SizedBox(height: 8),
+                      Container(
+                        height: screenHeight * 0.07,
+                        decoration: BoxDecoration(
+                          color: Color(0xFF004AAD),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20.0), // 왼쪽 위 모서리 둥글게
+                            topRight: Radius.circular(20.0), // 오른쪽 위 모서리 둥글게
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '실시간 환율(KRW)',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: screenHeight * 0.6,
+                        child: ClipRRect(
+                          // ClipRRect를 사용하여 모서리를 둥글게 만듭니다.
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20.0), // 아래 모서리 둥글게
+                            bottomRight: Radius.circular(20.0), // 아래 모서리 둥글게
+                          ),
+                          child:
+                              _exchangeRateContents(screenHeight, screenWidth),
+                        ),
+                      ),
                     ],
                   ),
                 )
@@ -348,6 +383,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
 void main() {
   runApp(HomePage());
 }

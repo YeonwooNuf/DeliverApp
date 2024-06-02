@@ -45,8 +45,6 @@ dependencies:
   geocoding: ^2.0.4
   flutter_google_places: ^0.3.0
   google_maps_webservice: ^0.0.20-nullsafety.5
-  get: ^4.6.5
-  bootpay: ^4.2.1
 
 dev_dependencies:
   flutter_test:
