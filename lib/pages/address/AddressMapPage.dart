@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:delivery/pages/AddressInfo.dart';
+import 'package:delivery/pages/address/AddressInfo.dart';
 
 class AddressMapPage extends StatefulWidget {
   @override
@@ -133,7 +133,11 @@ class _AddressMapPageState extends State<AddressMapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('지도 테스트'),
+        title: Text('',
+        style: TextStyle(
+            fontWeight: FontWeight.w500, // 이 부분에 FontWeight.w500 추가
+          ),
+        ),
       ),
       body: _center == null
           ? Center(child: CircularProgressIndicator())
@@ -196,6 +200,7 @@ class _AddressMapPageState extends State<AddressMapPage> {
                                 '설정하기',
                                 style: TextStyle(
                                   color: Colors.black,
+                                  fontWeight: FontWeight.w600,
                                   fontSize: 18.0,
                                 ),
                               ),

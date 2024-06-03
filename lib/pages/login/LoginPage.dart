@@ -33,11 +33,29 @@ class LoginPage extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('입력 오류'),
-              content: Text('아이디와 비밀번호를 모두 입력해주세요.'),
+              title: Text(
+                '입력 오류',
+                style: TextStyle(
+                  fontFamily: "MangoDdobak",
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              content: Text(
+                '아이디와 비밀번호를 모두 입력해주세요.',
+                style: TextStyle(
+                  fontFamily: "MangoDdobak",
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               actions: <Widget>[
                 TextButton(
-                  child: Text('확인'),
+                  child: Text(
+                    '확인',
+                    style: TextStyle(
+                      fontFamily: "MangoDdobak",
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -62,22 +80,43 @@ class LoginPage extends StatelessWidget {
           // 해당하는 아이디가 존재하고 비밀번호가 일치하는 경우
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => MainApp(name: names[index], phone: phones[index])),
+            MaterialPageRoute(
+                builder: (context) => MainApp(
+                      name: names[index],
+                      phone: phones[index],
+                    )),
           );
 
-           MyPage(name: names[index], phone: phones[index]);
-          
+          MyPage(name: names[index], phone: phones[index]);
         } else {
           // 아이디 또는 비밀번호가 올바르지 않은 경우
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('로그인 실패'),
-                content: Text('아이디 또는 비밀번호가 올바르지 않습니다.'),
+                title: Text(
+                  '로그인 실패',
+                  style: TextStyle(
+                    fontFamily: "MangoDdobak",
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                content: Text(
+                  '아이디 또는 비밀번호가 올바르지 않습니다.',
+                  style: TextStyle(
+                    fontFamily: "MangoDdobak",
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 actions: <Widget>[
                   TextButton(
-                    child: Text('확인'),
+                    child: Text(
+                      '확인',
+                      style: TextStyle(
+                        fontFamily: "MangoDdobak",
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -92,11 +131,29 @@ class LoginPage extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('서버 오류'),
-              content: Text('로그인 중 오류가 발생했습니다. 다시 시도해주세요.'),
+              title: Text(
+                '서버 오류',
+                style: TextStyle(
+                  fontFamily: "MangoDdobak",
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              content: Text(
+                '로그인 중 오류가 발생했습니다. 다시 시도해주세요.',
+                style: TextStyle(
+                  fontFamily: "MangoDdobak",
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               actions: <Widget>[
                 TextButton(
-                  child: Text('확인'),
+                  child: Text(
+                    '확인',
+                    style: TextStyle(
+                      fontFamily: "MangoDdobak",
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -161,6 +218,8 @@ class LoginPage extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.white, // 흰색 텍스트
                     fontSize: 16,
+                    fontFamily: "MangoDdobak",
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -190,6 +249,8 @@ class LoginPage extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.white, // 흰색 텍스트
                     fontSize: 16,
+                    fontFamily: "MangoDdobak",
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
@@ -206,10 +267,12 @@ class LoginPage extends StatelessWidget {
                   child: Text(
                     '아이디 찾기',
                     style: TextStyle(
-                        color: Color(0xFF004AAD), // 파란색 텍스트
-                        fontSize: 16,
-                        decoration: TextDecoration.underline, // 밑줄 추가
-                        decorationColor: Color(0xFF004AAD)),
+                      color: Color(0xFF004AAD), // 파란색 텍스트
+                      fontSize: 16,
+                      fontFamily: "MangoDdobak",
+                      fontWeight: FontWeight.w700,
+                      decoration: TextDecoration.underline, // 밑줄 추가
+                      decorationColor: Color(0xFF004AAD)),
                   ),
                 ),
                 GestureDetector(
@@ -219,10 +282,12 @@ class LoginPage extends StatelessWidget {
                   child: Text(
                     '비밀번호 찾기',
                     style: TextStyle(
-                        color: Color(0xFF004AAD), // 파란색 텍스트
-                        fontSize: 16,
-                        decoration: TextDecoration.underline, // 밑줄 추가
-                        decorationColor: Color(0xFF004AAD)),
+                      color: Color(0xFF004AAD), // 파란색 텍스트
+                      fontSize: 16,
+                      fontFamily: "MangoDdobak",
+                      fontWeight: FontWeight.w700,
+                      decoration: TextDecoration.underline, // 밑줄 추가
+                      decorationColor: Color(0xFF004AAD)),
                   ),
                 ),
               ],
@@ -233,3 +298,4 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
+

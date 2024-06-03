@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/DetailPage.dart';
-import 'package:delivery/pages/AddressManagePage.dart';
+import 'package:delivery/pages/address/AddressManagePage.dart';
 import 'package:delivery/pages/FavoritePage.dart';
 import 'package:delivery/pages/login/LogoutPage.dart';
 import 'package:delivery/pages/login/LoginPage.dart';

@@ -1,6 +1,6 @@
-import 'package:delivery/pages/AddressInfo.dart';
-import 'package:delivery/pages/AddressMapPage.dart';
-import 'package:delivery/pages/AddressRegisterPage.dart';
+import 'package:delivery/pages/address/AddressInfo.dart';
+import 'package:delivery/pages/address/AddressMapPage.dart';
+import 'package:delivery/pages/address/AddressRegisterPage.dart';
 import 'package:delivery/pages/FavoritePage.dart';
 import 'package:delivery/pages/HomePage.dart';
 import 'package:delivery/pages/MyPage.dart';
@@ -68,6 +68,7 @@ class _MyAppState extends State<MyApp> {
         brightness: Brightness.light,
         primaryColor: Colors.white,
         hintColor: Colors.white,
+        fontFamily: "MangoDdobak"
       ),
       home: LoginPage(), // 초기 화면을 LoginPage로 설정
       routes: {
