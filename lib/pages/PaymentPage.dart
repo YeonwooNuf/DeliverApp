@@ -5,10 +5,10 @@ import 'package:delivery/AddressChange.dart';
 import 'package:provider/provider.dart';
 
 class PaymentPage extends StatefulWidget {
-  final int selectedStoreId;
-  final String selectedStoreName;
-  final List<Map<String, dynamic>> selectedMenus;
-  final String storeAddress;
+  final int selectedStoreId;// 매장 아이디(기본키)
+  final String selectedStoreName;//매장이름
+  final List<Map<String, dynamic>> selectedMenus;//담긴 메뉴 리스트 정보 -> 예시: {productName: 들깨칼국수, price: 8000, quantity: 1, totalPrice: 8000}
+  final String storeAddress;//매장주소
 
   PaymentPage({
     required this.selectedStoreId,
@@ -31,11 +31,11 @@ class _PaymentPageState extends State<PaymentPage> {
     // 초기 메뉴 데이터 콘솔 출력
     print('Initial Menus: ${widget.selectedMenus}');
   }
-
+    //(수량 * 메뉴의가격) 총 결제할 금액 함수임.
   int getTotalPrice() {
     int total = 0;
     for (var menu in widget.selectedMenus) {
-      total += menu['totalPrice'] as int;
+      total += menu['totalPrice'] as int;//int값으로 바꿈
     }
     return total;
   }
@@ -48,7 +48,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    int totalPrice = getTotalPrice();
+    int payTotalPrice = getTotalPrice();
 
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +56,11 @@ class _PaymentPageState extends State<PaymentPage> {
           icon: Icon(Icons.arrow_back),
           color: Colors.black,
           onPressed: () {
+            setState(() {
+              widget.selectedMenus.clear();
+            });
             Navigator.pop(context, true);
+            
           },
         ),
         title: Text(
@@ -120,6 +124,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                   icon: Icon(Icons.remove, color: Colors.white),
                                   onPressed: () {
                                     setState(() {
+                                      //-버튼 누르면 최소수량 1까지 quantity감소시킴
                                       if (menu['quantity'] > 1) {
                                         menu['quantity']--;
                                         menu['totalPrice'] = menu['price'] * menu['quantity'];
@@ -131,6 +136,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                   '${menu['quantity']}',
                                   style: TextStyle(color: Colors.white),
                                 ),
+                                //+버튼 누르면 최대수량 10까지 quantity증가시킴
                                 IconButton(
                                   icon: Icon(Icons.add, color: Colors.white),
                                   onPressed: () {
@@ -148,7 +154,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         ],
                       ),
                       Text(
-                        '${menu['totalPrice']}원',
+                        '${menu['totalPrice']}원',//각메뉴의 금액
                         style: TextStyle(fontSize: 20),
                       ),
                       Divider(
@@ -187,7 +193,6 @@ class _PaymentPageState extends State<PaymentPage> {
               SizedBox(height: 8),
               GestureDetector(
                 onTap: () {
-                  _showSimpleDialog();
                 },
                 child: Container(
                   alignment: Alignment.centerLeft,
@@ -265,7 +270,7 @@ class _PaymentPageState extends State<PaymentPage> {
             padding: EdgeInsets.symmetric(vertical: 0),
           ),
           child: Text(
-            '${totalPrice}원 결제하기',
+            '${payTotalPrice}원 결제하기', //(각상품들의 가격 총합)총결제할 금액
             style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -277,7 +282,5 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 
-  _showSimpleDialog() {
-    // Add your simple dialog logic here
-  }
+  
 }

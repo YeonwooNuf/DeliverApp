@@ -175,7 +175,7 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
                             _goToPaymentPage(selectedMenus);
                           },
                           child: Container(
-                            height: MediaQuery.of(context).size.height * 0.07,
+                            height: MediaQuery.of(context).size.height * 0.1,
                             color: Colors.blue,
                             child: Center(
                               child: Text(
@@ -246,86 +246,95 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
   List<Map<String, dynamic>> selectedMenus = [];
 
   void _showQuantityDialog(Map<String, dynamic> menu) {
-    int quantity = 1; // 초기 수량
+  int quantity = 1; // 초기 수량
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text(
-                '수량 선택',
-                style: TextStyle(color: Colors.black),
+  showDialog(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text(
+              '수량 선택',
+              style: TextStyle(color: Colors.black),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.remove_circle_outline),
+                color: Colors.black,
+                onPressed: () {
+                  setState(() {
+                    if (quantity > 1) {
+                      quantity--;
+                    }
+                  });
+                },
               ),
-              actions: [
-                // 수량 감소 버튼
-                IconButton(
-                  icon: Icon(Icons.remove_circle_outline),
-                  color: Colors.black,
-                  onPressed: () {
-                    setState(() {
-                      if (quantity > 1) {
-                        quantity--;
-                      }
+              Text(
+                quantity.toString(),
+                style: TextStyle(fontSize: 18),
+              ),
+              IconButton(
+                icon: Icon(Icons.add_circle_outline),
+                color: Colors.black,
+                onPressed: () {
+                  setState(() {
+                    if (quantity < 10) {
+                      quantity++;
+                    }
+                  });
+                },
+              ),
+              TextButton(
+                onPressed: () {
+                  int price = menu['price'] as int;
+                  int totalPrice = quantity * price; // 선택된 수량에 메뉴 가격을 곱한 값
+
+                  // 이미 선택된 메뉴가 리스트에 있는지 확인
+                  bool isExist = false;
+                  for (var item in selectedMenus) {
+                    if (item['productName'] == menu['productName']) {
+                      isExist = true;
+                      item['quantity'] += quantity; // 기존 수량에 추가
+                      item['totalPrice'] += totalPrice; // 총 가격 업데이트
+                      break;
+                    }
+                  }
+
+                  // 선택된 메뉴가 리스트에 없는 경우, 새로 추가
+                  if (!isExist) {
+                    selectedMenus.add({
+                      'productName': menu['productName'],
+                      'price': price,
+                      'quantity': quantity,
+                      'totalPrice': totalPrice,
                     });
-                  },
+                  }
+
+                  // 다이얼로그 닫기 및 총합 업데이트
+                  int totalSum = selectedMenus.fold(0, (sum, item) => sum + item['totalPrice']as int);
+                  Navigator.of(context).pop(totalSum);
+                },
+                child: Text(
+                  '확인',
+                  style: TextStyle(color: Colors.black),
                 ),
-                Text(
-                  quantity.toString(),
-                  style: TextStyle(fontSize: 18),
-                ),
-                // 수량 증가 버튼
-                IconButton(
-                  icon: Icon(Icons.add_circle_outline),
-                  color: Colors.black,
-                  onPressed: () {
-                    setState(() {
-                      if (quantity < 10) {
-                        quantity++;
-                      }
-                    });
-                  },
-                ),
-                // 확인 버튼 눌렀을 때
-                TextButton(
-                  onPressed: () {
-                    int price = menu['price'] as int;
-                    int totalSum =
-                        _totalPrice + (quantity * price); // 선택된 수량에 메뉴 가격을 곱한 값
-                    int totalPrice = (quantity * price); // 선택된 수량에 메뉴 가격을 곱한 값
-                    setState(() {
-                      // 선택된 메뉴의 정보를 리스트에 추가
-                      selectedMenus.add({
-                        'productName': menu['productName'],
-                        'price': price,
-                        'quantity': quantity,
-                        'totalPrice': totalPrice,
-                      });
-                    });
-                    Navigator.of(context).pop(totalSum); // 다이얼로그 닫기
-                  },
-                  child: Text(
-                    '확인',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    ).then((totalSum) {
-      // 다이얼로그가 닫힌 후 실행되는 로직
-      if (totalSum != null) {
-        // 선택된 메뉴의 총 가격이 null이 아닌 경우에만 실행
-        setState(() {
-          _isPaymentButtonVisible = true; // 결제하기 버튼을 보이도록 설정
-          _totalPrice = totalSum; // 선택된 메뉴의 총 가격을 저장
-        });
-      }
-    });
-  }
+              ),
+            ],
+          );
+        },
+      );
+    },
+  ).then((totalSum) {
+    if (totalSum != null) {
+      setState(() {
+        _isPaymentButtonVisible = true; // 결제하기 버튼을 보이도록 설정
+        _totalPrice = totalSum; // 선택된 메뉴의 총 가격을 저장
+      });
+    }
+  });
+}
+
 
   // 결제하기 버튼 클릭 시 실행되는 함수
   void _goToPaymentPage(List<Map<String, dynamic>> selectedMenus) async {
@@ -345,6 +354,7 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
   if (result == true) {
     setState(() {
       _isPaymentButtonVisible = false;
+      _totalPrice = 0;
     });
   }
 
