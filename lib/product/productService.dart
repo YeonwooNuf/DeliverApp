@@ -12,7 +12,7 @@ class ProductService {
       List<dynamic> body = jsonDecode(response.body);
       return body.map((dynamic item) => Product.fromJson(item)).toList();
     } else {
-      throw Exception('Failed to load products');
+      throw Exception('Failed to load produacts');
     }
   }
 }

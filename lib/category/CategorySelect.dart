@@ -177,7 +177,7 @@ class _JapaneseState extends State<CategorySelect> {
   }
 
   // 이미지 클릭 메서드
-  Widget _Image(String image_URL, String storeName, int storeId, String storeAddress){
+  Widget _Image(String storeImage_URL, String storeName, int storeId, String storeAddress){
     return Padding(
       padding: EdgeInsets.all(20),
       child: Column(
@@ -190,7 +190,7 @@ class _JapaneseState extends State<CategorySelect> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => MenuSearchPage(
-                        image_URL: image_URL,
+                        storeImage_URL: storeImage_URL,
                         storeName: storeName,
                         storeId: storeId,
                         storeAddress: storeAddress
@@ -206,7 +206,7 @@ class _JapaneseState extends State<CategorySelect> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image.network(
-                      '${image_URL}',
+                      '${storeImage_URL}',
                       fit: BoxFit.fill,
                       width: double.infinity,
                       height: double.infinity,
