@@ -553,12 +553,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               }),
                               SizedBox(width: 8),
-                              _roundedContainer('assets/images/Japanese.png', '일식/돈까스', () {
+                              _roundedContainer('assets/images/Japanese.png', '일식', () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CategorySelect(CategoryName: '일식/돈까스')),
+                                          CategorySelect(CategoryName: '일식')),
                                 );
                               }),
                               SizedBox(width: 8),
