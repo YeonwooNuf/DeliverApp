@@ -22,12 +22,12 @@ class HomePage extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: const Color.fromARGB(255, 216, 214, 214),
         fontFamily: "MangoDdobak",
-        textTheme: TextTheme(
-      // 여기에서 모든 텍스트 스타일을 변경합니다.
-      bodyText1: TextStyle(fontWeight: FontWeight.w700), // 예시로 bodyText1을 변경하였습니다. 필요에 따라 다른 스타일도 변경할 수 있습니다.
-      bodyText2: TextStyle(fontWeight: FontWeight.w700),
-      // 추가적으로 필요한 스타일이 있다면 여기에 추가합니다.
-    ),
+    //     textTheme: TextTheme(
+    //   // 여기에서 모든 텍스트 스타일을 변경합니다.
+    //   bodyText1: TextStyle(fontWeight: FontWeight.w700), // 예시로 bodyText1을 변경하였습니다. 필요에 따라 다른 스타일도 변경할 수 있습니다.
+    //   bodyText2: TextStyle(fontWeight: FontWeight.w700),
+    //   // 추가적으로 필요한 스타일이 있다면 여기에 추가합니다.
+    // ),
       ),
       home: Scaffold(
         resizeToAvoidBottomInset: false, // 키보드로 인한 화면 크기 조정 방지
@@ -149,6 +149,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700),
                     ),
                     Icon(Icons.keyboard_arrow_down, color: Color(0xFF0892D0)),
+                    SizedBox(width: 8), // 아이콘과 텍스트 사이에 간격 추가
+                    Text(
+                      '              Inha Delivery',
+                      style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700),
+                    ),
                   ],
                 ),
               ),
@@ -185,9 +190,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: TextStyle(color: Colors.black),
                           decoration: InputDecoration(
                             hintText: "  검색어를 입력해주세요",
-                            hintStyle: Theme.of(context).textTheme.caption?.copyWith(
-                              fontSize: 18,
-                              fontFamily: "MangoDdobak"), // Pretendard 글꼴 설정 // 힌트 텍스트의 글씨 크기 조절
+                            // hintStyle: Theme.of(context).textTheme.caption?.copyWith(
+                            //   fontSize: 18,
+                            //   fontFamily: "MangoDdobak"), // Pretendard 글꼴 설정 // 힌트 텍스트의 글씨 크기 조절
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.search),
                           ),

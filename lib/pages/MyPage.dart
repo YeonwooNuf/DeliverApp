@@ -98,8 +98,8 @@ class DeliveryScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DetailPage(name: name, phone: phone),
-                  ));
+                    MaterialPageRoute(builder: (context) => DetailPage(name: name, phone: phone)),
+                  );
                 },
                 child: Text(
                   '자세히 보기',
