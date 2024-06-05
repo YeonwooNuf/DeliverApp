@@ -9,7 +9,7 @@ import 'package:delivery/pages/PaymentPage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:delivery/AddressChange.dart';
+import 'package:delivery/pages/address/AddressChange.dart';
 
 import 'package:delivery/product/productInfo.dart';
 import 'package:delivery/product/productService.dart';
