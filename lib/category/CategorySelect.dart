@@ -221,12 +221,15 @@ class _JapaneseState extends State<CategorySelect> {
             ],
           ),
           SizedBox(height: 8), // 이미지와 매장명 간의 간격 조절
-          Text(
-            storeName,
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              storeName,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+              ),
             ),
           ),
         ],

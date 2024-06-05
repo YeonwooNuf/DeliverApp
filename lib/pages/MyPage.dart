@@ -98,7 +98,7 @@ class DeliveryScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DetailPage()),
+                    MaterialPageRoute(builder: (context) => DetailPage(name: name, phone: phone)),
                   );
                 },
                 child: Text(

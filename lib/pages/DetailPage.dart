@@ -4,6 +4,11 @@ import 'package:delivery/pages/FavoritePage.dart';
 import 'package:provider/provider.dart';
 
 class DetailPage extends StatefulWidget {
+  final String name;
+  final String phone;
+
+  DetailPage({required this.name, required this.phone});
+
   @override
   _DetailPageState createState() => _DetailPageState();
 }
@@ -11,7 +16,7 @@ class DetailPage extends StatefulWidget {
 class Review {
   final String imagePath;
   final String text;
-  
+
   Review({required this.imagePath, required this.text});
 }
 
@@ -38,7 +43,7 @@ class _DetailPageState extends State<DetailPage> {
               Navigator.of(context).pop();
             },
           ),
-          title: Text('어플 이름'),
+          title: Text('             Inha Delivery'),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -48,12 +53,12 @@ class _DetailPageState extends State<DetailPage> {
             children: [
               SizedBox(height: 80),
               Text(
-                '장연우',
+                '${widget.name}',
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 30),
               Text(
-                '010-2995-3117',
+                '${widget.phone}',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 70),
