@@ -4,14 +4,16 @@ import 'package:delivery/pages/FavoritePage.dart';
 import 'package:provider/provider.dart';
 
 class DetailPage extends StatefulWidget {
+
   final String name;
   final String phone;
 
   DetailPage({required this.name, required this.phone});
 
   @override
-  _DetailPageState createState() => _DetailPageState();
+  _DetailPageState createState() => _DetailPageState(name: name, phone: phone);
 }
+
 
 class Review {
   final String imagePath;
@@ -23,10 +25,23 @@ class Review {
 class _DetailPageState extends State<DetailPage> {
   String displayText = '';
   bool showImage = false;
+  String name ;
+  String  phone;
+
+    _DetailPageState({required this.name, required this.phone});
+
+  
+  String formatPhoneNumber(String phoneNumber) {
+
+     // 전화번호 형식 변환(사이사이 - 추가되게)
+     return phoneNumber.substring(0, 3) + '-' + phoneNumber.substring(3, 7) + '-' + phoneNumber.substring(7);
+   }
+  
 
   @override
   Widget build(BuildContext context) {
     double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
+    
     return Theme(
       data: ThemeData(
         fontFamily: "MangoDdobak",
@@ -43,7 +58,9 @@ class _DetailPageState extends State<DetailPage> {
               Navigator.of(context).pop();
             },
           ),
+
           title: Text('             Inha Delivery'),
+
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),

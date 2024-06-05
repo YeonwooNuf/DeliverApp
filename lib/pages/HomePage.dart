@@ -1,6 +1,7 @@
 import 'package:delivery/category/CategorySelect.dart';
 import 'package:delivery/pages/SearchPage.dart';
 import 'package:flutter/material.dart';
+
 import 'package:delivery/pages/address/AddressRegisterPage.dart';
 import 'package:delivery/service/sv_ExchangeRate.dart';
 import 'package:delivery/AddressChange.dart';
@@ -44,6 +45,12 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.selectedIndex}) : super(key: key);
 
   @override
+  Widget build(BuildContext context) {
+    // String? homeAddress = Provider.of<ItemListNotifier>(context).homeAddress;
+    // String? workAddress = Provider.of<ItemListNotifier>(context).workAddress;
+    // List<String> addresses = Provider.of<ItemListNotifier>(context).addresses;
+
+    String selectedAddress = '';
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -52,6 +59,42 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String selectedAddress = '';
 
+          String? addressType = Provider.of<ItemListNotifier>(context).addressType;
+
+      return SafeArea(
+        child: Container(
+          width: double.infinity,
+          decoration: BoxDecoration(color: Colors.white),
+          padding: const EdgeInsets.all(8), // 좌측에 여백 추가
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.centerLeft, // 왼쪽 정렬
+                child: TextButton(
+                  onPressed: () {
+                    // Add your desired logic here
+                    // For example, you can navigate to a new page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddressRegisterPage(),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min, // Row의 크기를 내용물에 맞게 조정
+                    children: [
+                      Icon(Icons.location_on, color: Colors.black),
+                      SizedBox(width: 8), // 아이콘과 텍스트 사이에 간격 추가
+                      Text(
+                        addressType, // Add the selected address value here
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                      ),
+                      Icon(Icons.keyboard_arrow_down, color: Colors.black),
+                    ],
+                  ),
   String _getSelectedAddressName(BuildContext context) {
     final itemListNotifier = Provider.of<ItemListNotifier>(context);
 
@@ -166,6 +209,55 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+    // 카테고리 정의하는 메서드
+    Widget _roundedContainer(String image, String title, VoidCallback onTap) {
+      double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
+      return Expanded(
+        child: GestureDetector(
+          onTap: onTap,
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(30), // 컨테이너의 모서리를 둥글게 설정
+                ),
+                width: squareSize,
+                height: 50,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Image.asset(
+                    image,
+                    width: squareSize,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+
+    // 환율 이미지, 값 정의하는 함수
+    Widget exchangeRateImage(String imagePath, String firstText,
+        String secondText, double screenHeight, double screenWidth) {
+      return Container(
+        height: screenHeight * 0.1,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              Container(
+                height: screenHeight * 0.07,
+                width: screenWidth * 0.25,
   Widget _roundedContainer(String image, String title, VoidCallback onTap) {
     double squareSize = (MediaQuery.of(context).size.width - 60) / 4;
     return Expanded(
@@ -248,6 +340,93 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+    // 환율 데이터를 가져오는 FutureBuilder 사용
+    Widget _exchangeRateContents(double screenHeight, double screenWidth) {
+      return FutureBuilder<List<ExchangeRate>>(
+        future: getExchangeRate(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No data available'));
+          } else {
+            final exchangeRates = snapshot.data!;
+            return ListView.builder(
+              shrinkWrap: true, // 부모의 크기에 맞춰 스크롤 크기를 조정
+              itemCount: exchangeRates.length,
+              itemBuilder: (context, index) {
+                final exchangeRate = exchangeRates[index];
+                return exchangeRateImage(
+                  'assets/images/country/${exchangeRate.curUnit}.png',
+                  '${exchangeRate.curUnit}-${exchangeRate.curName}',
+                  '1${exchangeRate.curUnit} - ${exchangeRate.ttb}원',
+                  screenHeight,
+                  screenWidth,
+                );
+              },
+            );
+          }
+        },
+      );
+    }
+
+    Widget _contents() {
+      double screenHeight = MediaQuery.of(context).size.height;
+      double screenWidth = MediaQuery.of(context).size.width;
+      return Expanded(
+        child: Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          _roundedContainer('assets/images/bibimbap.jpeg', '한식',
+                              () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '한식')),
+                            );
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/sushi.jpeg', '일식',
+                              () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '일식')),
+                            );
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/jjajang.jpeg', '중식',
+                              () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '중식')),
+                            );
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/chicken.jpeg', '치킨',
+                              () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '치킨')),
+                            );
+                          }),
+                        ],
   Widget _exchangeRateContents(double screenHeight, double screenWidth) {
     return FutureBuilder<List<ExchangeRate>>(
       future:  getExchangeRate(),
@@ -299,6 +478,75 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Column(
                         children: [
+                          _roundedContainer('assets/images/pizza.jpeg', '피자',
+                              () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '피자')),
+                            );
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/pho.jpeg', '아시아',
+                              () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '아시아')),
+                            );
+                          }),
+                          SizedBox(width: 8),
+                          _roundedContainer('assets/images/burrito.jpeg', '멕시칸',
+                              () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      CategorySelect(CategoryName: '멕시칸')),
+                            );
+                          }),
+                          SizedBox(width: 8),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Container(
+                        height: screenHeight * 0.07,
+                        decoration: BoxDecoration(
+                          color: Color(0xFF004AAD),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20.0), // 왼쪽 위 모서리 둥글게
+                            topRight: Radius.circular(20.0), // 오른쪽 위 모서리 둥글게
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '실시간 환율(KRW)',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: screenHeight * 0.6,
+                        child: ClipRRect(
+                          // ClipRRect를 사용하여 모서리를 둥글게 만듭니다.
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20.0), // 아래 모서리 둥글게
+                            bottomRight: Radius.circular(20.0), // 아래 모서리 둥글게
+                          ),
+                          child:
+                              _exchangeRateContents(screenHeight, screenWidth),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
                           Row(
                             children: [
                               _roundedContainer('assets/images/bibimbap.png', '한식', () {
@@ -443,3 +691,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+void main() {
+  runApp(HomePage());
+}
