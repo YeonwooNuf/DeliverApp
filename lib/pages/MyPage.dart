@@ -21,7 +21,7 @@ class MyPage extends StatelessWidget {
   }
 }
 
-// 깃 커밋 테스트
+
 
 class DeliveryScreen extends StatelessWidget {
 
@@ -150,7 +150,7 @@ class DeliveryScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => FavoritePage()),
+                        MaterialPageRoute(builder: (context) => FavoritePage(userNumber: '',)),
                       );
                     },
                     child: Row(

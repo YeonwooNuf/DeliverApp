@@ -1,4 +1,7 @@
+import 'package:delivery/category/CategorySelect.dart';
 import 'package:delivery/main.dart';
+import 'package:delivery/pages/FavoritePage.dart';
+import 'package:delivery/pages/HomePage.dart';
 import 'package:delivery/pages/MyPage.dart';
 import 'package:delivery/service/sv_user.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +71,7 @@ class LoginPage extends StatelessWidget {
       }
       //로그인 기능 구현 (각 인덱스에 맞는 아이디와 비밀번호)
       try {
+        List<String> userNumbers = await getUserNumber();
         List<String> userIds = await getUserId();
         List<String> passwords = await getUserPassword();
         List<String> phones = await getUserPhone();
@@ -84,10 +88,13 @@ class LoginPage extends StatelessWidget {
                 builder: (context) => MainApp(
                       name: names[index],
                       phone: phones[index],
+                      userNumber:userNumbers[index]
                     )),
           );
 
           MyPage(name: names[index], phone: phones[index]);
+          FavoritePage(userNumber:userNumbers[index]);//즐겨찾기페이지로 유저번호 전달(기본키)
+          HomePage(userNumber:userNumbers[index]);//홈페이지로 유저번호 전달(기본키)
         } else {
           // 아이디 또는 비밀번호가 올바르지 않은 경우
           showDialog(
