@@ -7,12 +7,11 @@ import 'package:delivery/pages/address/AddressChange.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 
-void main() {
-  runApp(HomePage());
-}
+
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final String userNumber;
+  const HomePage({Key? key,required this.userNumber}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +20,18 @@ class HomePage extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: const Color.fromARGB(255, 216, 214, 214),
         fontFamily: "MangoDdobak",
+    //     textTheme: TextTheme(
+    //   // 여기에서 모든 텍스트 스타일을 변경합니다.
+    //   bodyText1: TextStyle(fontWeight: FontWeight.w700), // 예시로 bodyText1을 변경하였습니다. 필요에 따라 다른 스타일도 변경할 수 있습니다.
+    //   bodyText2: TextStyle(fontWeight: FontWeight.w700),
+    //   // 추가적으로 필요한 스타일이 있다면 여기에 추가합니다.
+    // ),
       ),
       home: Scaffold(
         resizeToAvoidBottomInset: false, // 키보드로 인한 화면 크기 조정 방지
         body: Directionality(
           textDirection: TextDirection.ltr,
-          child: const HomeScreen(selectedIndex: 0),
+          child: HomeScreen(selectedIndex: 0,userNumber: userNumber),
         ),
       ),
     );
@@ -35,7 +40,8 @@ class HomePage extends StatelessWidget {
 
 class HomeScreen extends StatefulWidget {
   final int selectedIndex;
-  const HomeScreen({Key? key, required this.selectedIndex}) : super(key: key);
+  final String userNumber;
+  const HomeScreen({Key? key, required this.selectedIndex, required this.userNumber}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -280,7 +286,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CategorySelect(CategoryName: '한식')),
+                                          CategorySelect(CategoryName: '한식',userNumber: widget.userNumber,)),
                                 );
                               }),
                               SizedBox(width: 8),
@@ -289,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CategorySelect(CategoryName: '일식')),
+                                          CategorySelect(CategoryName: '일식', userNumber: widget.userNumber,)),
                                 );
                               }),
                               SizedBox(width: 8),
@@ -298,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CategorySelect(CategoryName: '중국집')),
+                                          CategorySelect(CategoryName: '중국집', userNumber: widget.userNumber,)),
                                 );
                               }),
                               SizedBox(width: 8),
@@ -307,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CategorySelect(CategoryName: '치킨')),
+                                          CategorySelect(CategoryName: '치킨',userNumber: widget.userNumber,)),
                                 );
                               }),
                             ],
@@ -320,7 +326,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CategorySelect(CategoryName: '피자')),
+                                          CategorySelect(CategoryName: '피자',userNumber: widget.userNumber,)),
                                 );
                               }),
                               SizedBox(width: 8),
@@ -329,7 +335,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CategorySelect(CategoryName: '햄버거')),
+                                          CategorySelect(CategoryName: '햄버거',userNumber: widget.userNumber,)),
                                 );
                               }),
                               SizedBox(width: 8),
@@ -338,7 +344,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CategorySelect(CategoryName: '분식')),
+                                          CategorySelect(CategoryName: '분식',userNumber: widget.userNumber,)),
                                 );
                               }),
                               SizedBox(width: 8),
@@ -347,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          CategorySelect(CategoryName: '족발')),
+                                          CategorySelect(CategoryName: '족발',userNumber: widget.userNumber,)),
                                 );
                               }),
                             ],
@@ -364,6 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       children: [
                         ExpansionPanel(
+                          backgroundColor: Colors.white,
                           headerBuilder: (BuildContext context, bool isExpanded) {
                             return Container(
                               alignment: Alignment.centerLeft, // 제목을 화면 왼쪽에 정렬
@@ -406,6 +413,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+ 
     return Scaffold(
       body: Column(
         children: [

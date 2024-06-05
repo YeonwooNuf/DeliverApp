@@ -43,7 +43,7 @@ class MainApp extends StatelessWidget {
         body: TabBarView(
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            HomePage(),
+            HomePage(userNumber: userNumber,),
             FavoritePage(userNumber: userNumber,),
             OrderHistoryPage(),
             MyPage(name: name, phone: phone),
