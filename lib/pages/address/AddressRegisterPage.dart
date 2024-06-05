@@ -15,16 +15,28 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    
     double buttonWidth =
         MediaQuery.of(context).size.width * 0.9; //버튼의 크기 = 화면넓이의 90%
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('주소 등록',
-        style: TextStyle(
+        title: Text(
+          '주소 등록',
+          style: TextStyle(
             fontWeight: FontWeight.w700,
-            ),
-          )
-        ), // 주소 등록 페이지 제목 추가
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // HomePage로 이동
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+              (Route<dynamic> route) => false,
+            );
+          },
+        ),
       ),
       body: SafeArea(
         child: Column(

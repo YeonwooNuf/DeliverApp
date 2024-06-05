@@ -98,8 +98,8 @@ class DeliveryScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DetailPage()),
-                  );
+                    MaterialPageRoute(builder: (context) => DetailPage(name: name, phone: phone),
+                  ));
                 },
                 child: Text(
                   '자세히 보기',
@@ -196,8 +196,8 @@ class DeliveryScreen extends StatelessWidget {
                       ],
                     ),
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+                      backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                      foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
                     ),
                   ),
                 ),
@@ -209,18 +209,3 @@ class DeliveryScreen extends StatelessWidget {
     );
   }
 }
-
-
-// class LogoutPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('로그아웃'),
-//       ),
-//       body: Center(
-//         child: Text('로그아웃 페이지'),
-//       ),
-//     );
-//   }
-// }

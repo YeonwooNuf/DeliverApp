@@ -251,12 +251,14 @@ class AddressInfoState extends State<AddressInfo> {
                               .removeHomeAddress();
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .setHomeAddress(combinedAddress);
+                          Provider.of<ItemListNotifier>(context, listen: false).setSelectedIndex(-2); // 집 주소 인덱스 설정
                         } else if (_workColor == Colors.black12) {
                           print('선택된 버튼: 회사');
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .removeWorkAddress();
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .setWorkAddress(combinedAddress);
+                          Provider.of<ItemListNotifier>(context, listen: false).setSelectedIndex(-1); // 회사 주소 인덱스 설정
                         } else {
                           print('선택된 버튼: 기타');
                           final alias =
@@ -275,12 +277,12 @@ class AddressInfoState extends State<AddressInfo> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
-                                    Navigator.push(
+                                    Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            AddressRegisterPage(),
+                                        builder: (context) => AddressRegisterPage(),
                                       ),
+                                      ModalRoute.withName('/'),
                                     );
                                   },
                                   child: Text("확인"),
