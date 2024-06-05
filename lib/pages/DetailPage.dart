@@ -46,8 +46,6 @@ class _DetailPageState extends State<DetailPage> {
       data: ThemeData(
         fontFamily: "MangoDdobak",
         textTheme: TextTheme(
-          bodyText1: TextStyle(fontWeight: FontWeight.w700),
-          bodyText2: TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
       child: Scaffold(
@@ -58,9 +56,7 @@ class _DetailPageState extends State<DetailPage> {
               Navigator.of(context).pop();
             },
           ),
-
           title: Text('             Inha Delivery'),
-
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -70,12 +66,12 @@ class _DetailPageState extends State<DetailPage> {
             children: [
               SizedBox(height: 80),
               Text(
-                '${widget.name}',
+                '${name}',
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 30),
               Text(
-                '${widget.phone}',
+                '${formatPhoneNumber(phone)}',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 70),

@@ -84,6 +84,7 @@ class ItemListNotifier extends ChangeNotifier {
 
   void addAddress(String newAddress) {
     addresses.add(newAddress);
+    setSelectedIndex(addresses.length - 1);
     notifyListeners();
   }
 
