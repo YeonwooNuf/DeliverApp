@@ -1,4 +1,4 @@
-import 'package:delivery/AddressChange.dart';
+import 'package:delivery/pages/address/AddressChange.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/FavoritePage.dart';
 import 'package:provider/provider.dart';

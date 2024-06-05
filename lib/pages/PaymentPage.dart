@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'PaymentMethod.dart';
-import 'package:delivery/AddressChange.dart';
+import 'package:delivery/pages/address/AddressChange.dart';
 import 'package:provider/provider.dart';
 
 void main() {

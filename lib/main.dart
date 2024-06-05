@@ -8,7 +8,7 @@ import 'package:delivery/pages/OrderHistoryPage.dart';
 import 'package:delivery/pages/login/LoginPage.dart';
 import 'package:delivery/widget/bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:delivery/AddressChange.dart';
+import 'package:delivery/pages/address/AddressChange.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -27,8 +27,10 @@ class MainApp extends StatelessWidget {
   // MainPage로 LoginPage의 이름과 전화번호를 전달해줌.
   final String name;
   final String phone;
+  final String userNumber;
 
-  MainApp({required this.name, required this.phone}); // 생성자
+
+  MainApp({required this.name, required this.phone, required this.userNumber, }); // 생성자
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class MainApp extends StatelessWidget {
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
             HomePage(),
-            FavoritePage(),
+            FavoritePage(userNumber: userNumber,),
             OrderHistoryPage(),
             MyPage(name: name, phone: phone),
           ],

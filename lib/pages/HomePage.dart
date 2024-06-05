@@ -3,7 +3,7 @@ import 'package:delivery/pages/SearchPage.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/address/AddressRegisterPage.dart';
 import 'package:delivery/service/sv_ExchangeRate.dart';
-import 'package:delivery/AddressChange.dart';
+import 'package:delivery/pages/address/AddressChange.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 

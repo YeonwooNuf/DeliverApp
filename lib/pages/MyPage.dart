@@ -21,7 +21,7 @@ class MyPage extends StatelessWidget {
   }
 }
 
-// 깃 커밋 테스트
+
 
 class DeliveryScreen extends StatelessWidget {
 
@@ -150,7 +150,7 @@ class DeliveryScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => FavoritePage()),
+                        MaterialPageRoute(builder: (context) => FavoritePage(userNumber: '',)),
                       );
                     },
                     child: Row(
@@ -196,8 +196,8 @@ class DeliveryScreen extends StatelessWidget {
                       ],
                     ),
                     style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
-                      foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
                     ),
                   ),
                 ),
@@ -209,3 +209,18 @@ class DeliveryScreen extends StatelessWidget {
     );
   }
 }
+
+
+// class LogoutPage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('로그아웃'),
+//       ),
+//       body: Center(
+//         child: Text('로그아웃 페이지'),
+//       ),
+//     );
+//   }
+// }
