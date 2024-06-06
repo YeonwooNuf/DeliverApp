@@ -241,13 +241,19 @@ class _PaymentPageState extends State<PaymentPage> {
      bottomNavigationBar: Container(
         width: double.infinity,
         height: 80,
-        color: Colors.white, // 배경색을 흰색으로 설정
+        decoration: BoxDecoration(
+          color: Colors.white, // 배경색을 흰색으로 설정
+          borderRadius: BorderRadius.circular(20), // 둥글게 설정
+        ),
         child: ElevatedButton(
           onPressed: () {
             TotalPayment().bootpayTest(context);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20), // 버튼도 둥글게 설정
+            ),
             padding: EdgeInsets.symmetric(vertical: 10),
           ),
           child: Text(
@@ -263,3 +269,4 @@ class _PaymentPageState extends State<PaymentPage> {
     );
   }
 }
+
