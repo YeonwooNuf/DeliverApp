@@ -1,20 +1,18 @@
-import 'package:delivery/pages/MenuSearchPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'PaymentMethod.dart';
-import 'package:delivery/pages/address/AddressChange.dart';
-import 'package:provider/provider.dart';
 
 class PaymentPage extends StatefulWidget {
-  final int selectedStoreId;// 매장 아이디(기본키)
-  final String selectedStoreName;//매장이름
-  final List<Map<String, dynamic>> selectedMenus;//담긴 메뉴 리스트 정보 -> 예시: {productName: 들깨칼국수, price: 8000, quantity: 1, totalPrice: 8000}
-  final String storeAddress;//매장주소
+  final int selectedStoreId;
+  final String selectedStoreName;
+  final List<Map<String, dynamic>> selectedMenus;
+  final String storeAddress;
 
   PaymentPage({
     required this.selectedStoreId,
     required this.selectedStoreName,
     required this.selectedMenus,
-    required this.storeAddress
+    required this.storeAddress,
   });
 
   @override
@@ -28,14 +26,13 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   void initState() {
     super.initState();
-    // 초기 메뉴 데이터 콘솔 출력
     print('Initial Menus: ${widget.selectedMenus}');
   }
-    //(수량 * 메뉴의가격) 총 결제할 금액 함수임.
+
   int getTotalPrice() {
     int total = 0;
     for (var menu in widget.selectedMenus) {
-      total += menu['totalPrice'] as int;//int값으로 바꿈
+      total += menu['totalPrice'] as int;
     }
     return total;
   }
@@ -49,8 +46,10 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     int payTotalPrice = getTotalPrice();
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -60,7 +59,6 @@ class _PaymentPageState extends State<PaymentPage> {
               widget.selectedMenus.clear();
             });
             Navigator.pop(context, true);
-            
           },
         ),
         title: Text(
@@ -81,11 +79,15 @@ class _PaymentPageState extends State<PaymentPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('집 (으)로 배달', style: TextStyle(fontSize: 18)),
+              Text(
+                '집 (으)로 배달',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
               Center(
                 child: Text(
                   '${widget.storeAddress}',
-                  style: TextStyle(fontSize: 28),
+                  style: TextStyle(fontSize: 20, color: Colors.grey[700]),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -100,68 +102,84 @@ class _PaymentPageState extends State<PaymentPage> {
               ),
               Column(
                 children: widget.selectedMenus.map((menu) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(bottom: 0),
-                        child: Text(
-                          menu['productName'],
-                          style: TextStyle(fontSize: 20),
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                IconButton(
-                                  icon: Icon(Icons.remove, color: Colors.white),
-                                  onPressed: () {
-                                    setState(() {
-                                      //-버튼 누르면 최소수량 1까지 quantity감소시킴
-                                      if (menu['quantity'] > 1) {
-                                        menu['quantity']--;
-                                        menu['totalPrice'] = menu['price'] * menu['quantity'];
-                                      }
-                                    });
-                                  },
+                          Text(
+                            menu['productName'],
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                Text(
-                                  '${menu['quantity']}',
-                                  style: TextStyle(color: Colors.white),
+                                child: Row(
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: Icon(Icons.remove,
+                                          color: Colors.white),
+                                      onPressed: () {
+                                        setState(() {
+                                          if (menu['quantity'] > 1) {
+                                            menu['quantity']--;
+                                            menu['totalPrice'] = menu['price'] *
+                                                menu['quantity'];
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    Text(
+                                      '${menu['quantity']}',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    IconButton(
+                                      icon:
+                                          Icon(Icons.add, color: Colors.white),
+                                      onPressed: () {
+                                        setState(() {
+                                          if (menu['quantity'] < 10) {
+                                            menu['quantity']++;
+                                            menu['totalPrice'] = menu['price'] *
+                                                menu['quantity'];
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ],
                                 ),
-                                //+버튼 누르면 최대수량 10까지 quantity증가시킴
-                                IconButton(
-                                  icon: Icon(Icons.add, color: Colors.white),
-                                  onPressed: () {
-                                    setState(() {
-                                      if(menu['quantity'] <10){
-                                      menu['quantity']++;
-                                      menu['totalPrice'] = menu['price'] * menu['quantity'];
-                                      }
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
+                              ),
+                              Text(
+                                '${menu['totalPrice']}원',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                      Text(
-                        '${menu['totalPrice']}원',//각메뉴의 금액
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      Divider(
-                        color: Colors.grey,
-                        thickness: 1,
-                      ),
-                    ],
+                    ),
                   );
                 }).toList(),
               ),
@@ -190,29 +208,10 @@ class _PaymentPageState extends State<PaymentPage> {
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
               ),
-              SizedBox(height: 8),
-              GestureDetector(
-                onTap: () {
-                },
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '배달 기사님에게',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 0),
-              SizedBox(height: 0),
+              SizedBox(height: 16),
               Center(
                 child: Container(
-                  width: 230,
+                  width: screenWidth * 0.8,
                   child: DropdownButton<String>(
                     value: _selectedItem,
                     items: <String>[
@@ -248,39 +247,59 @@ class _PaymentPageState extends State<PaymentPage> {
       ),
       bottomNavigationBar: Container(
         width: double.infinity,
-        height: 80,
+        height:
+            MediaQuery.of(context).size.height * 0.18, // 높이를 버튼 두 개가 들어갈 정도로 조절
         decoration: BoxDecoration(
-          color: Colors.blue,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.blue.withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3),
+          color: Colors.white, // 배경색을 흰색으로 설정
+          borderRadius: BorderRadius.circular(20), // 둥글게 설정
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                // 두 번째 버튼의 동작을 정의합니다.
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF0A82FF), // 버튼의 배경색
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // 버튼도 둥글게 설정
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 23),
+              ),
+              child: Text(
+                '환율 계산',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                TotalPayment().bootpayTest(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // 버튼도 둥글게 설정
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 20,  vertical: 23),
+              ),
+              child: Text(
+                '${payTotalPrice}원 결제하기',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
-        ),
-        child: ElevatedButton(
-          onPressed: () {
-            // 버튼을 클릭했을 때 실행할 내용을 여기에 작성하세요.
-            TotalPayment().bootpayTest(context);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            padding: EdgeInsets.symmetric(vertical: 0),
-          ),
-          child: Text(
-            '${payTotalPrice}원 결제하기', //(각상품들의 가격 총합)총결제할 금액
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
         ),
       ),
     );
   }
-
-  
 }

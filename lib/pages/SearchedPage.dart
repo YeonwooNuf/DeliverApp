@@ -111,8 +111,10 @@ class _SearchedPageState extends State<SearchedPage> {
 
   Widget _buildStoreCard(Map<String, dynamic> storeInfo) {
     final String storeName = storeInfo['storeName'] ?? '가게 이름 없음';
-    final String storeImageUrl = storeInfo['storeImg'] ?? 'https://via.placeholder.com/150';
+    final String storeImageUrl =
+        storeInfo['storeImg'] ?? 'https://via.placeholder.com/150';
     final int storeId = storeInfo['storeId'];
+    final String storeAddress = storeInfo['storeAddress'] ?? '주소정보 없음';
 
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -126,9 +128,10 @@ class _SearchedPageState extends State<SearchedPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => MenuSearchPage(
-                        image_URL: storeImageUrl,
+                        storeImage_URL: storeImageUrl,
                         storeName: storeName,
                         storeId: storeId,
+                        storeAddress: storeAddress,
                       ),
                     ),
                   );
