@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'PaymentMethod.dart';
 
 class PaymentPage extends StatefulWidget {
@@ -122,7 +123,8 @@ class _PaymentPageState extends State<PaymentPage> {
                         children: [
                           Text(
                             menu['productName'],
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 8),
                           Row(
@@ -136,12 +138,14 @@ class _PaymentPageState extends State<PaymentPage> {
                                 child: Row(
                                   children: <Widget>[
                                     IconButton(
-                                      icon: Icon(Icons.remove, color: Colors.white),
+                                      icon: Icon(Icons.remove,
+                                          color: Colors.white),
                                       onPressed: () {
                                         setState(() {
                                           if (menu['quantity'] > 1) {
                                             menu['quantity']--;
-                                            menu['totalPrice'] = menu['price'] * menu['quantity'];
+                                            menu['totalPrice'] = menu['price'] *
+                                                menu['quantity'];
                                           }
                                         });
                                       },
@@ -151,12 +155,14 @@ class _PaymentPageState extends State<PaymentPage> {
                                       style: TextStyle(color: Colors.white),
                                     ),
                                     IconButton(
-                                      icon: Icon(Icons.add, color: Colors.white),
+                                      icon:
+                                          Icon(Icons.add, color: Colors.white),
                                       onPressed: () {
                                         setState(() {
                                           if (menu['quantity'] < 10) {
                                             menu['quantity']++;
-                                            menu['totalPrice'] = menu['price'] * menu['quantity'];
+                                            menu['totalPrice'] = menu['price'] *
+                                                menu['quantity'];
                                           }
                                         });
                                       },
@@ -166,7 +172,8 @@ class _PaymentPageState extends State<PaymentPage> {
                               ),
                               Text(
                                 '${menu['totalPrice']}원',
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -238,35 +245,61 @@ class _PaymentPageState extends State<PaymentPage> {
           ),
         ),
       ),
-     bottomNavigationBar: Container(
+      bottomNavigationBar: Container(
         width: double.infinity,
-        height: 80,
+        height:
+            MediaQuery.of(context).size.height * 0.18, // 높이를 버튼 두 개가 들어갈 정도로 조절
         decoration: BoxDecoration(
           color: Colors.white, // 배경색을 흰색으로 설정
           borderRadius: BorderRadius.circular(20), // 둥글게 설정
         ),
-        child: ElevatedButton(
-          onPressed: () {
-            TotalPayment().bootpayTest(context);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20), // 버튼도 둥글게 설정
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                // 두 번째 버튼의 동작을 정의합니다.
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF0A82FF), // 버튼의 배경색
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // 버튼도 둥글게 설정
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 23),
+              ),
+              child: Text(
+                '환율 계산',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-            padding: EdgeInsets.symmetric(vertical: 10),
-          ),
-          child: Text(
-            '${payTotalPrice}원 결제하기',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+            ElevatedButton(
+              onPressed: () {
+                TotalPayment().bootpayTest(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // 버튼도 둥글게 설정
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 20,  vertical: 23),
+              ),
+              child: Text(
+                '${payTotalPrice}원 결제하기',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 }
-
