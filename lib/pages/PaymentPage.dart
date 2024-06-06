@@ -1,6 +1,8 @@
 import 'package:delivery/pages/PaymentMethod.dart';
 import 'package:delivery/service/sv_ExchangeRate.dart';
 import 'package:flutter/material.dart';
+import 'package:delivery/pages/address/AddressChange.dart';
+import 'package:provider/provider.dart';
 
 class PaymentPage extends StatefulWidget {
   final int selectedStoreId;
@@ -61,7 +63,6 @@ class _PaymentPageState extends State<PaymentPage> {
     return totalKoreanPrice;
   }
 
-
   //결제할 금액을 환율에 따라 변경
   double calculateTotalPriceWithTtb(double totalPrice, String? selectedUnit) {
     if (selectedUnit == null) return totalPrice; // 선택된 단위가 없으면 그대로 반환
@@ -98,10 +99,16 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
-    double payKoreanTotalPrice = getKoreanTotalPrice();// 연우야 이게 결제api쓸때 사용할 한국돈 결제 금액임
+    double payKoreanTotalPrice =
+        getKoreanTotalPrice(); // 연우야 이게 결제api쓸때 사용할 한국돈 결제 금액임
+
     print('한국 돈 결제 금액: $payKoreanTotalPrice');
-    double payTotalPrice = calculateTotalPriceWithTtb(payKoreanTotalPrice, dropdownValue);
+
+    double payTotalPrice =
+        calculateTotalPriceWithTtb(payKoreanTotalPrice, dropdownValue);
     final screenWidth = MediaQuery.of(context).size.width;
+
+    String? addressType = Provider.of<ItemListNotifier>(context).addressType;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -135,7 +142,7 @@ class _PaymentPageState extends State<PaymentPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                '집 (으)로 배달',
+                '${addressType} (으)로 배달',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
@@ -313,7 +320,7 @@ class _PaymentPageState extends State<PaymentPage> {
           children: [
             ElevatedButton(
               onPressed: () {
-                TotalPayment().bootpayTest(context);
+                TotalPayment(payTotalPrice: payTotalPrice, selectedStoreName: widget.selectedStoreName,).bootpayTest(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
@@ -322,70 +329,69 @@ class _PaymentPageState extends State<PaymentPage> {
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 23),
               ),
-              child:Row(
-  mainAxisAlignment: MainAxisAlignment.center, // 수평 방향으로 중앙 정렬
-  children: [
-    Expanded(
-      child: Container(
-        width: screenWidth * 0.01,
-        child: DropdownButton<String>(
-          value: dropdownValue,
-          icon: Icon(
-            Icons.arrow_drop_down,
-            size: 30,
-            color: Colors.white,
-          ),
-          iconSize: 20,
-          elevation: 16,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-          ),
-          underline: Container(
-            height: 0,
-            color: Colors.transparent,
-          ),
-          onChanged: (String? newValue) {
-            setState(() {
-              dropdownValue = newValue!;
-            });
-            // 드롭다운 메뉴에서 선택된 값에 따라 동작을 정의
-          },
-          items: widget.exchangeRates.map((ExchangeRate exchangeRate) {
-            return DropdownMenuItem<String>(
-              value: exchangeRate.curUnit,
-              child: Center(
-                child: Text(
-                  exchangeRate.curUnit,
-                  style: TextStyle(
-                    color: dropdownValue == exchangeRate.curUnit
-                        ? Colors.white
-                        : Colors.black,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center, // 수평 방향으로 중앙 정렬
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: screenWidth * 0.01,
+                      child: DropdownButton<String>(
+                        value: dropdownValue,
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        iconSize: 20,
+                        elevation: 16,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                        underline: Container(
+                          height: 0,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownValue = newValue!;
+                          });
+                          // 드롭다운 메뉴에서 선택된 값에 따라 동작을 정의
+                        },
+                        items: widget.exchangeRates
+                            .map((ExchangeRate exchangeRate) {
+                          return DropdownMenuItem<String>(
+                            value: exchangeRate.curUnit,
+                            child: Center(
+                              child: Text(
+                                exchangeRate.curUnit,
+                                style: TextStyle(
+                                  color: dropdownValue == exchangeRate.curUnit
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    '${payTotalPrice}${dropdownValue} 결제하기',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            );
-          }).toList(),
-        ),
-      ),
-    ),
-    SizedBox(width: 20,),
-    
-     Text(
-        '${payTotalPrice}${dropdownValue} 결제하기',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    
-  ],
-),
-
-
             ),
           ],
         ),
