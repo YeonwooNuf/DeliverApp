@@ -21,6 +21,11 @@ class TotalPayment extends StatelessWidget {
   String androidApplicationId = '6638af18906692af33768590';
   String iosApplicationId = '6638af18906692af33768591';
 
+  final double payTotalPrice;
+  final String selectedStoreName;
+
+  TotalPayment({required this.payTotalPrice, required this.selectedStoreName});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,8 +149,8 @@ class TotalPayment extends StatelessWidget {
     // 결제수단 설정. 값 안넣으면 통합결제(모든 결제수단)
     // payload.method = '카드';
     // payload.methods = ['card', 'phone', 'vbank', 'bank', 'kakao'];
-    payload.orderName = "테스트 상품"; //결제할 상품명
-    payload.price = totalPrice;
+    payload.orderName = selectedStoreName; //결제할 상품명
+    payload.price = payTotalPrice;
 
     payload.orderId = DateTime.now()
         .millisecondsSinceEpoch
