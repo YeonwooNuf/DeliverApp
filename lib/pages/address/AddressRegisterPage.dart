@@ -32,7 +32,7 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
             // HomePage로 이동
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+              MaterialPageRoute(builder: (context) => const HomePage(userNumber: '',)),
               (Route<dynamic> route) => false,
             );
           },
