@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 import 'PaymentMethod.dart';
 
 class PaymentPage extends StatefulWidget {
@@ -41,6 +44,41 @@ class _PaymentPageState extends State<PaymentPage> {
     setState(() {
       isDisposableChecked = value ?? true;
     });
+  }
+
+void _sendOrderToServer() async {
+    int total = getTotalPrice();
+    List<String> menuNames = widget.selectedMenus.map((menu) => menu['productName'].toString()).toList();
+    // 서버로 전송할 데이터
+    var orderData = {
+      'storeId': widget.selectedStoreId,
+      'storeName': widget.selectedStoreName,
+      'menus': widget.selectedMenus,
+      'storeAddress': widget.storeAddress,
+      'totalPrice': total,
+      // 기타 필요한 데이터 추가
+    };
+
+    // 데이터를 JSON 형식으로 변환
+    var body = jsonEncode(orderData);
+
+    // POST 요청 보내기
+    var response = await http.post(
+      Uri.parse('http://localhost:8080/orders'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: body,
+    );
+
+    // 응답 확인
+    if (response.statusCode == 200) {
+      print('주문내역이 성공적으로 전송되었습니다.');
+      // 여기서 필요한 처리를 수행하세요.
+    } else {
+      print('주문내역 전송에 실패했습니다.');
+      // 실패 시에 대한 처리를 수행하세요.
+    }
   }
 
   @override
@@ -279,6 +317,7 @@ class _PaymentPageState extends State<PaymentPage> {
             ),
             ElevatedButton(
               onPressed: () {
+                _sendOrderToServer(); // _sendOrderToServer 함수 호출
                 TotalPayment().bootpayTest(context);
               },
               style: ElevatedButton.styleFrom(
