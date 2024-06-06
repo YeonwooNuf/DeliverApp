@@ -79,7 +79,7 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
                 ),
                 Positioned(
                   top: MediaQuery.of(context).size.height *
-                      0.2, // 화면의 높이 20%에 위치
+                      0.25, // 화면의 높이 20%에 위치
                   left: MediaQuery.of(context).size.width *
                       0.04, // 왼쪽 여백을 화면의 너비를 기준으로 설정
                   right: MediaQuery.of(context).size.width *
@@ -88,19 +88,15 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
                     height:
                         MediaQuery.of(context).size.height * 0.1, // 화면의 높이 10%
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
+                      boxShadow: <BoxShadow>[
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5), // 그림자의 색상 및 투명도
-                          spreadRadius: 5, // 그림자의 확산 정도
-                          blurRadius: 7, // 그림자의 흐림 정도
-                          offset: Offset(0, 3), // 그림자의 위치 (수평, 수직)
-                        ),
+                          color: Theme.of(context).shadowColor.withOpacity(0.3),
+                          offset: const Offset(0, 3),
+                          blurRadius: 5.0,
+                        )
                       ],
-                      border: Border.all(
-                        color: Colors.grey, // 테두리 색상
-                        width: 2, // 테두리 너비
-                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                      color: Colors.white,
                     ),
                     child: Center(
                       child: Text(
@@ -136,13 +132,12 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
               ),
             ),
             Container(
-              height: MediaQuery.of(context).size.height * 0.05,
+              height: MediaQuery.of(context).size.height * 0.04,
               width: MediaQuery.of(context).size.width,
-              color: Colors.grey,
               child: Center(
                 child: Text(
-                  "메뉴",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  "전체 메뉴",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

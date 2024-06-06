@@ -18,8 +18,8 @@ class CategorySelect extends StatefulWidget {
 }
 
 class _JapaneseState extends State<CategorySelect> {
-  var currentValue = '1'; //드롭다운메뉴 변수
-  final List<String> _items = <String>['가나다순', '신규매장순']; //드롭다운메뉴
+  var currentValue = '1'; // 드롭다운메뉴 변수
+  final List<String> _items = <String>['가나다순', '신규매장순']; // 드롭다운메뉴
   late String selectedValue = _items[0];
   final List<String> _titles = [
     "한식",
@@ -31,10 +31,10 @@ class _JapaneseState extends State<CategorySelect> {
     "분식",
     "족발"
   ];
-  late int _currentIndex; //초기탭 배열번호 선언
+  late int _currentIndex; // 초기탭 배열번호 선언
   bool IsFilled = false;
 
-  //매장정보 따로 받아옴.
+  // 매장정보 따로 받아옴.
   late List<Map<String, dynamic>> _storeName = [];
   late List<Map<String, dynamic>> _storeImg = [];
 
@@ -43,8 +43,7 @@ class _JapaneseState extends State<CategorySelect> {
   @override
   void initState() {
     super.initState();
-    _currentIndex =
-        _titles.indexOf(widget.CategoryName); // initState 메서드 내에서 호출
+    _currentIndex = _titles.indexOf(widget.CategoryName); // initState 메서드 내에서 호출
     _fetchStoreData(); // 데이터 불러오기
   }
 
@@ -62,6 +61,17 @@ class _JapaneseState extends State<CategorySelect> {
     setState(() {}); // 상태 업데이트
 
     // 각 카테고리를 콘솔에 출력
+  }
+
+  // 정렬 함수 추가
+  void _sortStores() {
+    setState(() {
+      if (selectedValue == '가나다순') {
+        _allStores.sort((Map<String, dynamic> a, Map<String, dynamic> b) => a['storeName'].compareTo(b['storeName']));
+      } else if (selectedValue == '신규매장순') {
+        _allStores.sort((Map<String, dynamic> a, Map<String, dynamic> b) => b['storeId'].compareTo(a['storeId']));
+      }
+    });
   }
 
   @override
@@ -82,7 +92,7 @@ class _JapaneseState extends State<CategorySelect> {
           ),
           title: Center(
             child: Text(
-              _titles[_currentIndex], //탭을 누를때마다 타이틀 변경되게 함.
+              _titles[_currentIndex], // 탭을 누를때마다 타이틀 변경되게 함.
               style: TextStyle(
                 color: Colors.black,
                 fontFamily: 'MangoDdobak',
@@ -173,6 +183,7 @@ class _JapaneseState extends State<CategorySelect> {
         onChanged: (String? newValue) {
           setState(() {
             selectedValue = newValue!;
+            _sortStores(); // 정렬 함수 호출
           });
         },
         items: _items.map<DropdownMenuItem<String>>((String value) {
