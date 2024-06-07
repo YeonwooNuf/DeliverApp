@@ -5,6 +5,7 @@ import 'package:bootpay/model/payload.dart';
 import 'package:bootpay/model/stat_item.dart';
 import 'package:bootpay/model/user.dart';
 import 'package:delivery/pages/MyPage.dart';
+import 'package:delivery/pages/OrderHistoryPage.dart';
 import 'package:delivery/pages/PaymentPage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -96,14 +97,18 @@ class TotalPayment extends StatelessWidget {
       },
       onConfirm: (String data) {
         print('------- onConfirm: $data');
+        Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OrderHistoryPage()),
+        );
         return true;
       },
       onDone: (String data) {
         print('------- onDone: $data');
-        // Navigator.push(
-        //           context,
-        //           MaterialPageRoute(builder: (context) => MyPage()),
-        // );
+        Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OrderHistoryPage()),
+        );
       },
     );
   }
@@ -115,29 +120,7 @@ class TotalPayment extends StatelessWidget {
     final itemListNotifier =
         Provider.of<ItemListNotifier>(context, listen: false);
 
-    List<Item> itemList = _convertProductsToItems(itemListNotifier.products);
-
     int totalPrice = 0;
-
-    // Item item1 = Item();
-    // item1.name = "미키 '마우스"; // 주문정보에 담길 상품명
-    // item1.qty = 1; // 해당 상품의 주문 수량
-    // item1.id = "ITEM_CODE_MOUSE"; // 해당 상품의 고유 키
-    // item1.price = 500; // 상품의 가격
-
-    // Item item2 = Item();
-    // item2.name = "키보드"; // 주문정보에 담길 상품명
-    // item2.qty = 1; // 해당 상품의 주문 수량
-    // item2.id = "ITEM_CODE_KEYBOARD"; // 해당 상품의 고유 키
-    // item2.price = 500; // 상품의 가격
-    // List<Item> itemList2 = [item1, item2];
-
-    for (Item item in itemList) {
-      totalPrice += item.price! * item.qty!;
-      if (totalPrice == 0) {
-        totalPrice = 0;
-      }
-    }
 
     payload.webApplicationId = webApplicationId; // web application id
     payload.androidApplicationId =
@@ -162,7 +145,6 @@ class TotalPayment extends StatelessWidget {
       "callbackParam3": "value56",
       "callbackParam4": "value78",
     }; // 전달할 파라미터, 결제 후 되돌려 주는 값
-    payload.items = itemList; // 상품정보 배열
 
     User user = User(); // 구매자 정보
     user.username = "사용자 이름";
@@ -184,13 +166,4 @@ class TotalPayment extends StatelessWidget {
     return payload;
   }
 
-  List<Item> _convertProductsToItems(List<Product> products) {
-    return products.map((product) {
-      return Item()
-        ..name = product.productName
-        ..qty = product.qty
-        ..id = product.productId.toString()
-        ..price = product.price;
-    }).toList();
-  }
 }
