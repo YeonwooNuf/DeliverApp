@@ -428,7 +428,7 @@ class _HeartIconButtonState extends State<HeartIconButton> {
             favorite_storeId: widget.storeId,
             favorite_storeImg: widget.storeImg,
             favorite_storeName: widget.storeName,
-            rating: '5.0', // 리뷰 페이지 만들면 변수 갖다 박아주세요 ^^
+            rating: '5', // 리뷰 페이지 만들면 변수 갖다 박아주세요 ^^
           );
 
           print('서버로 전송하는 favorite데이터: $favorite');

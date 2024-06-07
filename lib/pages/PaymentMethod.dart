@@ -112,7 +112,7 @@ class TotalPayment extends StatelessWidget {
 
     List<Item> itemList = _convertProductsToItems(itemListNotifier.products);
 
-    int totalPrice = 0;
+    double totalPrice = 0;
 
     // Item item1 = Item();
     // item1.name = "미키 '마우스"; // 주문정보에 담길 상품명

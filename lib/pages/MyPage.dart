@@ -9,14 +9,15 @@ class MyPage extends StatelessWidget {
   //Mypage로 loginpage에서 이름과 전화번호를 전달해줌.
    final String  name ;
    final String  phone;
+   final String userNumber;
 
-   MyPage({required this.name, required this.phone}); // 생성자 추가
+   MyPage({required this.name, required this.phone, required this.userNumber}); // 생성자 추가
 
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: DeliveryScreen(name: name, phone: phone),
+      home: DeliveryScreen(name: name, phone: phone, userNumber: userNumber,),
     );
   }
 }
@@ -27,8 +28,9 @@ class DeliveryScreen extends StatelessWidget {
 
    String name ;
    String  phone;
+   String userNumber;
 
-   DeliveryScreen({required this.name, required this.phone});
+   DeliveryScreen({required this.name, required this.phone, required this.userNumber});
 
    String formatPhoneNumber(String phoneNumber) {
      // 전화번호 형식 변환(사이사이 - 추가되게)
@@ -150,7 +152,7 @@ class DeliveryScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => FavoritePage(userNumber: '',)),
+                        MaterialPageRoute(builder: (context) => FavoritePage(userNumber: userNumber)),
                       );
                     },
                     child: Row(

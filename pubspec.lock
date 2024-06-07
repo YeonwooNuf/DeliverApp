@@ -56,7 +56,7 @@ packages:
       sha256: "70b329c9b8c03794fa43e9b79ddc54b9d81c938bc4cab51e16e37bf3271ab9c1"
       url: "https://pub.dev"
     source: hosted
-    version: "3.7.3"
+     version: "3.7.3"
   bootpay_webview_flutter_platform_interface:
     dependency: transitive
     description:
@@ -604,7 +604,7 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences
-      sha256: d3bbe5553a986e83980916ded2f0b435ef2e1893dfaa29d5a7a790d0eca12180
+       sha256: "93d0ec9dd902d85f326068e6a899487d1f65ffcd5798721a95330b26c8131577"
       url: "https://pub.dev"
     source: hosted
     version: "2.2.3"

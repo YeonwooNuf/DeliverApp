@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:delivery/pages/MenuSearchPage.dart';
 import 'package:delivery/service/sv_favorite.dart';
 import 'package:delivery/service/sv_store.dart';
-import 'package:flutter/material.dart';
 
 class FavoritePage extends StatefulWidget {
   final String userNumber;
@@ -29,29 +29,41 @@ class _FavoritePageState extends State<FavoritePage> {
     try {
       List<Map<String, dynamic>> _fetchedFavoriteData =
           await getUserFavorites(widget.userNumber);
-      //모든 메장 데이터
+      List<Map<String, dynamic>> _fetchedAllStores = await getAllStores();
 
       setState(() {
         allFavorites = _fetchedFavoriteData;
+        allStores = _fetchedAllStores;
 
         favorites = buildFavoritesList(allFavorites);
 
-        print('Fetched favorites: $allFavorites'); // 콘솔에 데이터 출력
+        print('Fetched favorites: $allFavorites');
       });
     } catch (e) {
       print('Error fetching favorites: $e');
     }
   }
 
+// 즐겨찾기에 추가한 매장들만 필터링 해주는 함수
   List<Widget> buildFavoritesList(List<Map<String, dynamic>> favoritesData) {
     return favoritesData.map<Widget>((favorite) {
+      Map<String, dynamic> store = allStores.firstWhere(
+        (store) =>
+            store['storeId'] ==
+            favorite['favoriteStoreId'], // 아이디 값이 같은 매장의 정보들만 필터링
+        orElse: () => {},
+      );
+
       return buildItemWidget(
-        favorite['favorite_storeImg'],
+        favorite['favoriteStoreId'] as int,
         favorite['favoriteStoreName'],
+        favorite['favorite_storeImg'],
         favorite['rating'].toString(),
+        store['storeAddress'] ?? '주소를 찾을 수 없음',
       );
     }).toList();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,31 +74,29 @@ class _FavoritePageState extends State<FavoritePage> {
         title: Text(
           '즐겨찾기',
           style: TextStyle(
-              color: Colors.black,
-              fontFamily: "MangoDdobak",
-              fontWeight: FontWeight.w700), // 텍스트 색상 변경
+            color: Colors.black,
+            fontFamily: "MangoDdobak",
+            fontWeight: FontWeight.w700,
+          ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white, // 배경색 변경
-        elevation: 0, // 그림자 없애기
+        backgroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.05), // 양쪽에 상대적인 패딩 추가
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
         child: Column(
           children: [
-            // 필터 드롭다운을 오른쪽으로 정렬
             Padding(
               padding: EdgeInsets.all(screenWidth * 0.02),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end, // 오른쪽 정렬
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   DropdownButton<String>(
                     value: selectedFilter,
                     underline: Container(),
-                    dropdownColor: Colors.white, // 드롭다운 메뉴 배경색 흰색으로 변경
-                    icon: Icon(Icons.arrow_drop_down,
-                        color: Colors.black), // 드롭다운 버튼의 아이콘 설정
+                    dropdownColor: Colors.white,
+                    icon: Icon(Icons.arrow_drop_down, color: Colors.black),
                     onChanged: (String? newValue) {
                       setState(() {
                         selectedFilter = newValue;
@@ -101,13 +111,13 @@ class _FavoritePageState extends State<FavoritePage> {
                             Text(
                               value,
                               style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: screenWidth * 0.04,
-                                  fontFamily: "MangoDdobak",
-                                  fontWeight: FontWeight.w700),
+                                color: Colors.black,
+                                fontSize: screenWidth * 0.04,
+                                fontFamily: "MangoDdobak",
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                            SizedBox(
-                                width: screenWidth * 0.01), // 아이콘과 텍스트 사이 간격
+                            SizedBox(width: screenWidth * 0.01),
                           ],
                         ),
                       );
@@ -116,81 +126,119 @@ class _FavoritePageState extends State<FavoritePage> {
                 ],
               ),
             ),
-            // 즐겨찾기 목록
             Expanded(
               child: ListView(
-                children: [
-                  ...favorites,
-                ],
+                children: [...favorites],
               ),
             ),
           ],
         ),
       ),
-      backgroundColor: Colors.white, // Scaffold의 배경색을 흰색으로 변경
+      backgroundColor: Colors.white,
     );
   }
 
-  Widget buildItemWidget(String imagePath, String title, String starRating,) {
+  Widget buildItemWidget(
+    int favoriteStoreId,
+    String title,
+    String imagePath,
+    String starRating,
+    String storeAddress,
+  ) {
     return GestureDetector(
-        onTap: () {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => MenuSearchPage(
-          //               storeImage_URL: storeImage_URL,
-          //               storeName: storeName,
-          //               storeId: storeId,
-          //               storeAddress: storeAddress,
-          //             )));
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey[200], // 배경색을 회색 계통으로 변경
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MenuSearchPage(
+              storeImage_URL: imagePath,
+              storeName: title,
+              storeId: favoriteStoreId,
+              storeAddress: storeAddress,
+            ),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.grey[200],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Row(
+              children: [
+                Image.network(
+                  imagePath,
+                  width: 110,
+                  height: 90,
+                  fit: BoxFit.contain,
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Row(
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.network(
-                        imagePath,
-                        width: 110,
-                        height: 90,
-                        fit: BoxFit.contain,
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              title,
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Row(
-                              children: List.generate(
-                                int.parse(starRating),
-                                (index) => Icon(Icons.star,
-                                    color: Colors.yellow, size: 20),
-                              ),
-                            ),
-                          ],
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: Colors.black,
                         ),
+                      ),
+                      Text(
+                        storeAddress,
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          ...List.generate(
+                            int.parse(starRating),
+                            (index) => Icon(Icons.star,
+                                color: Colors.yellow, size: 20),
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            starRating,
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
+                IconButton(
+                  icon: Icon(Icons.delete, color: Colors.black),
+                  onPressed: () {
+                    deleteFavorite(int.parse(widget.userNumber), favoriteStoreId);
+                    setState(() {
+                      allFavorites.removeWhere((favorite) => favorite['favoriteStoreId'] == favoriteStoreId);
+                      favorites = buildFavoritesList(allFavorites);
+                      
+                    });
+                    
+                  },
+                ),
+              ],
+            ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
