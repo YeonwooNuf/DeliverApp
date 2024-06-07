@@ -57,10 +57,12 @@ class AddressInfoState extends State<AddressInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('주소 상세 정보',
-        style: TextStyle(
-        fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
-      ),),
+        title: Text(
+          '주소 상세 정보',
+          style: TextStyle(
+            fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
+          ),
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -78,9 +80,11 @@ class AddressInfoState extends State<AddressInfo> {
             TextField(
               decoration: InputDecoration(
                 hintText: '상세주소 (아파트/동/호)',
+                hintStyle:
+                    TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),
               ),
               style: TextStyle(
-            fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
+                fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
               ),
               onChanged: (value) {
                 setState(() {
@@ -92,6 +96,8 @@ class AddressInfoState extends State<AddressInfo> {
             TextField(
               decoration: InputDecoration(
                 hintText: '길 안내 (예: 1층에 메가커피가 있는 건물, 공동현관 비밀번호 #1234)',
+                hintStyle:
+                    TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),
               ),
               style: TextStyle(
                 fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
@@ -108,6 +114,8 @@ class AddressInfoState extends State<AddressInfo> {
                 controller: _aliasController,
                 decoration: InputDecoration(
                   hintText: '주소의 별칭을 입력해주세요',
+                  hintStyle: TextStyle(
+                      color: Colors.grey, fontWeight: FontWeight.w700),
                 ),
                 style: TextStyle(
                   fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
@@ -251,14 +259,16 @@ class AddressInfoState extends State<AddressInfo> {
                               .removeHomeAddress();
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .setHomeAddress(combinedAddress);
-                          Provider.of<ItemListNotifier>(context, listen: false).setSelectedIndex(-2); // 집 주소 인덱스 설정
+                          Provider.of<ItemListNotifier>(context, listen: false)
+                              .setSelectedIndex(-2); // 집 주소 인덱스 설정
                         } else if (_workColor == Colors.black12) {
                           print('선택된 버튼: 회사');
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .removeWorkAddress();
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .setWorkAddress(combinedAddress);
-                          Provider.of<ItemListNotifier>(context, listen: false).setSelectedIndex(-1); // 회사 주소 인덱스 설정
+                          Provider.of<ItemListNotifier>(context, listen: false)
+                              .setSelectedIndex(-1); // 회사 주소 인덱스 설정
                         } else {
                           print('선택된 버튼: 기타');
                           final alias =
@@ -266,8 +276,7 @@ class AddressInfoState extends State<AddressInfo> {
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .addAddress(combinedAddress);
                         }
-
-                        showDialog(
+                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
@@ -277,19 +286,20 @@ class AddressInfoState extends State<AddressInfo> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => AddressRegisterPage(),
-                                      ),
-                                      ModalRoute.withName('/'),
-                                    );
+                                    
                                   },
                                   child: Text("확인"),
                                 ),
-                              ],
+                              ]
                             );
-                          },
+                         
+                         
+                          });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddressRegisterPage(),
+                          ),
                         );
                       }
                     },

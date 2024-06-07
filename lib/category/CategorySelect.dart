@@ -415,12 +415,12 @@ class _HeartIconButtonState extends State<HeartIconButton> {
           ? Icon(Icons.favorite, color: Colors.red)
           : Icon(Icons.favorite_border, color: Colors.white),
       onPressed: () async {
-        // 상태를 먼저 변경합
+        // 상태를 먼저 변경
         setState(() {
           isFilled = !isFilled;
         });
 
-        // 상태 변경 후, 즐겨찾기 추가 또는 삭제 로직을 처리
+        // 상태 변경 후, 즐겨찾기 추가 또는 삭제 
         if (isFilled) {
           // 즐겨찾기를 추가하는 로직
           final favorite = FavoriteDto(
@@ -428,7 +428,7 @@ class _HeartIconButtonState extends State<HeartIconButton> {
             favorite_storeId: widget.storeId,
             favorite_storeImg: widget.storeImg,
             favorite_storeName: widget.storeName,
-            rating: '5.0', // 리뷰 페이지 만들면 변수 갖다 박아주세요 ^^
+            rating: '5', // 리뷰 페이지 만들면 변수 갖다 박아주세요 ^^
           );
 
           print('서버로 전송하는 favorite데이터: $favorite');
@@ -445,7 +445,21 @@ class _HeartIconButtonState extends State<HeartIconButton> {
             print('삭제 실패: $e');
           }
         }
+
+        // 즐겨찾기 개수를 업데이트
+        updateFavoritesCount(isFilled);
       },
     );
+  }
+
+  // 즐겨찾기 개수를 업데이트하는 함수 (추가된 부분)
+  void updateFavoritesCount(bool isFilled) async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentFavoritesCount = prefs.getInt('favoritesCount') ?? 0;
+    setState(() {
+      // 하트가 채워져 있는 경우에만 즐겨찾기 개수를 증가
+      final newFavoritesCount = isFilled ? currentFavoritesCount + 1 : currentFavoritesCount - 1;
+      prefs.setInt('favoritesCount', newFavoritesCount);
+    });
   }
 }

@@ -102,7 +102,9 @@ class _PaymentPageState extends State<PaymentPage> {
     double payKoreanTotalPrice =
         getKoreanTotalPrice(); // 연우야 이게 결제api쓸때 사용할 한국돈 결제 금액임
 
+
     print('한국 돈 결제 금액: $payKoreanTotalPrice');
+
 
     double payTotalPrice =
         calculateTotalPriceWithTtb(payKoreanTotalPrice, dropdownValue);
