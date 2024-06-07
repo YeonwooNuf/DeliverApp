@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:delivery/pages/MenuSearchPage.dart';
 import 'package:delivery/service/sv_favorite.dart';
 import 'package:delivery/service/sv_store.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FavoritePage extends StatefulWidget {
   final String userNumber;
@@ -39,12 +40,16 @@ class _FavoritePageState extends State<FavoritePage> {
 
         print('Fetched favorites: $allFavorites');
       });
+
+      // 즐겨찾기 수를 SharedPreferences에 저장
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('favoritesCount', allFavorites.length);
     } catch (e) {
       print('Error fetching favorites: $e');
     }
   }
 
-// 즐겨찾기에 추가한 매장들만 필터링 해주는 함수
+  // 즐겨찾기에 추가한 매장들만 필터링 해주는 함수
   List<Widget> buildFavoritesList(List<Map<String, dynamic>> favoritesData) {
     return favoritesData.map<Widget>((favorite) {
       Map<String, dynamic> store = allStores.firstWhere(
@@ -63,7 +68,6 @@ class _FavoritePageState extends State<FavoritePage> {
       );
     }).toList();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -195,13 +199,6 @@ class _FavoritePageState extends State<FavoritePage> {
                           color: Colors.black,
                         ),
                       ),
-                      Text(
-                        storeAddress,
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.black54,
-                        ),
-                      ),
                       Row(
                         children: [
                           ...List.generate(
@@ -224,14 +221,21 @@ class _FavoritePageState extends State<FavoritePage> {
                 ),
                 IconButton(
                   icon: Icon(Icons.delete, color: Colors.black),
-                  onPressed: () {
-                    deleteFavorite(int.parse(widget.userNumber), favoriteStoreId);
+                  onPressed: () async {
+                    await deleteFavorite(
+                        int.parse(widget.userNumber), favoriteStoreId);
                     setState(() {
-                      allFavorites.removeWhere((favorite) => favorite['favoriteStoreId'] == favoriteStoreId);
+                      allFavorites.removeWhere((favorite) =>
+                          favorite['favoriteStoreId'] ==
+                          favoriteStoreId); // 클릭하면 바로 상태 업데이트
                       favorites = buildFavoritesList(allFavorites);
-                      
                     });
-                    
+
+                    // 즐겨찾기 수를 SharedPreferences에 저장
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setInt('favoritesCount', allFavorites.length);
+
+                   
                   },
                 ),
               ],
