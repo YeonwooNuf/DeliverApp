@@ -61,7 +61,7 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
         elevation: 0, // 그림자 제거
       ),
       extendBodyBehindAppBar: true, // AppBar를 body 뒤에 확장하여 배경 이미지를 덮도록 함
-      body: Container(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Stack(
@@ -79,7 +79,7 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
                 ),
                 Positioned(
                   top: MediaQuery.of(context).size.height *
-                      0.25, // 화면의 높이 20%에 위치
+                      0.25, // 화면의 높이 25%에 위치
                   left: MediaQuery.of(context).size.width *
                       0.04, // 왼쪽 여백을 화면의 너비를 기준으로 설정
                   right: MediaQuery.of(context).size.width *
@@ -95,8 +95,9 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
                           blurRadius: 5.0,
                         )
                       ],
-                      borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-                      color: Colors.white,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(15.0)),
+                      color: Colors.white70,
                     ),
                     child: Center(
                       child: Text(
@@ -114,83 +115,106 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
               ],
             ),
             Container(
-              height: MediaQuery.of(context).size.height * 0.1, // 화면의 높이 30%
-              color: Colors.blue,
-              child: Text('${widget.storeAddress}'),
-            ),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(children: [
-                  _ReviewBox(context),
-                  SizedBox(width: 20), // 간격 추가
-                  _ReviewBox(context),
-                  SizedBox(width: 20), // 간격 추가
-                  _ReviewBox(context), //여기에 리뷰 리스트 뜨게 해야함 리뷰함수 만들어서 구현 ㄱㄱ
-                ]),
+              height: MediaQuery.of(context).size.height * 0.05, // 화면의 높이 5%
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: Colors.black, width: 2.0), // 굵은 검은색 테두리 추가
+                color: Colors.transparent, // 내부 배경색을 투명하게 설정
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(right: 16.0), // 오른쪽 여백 추가
+                child: Align(
+                  child: Text(
+                    '${widget.storeAddress}',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w300,
+                        color: Color.fromARGB(221, 33, 33, 33)),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
+            SizedBox(height: 20),
+            // 리뷰 텍스트의 위치를 약간 띄움
+            Padding(
+              padding: EdgeInsets.only(left: 16.0), // 왼쪽 여백 추가
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.03,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '리뷰',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            Padding(
+  padding: EdgeInsets.all(20),
+  child: Container(
+    height: MediaQuery.of(context).size.height * 0.15, // 리뷰 박스 높이 설정
+    child: ListView.builder(
+      scrollDirection: Axis.horizontal, // 가로 스크롤
+      itemCount: 3, // 리뷰 박스 개수 (예시로 3개)
+      itemBuilder: (context, index) {
+        return Row(
+          children: [
+            _ReviewBox(context),
+            SizedBox(width: 20), // 간격 추가
+          ],
+        );
+      },
+    ),
+  ),
+),
+            SizedBox(height: 20),
             Container(
-              height: MediaQuery.of(context).size.height * 0.04,
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 2.0)),
+              height: MediaQuery.of(context).size.height * 0.06,
               width: MediaQuery.of(context).size.width,
               child: Center(
                 child: Text(
                   "전체 메뉴",
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),
-            Stack(
-              children: [
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        color: Colors.white,
-                        child: ListView.builder(
-                          itemCount: _filteredMenus.length,
-                          itemBuilder: (context, index) {
-                            return _MenuBox(_filteredMenus[index]);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: _isPaymentButtonVisible
-                      ? GestureDetector(
-                          onTap: () {
-                            // 결제하기 버튼 클릭 시 실행할 기능 추가
-                            _goToPaymentPage(selectedMenus);
-                          },
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.1,
-                            color: Colors.blue,
-                            child: Center(
-                              child: Text(
-                                '${_totalPrice}원 결제하기',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      : SizedBox(), // 결제하기 버튼이 보이지 않을 때는 빈 SizedBox를 반환하여 영역을 차지하지 않도록 함
-                ),
-              ],
+            SizedBox(height: 8.0),
+            ListView.builder(
+              physics:
+                  NeverScrollableScrollPhysics(), // Disable scrolling of the ListView
+              shrinkWrap: true, // Take only necessary space
+              itemCount: _filteredMenus.length,
+              itemBuilder: (context, index) {
+                return _MenuBox(_filteredMenus[index]);
+              },
             ),
           ],
         ),
       ),
+      bottomNavigationBar: _isPaymentButtonVisible
+          ? GestureDetector(
+              onTap: () {
+                // 결제하기 버튼 클릭 시 실행할 기능 추가
+                _goToPaymentPage(selectedMenus);
+              },
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.1,
+                color: Colors.blue,
+                child: Center(
+                  child: Text(
+                    '${_totalPrice}원 결제하기',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          : SizedBox(), // 결제하기 버튼이 보이지 않을 때는 빈 SizedBox를 반환하여 영역을 차지하지 않도록 함
     );
   }
 
@@ -211,8 +235,8 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
             children: [
               Image.network(
                 menu['productImg'],
-                width: 50,
-                height: 50,
+                width: 70,
+                height: 70,
                 fit: BoxFit.cover,
               ),
               SizedBox(width: 10),
@@ -222,11 +246,11 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
                 children: [
                   Text(
                     menu['productName'],
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text(
                     '${menu['price']} 원',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                 ],
               ),
@@ -241,122 +265,119 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
   List<Map<String, dynamic>> selectedMenus = [];
 
   void _showQuantityDialog(Map<String, dynamic> menu) {
-  int quantity = 1; // 초기 수량
+    int quantity = 1; // 초기 수량
 
-  showDialog(
-    context: context,
-    builder: (context) {
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return AlertDialog(
-            title: Text(
-              '수량 선택',
-              style: TextStyle(color: Colors.black),
-            ),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.remove_circle_outline),
-                color: Colors.black,
-                onPressed: () {
-                  setState(() {
-                    if (quantity > 1) {
-                      quantity--;
-                    }
-                  });
-                },
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text(
+                '수량 선택',
+                style: TextStyle(color: Colors.black),
               ),
-              Text(
-                quantity.toString(),
-                style: TextStyle(fontSize: 18),
-              ),
-              IconButton(
-                icon: Icon(Icons.add_circle_outline),
-                color: Colors.black,
-                onPressed: () {
-                  setState(() {
-                    if (quantity < 10) {
-                      quantity++;
-                    }
-                  });
-                },
-              ),
-              TextButton(
-                onPressed: () {
-                  int price = menu['price'] as int;
-                  int totalPrice = quantity * price; // 선택된 수량에 메뉴 가격을 곱한 값
-
-                  // 이미 선택된 메뉴가 리스트에 있는지 확인
-                  bool isExist = false;
-                  for (var item in selectedMenus) {
-                    if (item['productName'] == menu['productName']) {
-                      isExist = true;
-                      item['quantity'] += quantity; // 기존 수량에 추가
-                      item['totalPrice'] += totalPrice; // 총 가격 업데이트
-                      break;
-                    }
-                  }
-
-                  // 선택된 메뉴가 리스트에 없는 경우, 새로 추가
-                  if (!isExist) {
-                    selectedMenus.add({
-                      'productName': menu['productName'],
-                      'price': price,
-                      'quantity': quantity,
-                      'totalPrice': totalPrice,
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.remove_circle_outline),
+                  color: Colors.black,
+                  onPressed: () {
+                    setState(() {
+                      if (quantity > 1) {
+                        quantity--;
+                      }
                     });
-                  }
-
-                  // 다이얼로그 닫기 및 총합 업데이트
-                  int totalSum = selectedMenus.fold(0, (sum, item) => sum + item['totalPrice']as int);
-                  Navigator.of(context).pop(totalSum);
-                },
-                child: Text(
-                  '확인',
-                  style: TextStyle(color: Colors.black),
+                  },
                 ),
-              ),
-            ],
-          );
-        },
-      );
-    },
-  ).then((totalSum) {
-    if (totalSum != null) {
-      setState(() {
-        _isPaymentButtonVisible = true; // 결제하기 버튼을 보이도록 설정
-        _totalPrice = totalSum; // 선택된 메뉴의 총 가격을 저장
-      });
-    }
-  });
-}
+                Text(
+                  quantity.toString(),
+                  style: TextStyle(fontSize: 18),
+                ),
+                IconButton(
+                  icon: Icon(Icons.add_circle_outline),
+                  color: Colors.black,
+                  onPressed: () {
+                    setState(() {
+                      if (quantity < 10) {
+                        quantity++;
+                      }
+                    });
+                  },
+                ),
+                TextButton(
+                  onPressed: () {
+                    int price = menu['price'] as int;
+                    int totalPrice = quantity * price; // 선택된 수량에 메뉴 가격을 곱한 값
 
+                    // 이미 선택된 메뉴가 리스트에 있는지 확인
+                    bool isExist = false;
+                    for (var item in selectedMenus) {
+                      if (item['productName'] == menu['productName']) {
+                        isExist = true;
+                        item['quantity'] += quantity; // 기존 수량에 추가
+                        item['totalPrice'] += totalPrice; // 총 가격 업데이트
+                        break;
+                      }
+                    }
 
-  // 결제하기 버튼 클릭 시 실행되는 함수
-  void _goToPaymentPage(List<Map<String, dynamic>> selectedMenus) async {
-  // PaymentPage로 이동하여 데이터 전달
-  final result = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => PaymentPage(
-        selectedStoreId: widget.storeId,
-        selectedStoreName: widget.storeName,
-        selectedMenus: selectedMenus,
-        storeAddress: widget.storeAddress,
-      ),
-    ),
-  ).then((result){
-    // 결과값을 확인하고 페이지를 새로고침
-  if (result == true) {
-    setState(() {
-      _isPaymentButtonVisible = false;
-      _totalPrice = 0;
+                    // 선택된 메뉴가 리스트에 없는 경우, 새로 추가
+                    if (!isExist) {
+                      selectedMenus.add({
+                        'productName': menu['productName'],
+                        'price': price,
+                        'quantity': quantity,
+                        'totalPrice': totalPrice,
+                      });
+                    }
+
+                    // 다이얼로그 닫기 및 총합 업데이트
+                    int totalSum = selectedMenus.fold(
+                        0, (sum, item) => sum + item['totalPrice'] as int);
+                    Navigator.of(context).pop(totalSum);
+                  },
+                  child: Text(
+                    '확인',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    ).then((totalSum) {
+      if (totalSum != null) {
+        setState(() {
+          _isPaymentButtonVisible = true; // 결제하기 버튼을 보이도록 설정
+          _totalPrice = totalSum; // 선택된 메뉴의 총 가격을 저장
+        });
+      }
     });
   }
 
-  });
-
-}
-
+  // 결제하기 버튼 클릭 시 실행되는 함수
+  void _goToPaymentPage(List<Map<String, dynamic>> selectedMenus) async {
+    // PaymentPage로 이동하여 데이터 전달
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentPage(
+          selectedStoreId: widget.storeId,
+          selectedStoreName: widget.storeName,
+          selectedMenus: selectedMenus,
+          storeAddress: widget.storeAddress,
+        ),
+      ),
+    ).then((result) {
+      // 결과값을 확인하고 페이지를 새로고침
+      if (result == true) {
+        setState(() {
+          _isPaymentButtonVisible = false;
+          _totalPrice = 0;
+        });
+      }
+    });
+  }
 
   //리뷰박스 ui
   Widget _ReviewBox(BuildContext context) {

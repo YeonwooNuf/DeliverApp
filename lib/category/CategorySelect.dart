@@ -198,42 +198,46 @@ class _JapaneseState extends State<CategorySelect> {
 
   // 이미지 클릭 메서드
   Widget _Image(String storeImage_URL, String storeName, int storeId,
-      String storeAddress, String userNumber) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MenuSearchPage(
-                    storeImage_URL: storeImage_URL,
-                    storeName: storeName,
-                    storeId: storeId,
-                    storeAddress: storeAddress,
-                  ),
+    String storeAddress, String userNumber) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MenuSearchPage(
+                  storeImage_URL: storeImage_URL,
+                  storeName: storeName,
+                  storeId: storeId,
+                  storeAddress: storeAddress,
                 ),
-              );
-            },
-            child: Stack(
-              children: [
-                Container(
-                  height: 150,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+              ),
+            );
+          },
+          child: Stack(
+            children: [
+              Container(
+                height: 180,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 15,
+                      offset: Offset(5, 10),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color.fromARGB(66, 13, 13, 13), width: 3), // 얇은 회색 테두리 추가
+                    ),
                     child: Image.network(
                       storeImage_URL,
                       fit: BoxFit.cover,
@@ -266,35 +270,36 @@ class _JapaneseState extends State<CategorySelect> {
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: HeartIconButton(
-                    userNumber: userNumber,
-                    storeId: '$storeId',
-                    storeImg: storeImage_URL,
-                    storeName: storeName,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 8), // 이미지와 매장명 간의 간격 조절
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              storeName,
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w700,
-                fontSize: 20,
               ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: HeartIconButton(
+                  userNumber: userNumber,
+                  storeId: '$storeId',
+                  storeImg: storeImage_URL,
+                  storeName: storeName,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            storeName,
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
+              fontSize: 20,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
 // 이미지 위젯들을 반환하는 메서드
   Widget _buildImagesForCategory(int categoryIndex, String userNumber) {
@@ -415,12 +420,12 @@ class _HeartIconButtonState extends State<HeartIconButton> {
           ? Icon(Icons.favorite, color: Colors.red)
           : Icon(Icons.favorite_border, color: Colors.white),
       onPressed: () async {
-        // 상태를 먼저 변경합
+        // 상태를 먼저 변경
         setState(() {
           isFilled = !isFilled;
         });
 
-        // 상태 변경 후, 즐겨찾기 추가 또는 삭제 로직을 처리
+        // 상태 변경 후, 즐겨찾기 추가 또는 삭제 
         if (isFilled) {
           // 즐겨찾기를 추가하는 로직
           final favorite = FavoriteDto(
@@ -428,7 +433,7 @@ class _HeartIconButtonState extends State<HeartIconButton> {
             favorite_storeId: widget.storeId,
             favorite_storeImg: widget.storeImg,
             favorite_storeName: widget.storeName,
-            rating: '5.0', // 리뷰 페이지 만들면 변수 갖다 박아주세요 ^^
+            rating: '5', // 리뷰 페이지 만들면 변수 갖다 박아주세요 ^^
           );
 
           print('서버로 전송하는 favorite데이터: $favorite');
@@ -445,7 +450,21 @@ class _HeartIconButtonState extends State<HeartIconButton> {
             print('삭제 실패: $e');
           }
         }
+
+        // 즐겨찾기 개수를 업데이트
+        updateFavoritesCount(isFilled);
       },
     );
+  }
+
+  // 즐겨찾기 개수를 업데이트하는 함수 (추가된 부분)
+  void updateFavoritesCount(bool isFilled) async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentFavoritesCount = prefs.getInt('favoritesCount') ?? 0;
+    setState(() {
+      // 하트가 채워져 있는 경우에만 즐겨찾기 개수를 증가
+      final newFavoritesCount = isFilled ? currentFavoritesCount + 1 : currentFavoritesCount - 1;
+      prefs.setInt('favoritesCount', newFavoritesCount);
+    });
   }
 }
