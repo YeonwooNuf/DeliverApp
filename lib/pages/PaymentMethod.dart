@@ -42,24 +42,6 @@ class TotalPayment extends StatelessWidget {
                 onPressed: () => bootpayTest(context),
                 child: const Text('통합결제 테스트', style: TextStyle(fontSize: 16.0)),
               ),
-              // Consumer<ItemListNotifier>(
-              //   builder: (context, itemListNotifier, child) {
-              //     if (itemListNotifier.products.isEmpty) {
-              //       return CircularProgressIndicator();
-              //     }
-              //     return ListView.builder(
-              //       shrinkWrap: true,
-              //       itemCount: itemListNotifier.products.length,
-              //       itemBuilder: (context, index) {
-              //         Product product = itemListNotifier.products[index];
-              //         return ListTile(
-              //           title: Text(product.productName),
-              //           subtitle: Text('Price: ${product.price}, Qty: ${product.qty}'),
-              //         );
-              //       },
-              //     );
-              //   },
-              // ),
             ],
           ),
         ),
@@ -120,8 +102,6 @@ class TotalPayment extends StatelessWidget {
     final itemListNotifier =
         Provider.of<ItemListNotifier>(context, listen: false);
 
-    int totalPrice = 0;
-
     payload.webApplicationId = webApplicationId; // web application id
     payload.androidApplicationId =
         androidApplicationId; // android application id
@@ -165,5 +145,4 @@ class TotalPayment extends StatelessWidget {
     payload.extra = extra;
     return payload;
   }
-
 }

@@ -466,5 +466,4 @@ class _HeartIconButtonState extends State<HeartIconButton> {
       final newFavoritesCount = isFilled ? currentFavoritesCount + 1 : currentFavoritesCount - 1;
       prefs.setInt('favoritesCount', newFavoritesCount);
     });
-  }
 }
