@@ -198,42 +198,46 @@ class _JapaneseState extends State<CategorySelect> {
 
   // 이미지 클릭 메서드
   Widget _Image(String storeImage_URL, String storeName, int storeId,
-      String storeAddress, String userNumber) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MenuSearchPage(
-                    storeImage_URL: storeImage_URL,
-                    storeName: storeName,
-                    storeId: storeId,
-                    storeAddress: storeAddress,
-                  ),
+    String storeAddress, String userNumber) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MenuSearchPage(
+                  storeImage_URL: storeImage_URL,
+                  storeName: storeName,
+                  storeId: storeId,
+                  storeAddress: storeAddress,
                 ),
-              );
-            },
-            child: Stack(
-              children: [
-                Container(
-                  height: 150,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+              ),
+            );
+          },
+          child: Stack(
+            children: [
+              Container(
+                height: 180,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 15,
+                      offset: Offset(5, 10),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color.fromARGB(66, 13, 13, 13), width: 3), // 얇은 회색 테두리 추가
+                    ),
                     child: Image.network(
                       storeImage_URL,
                       fit: BoxFit.cover,
@@ -266,35 +270,36 @@ class _JapaneseState extends State<CategorySelect> {
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 10,
-                  right: 10,
-                  child: HeartIconButton(
-                    userNumber: userNumber,
-                    storeId: '$storeId',
-                    storeImg: storeImage_URL,
-                    storeName: storeName,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 8), // 이미지와 매장명 간의 간격 조절
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              storeName,
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w700,
-                fontSize: 20,
               ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: HeartIconButton(
+                  userNumber: userNumber,
+                  storeId: '$storeId',
+                  storeImg: storeImage_URL,
+                  storeName: storeName,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 8),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            storeName,
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w700,
+              fontSize: 20,
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
 // 이미지 위젯들을 반환하는 메서드
   Widget _buildImagesForCategory(int categoryIndex, String userNumber) {
@@ -461,5 +466,4 @@ class _HeartIconButtonState extends State<HeartIconButton> {
       final newFavoritesCount = isFilled ? currentFavoritesCount + 1 : currentFavoritesCount - 1;
       prefs.setInt('favoritesCount', newFavoritesCount);
     });
-  }
 }
