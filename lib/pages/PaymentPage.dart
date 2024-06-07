@@ -1,6 +1,8 @@
 import 'package:delivery/pages/PaymentMethod.dart';
 import 'package:delivery/service/sv_ExchangeRate.dart';
 import 'package:flutter/material.dart';
+import 'package:delivery/pages/address/AddressChange.dart';
+import 'package:provider/provider.dart';
 
 class PaymentPage extends StatefulWidget {
   final int selectedStoreId;
@@ -99,10 +101,16 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     double payKoreanTotalPrice =
         getKoreanTotalPrice(); // 연우야 이게 결제api쓸때 사용할 한국돈 결제 금액임
+
+
     print('한국 돈 결제 금액: $payKoreanTotalPrice');
+
+
     double payTotalPrice =
         calculateTotalPriceWithTtb(payKoreanTotalPrice, dropdownValue);
     final screenWidth = MediaQuery.of(context).size.width;
+
+    String? addressType = Provider.of<ItemListNotifier>(context).addressType;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -136,7 +144,7 @@ class _PaymentPageState extends State<PaymentPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                '집 (으)로 배달',
+                '${addressType} (으)로 배달',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
@@ -314,7 +322,7 @@ class _PaymentPageState extends State<PaymentPage> {
           children: [
             ElevatedButton(
               onPressed: () {
-                TotalPayment().bootpayTest(context);
+                TotalPayment(payTotalPrice: payTotalPrice, selectedStoreName: widget.selectedStoreName,).bootpayTest(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
