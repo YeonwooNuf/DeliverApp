@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,12 +11,14 @@ class PaymentPage extends StatefulWidget {
   final String selectedStoreName;
   final List<Map<String, dynamic>> selectedMenus;
   final String storeAddress;
+  final String userNumber;
 
   PaymentPage({
     required this.selectedStoreId,
     required this.selectedStoreName,
     required this.selectedMenus,
     required this.storeAddress,
+    required this.userNumber,
   });
 
   @override
@@ -48,14 +51,21 @@ class _PaymentPageState extends State<PaymentPage> {
 
 void _sendOrderToServer() async {
     int total = getTotalPrice();
-    List<String> menuNames = widget.selectedMenus.map((menu) => menu['productName'].toString()).toList();
+    List<String> productNames = widget.selectedMenus
+    .map((menu) => menu['productName'] as String?) // 'productName'이 없을 경우 null 반환
+    .where((productName) => productName != null) // null이 아닌 값만 필터링
+    .cast<String>() // null이 없는 것으로 보장하기 위해 명시적으로 형변환
+    .toList();
+
+     print('Product Names: $productNames'); // Product Names 출력
     // 서버로 전송할 데이터
     var orderData = {
       'storeId': widget.selectedStoreId,
       'storeName': widget.selectedStoreName,
-      'menus': widget.selectedMenus,
+      'productNames': productNames,
       'storeAddress': widget.storeAddress,
       'totalPrice': total,
+      'userNumber': widget.userNumber,
       // 기타 필요한 데이터 추가
     };
 

@@ -7,12 +7,14 @@ class MenuSearchPage extends StatefulWidget {
   final String storeName;
   final int storeId;
   final String storeAddress;
+  final String userNumber;
 
   MenuSearchPage(
       {required this.storeImage_URL,
       required this.storeName,
       required this.storeId,
-      required this.storeAddress});
+      required this.storeAddress,
+      required this.userNumber,});
 
   @override
   _MenuSearchPageState createState() => _MenuSearchPageState();
@@ -342,6 +344,7 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
         selectedStoreName: widget.storeName,
         selectedMenus: selectedMenus,
         storeAddress: widget.storeAddress,
+        userNumber: widget.userNumber,
       ),
     ),
   ).then((result){

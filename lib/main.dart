@@ -1,3 +1,4 @@
+import 'package:delivery/pages/PaymentPage.dart';
 import 'package:delivery/pages/address/AddressInfo.dart';
 import 'package:delivery/pages/address/AddressMapPage.dart';
 import 'package:delivery/pages/address/AddressRegisterPage.dart';
@@ -29,7 +30,6 @@ class MainApp extends StatelessWidget {
   final String phone;
   final String userNumber;
 
-
   MainApp({required this.name, required this.phone, required this.userNumber, }); // 생성자
 
   @override
@@ -45,7 +45,7 @@ class MainApp extends StatelessWidget {
           children: <Widget>[
             HomePage(userNumber: userNumber,),
             FavoritePage(userNumber: userNumber,),
-            OrderHistoryPage(),
+            OrderHistoryPage(userNumber: userNumber,),
             MyPage(name: name, phone: phone),
           ],
         ),
