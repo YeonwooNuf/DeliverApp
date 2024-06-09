@@ -82,19 +82,33 @@ class _MyAppState extends State<MyApp> {
             userNumber: args['userNumber'],
           );
         },
-        '/addressMap': (context) => AddressMapPage(),
-        '/addressRegister': (context) {
-          final address = ModalRoute.of(context)?.settings.arguments as String?;
-          if (address == null) {
+        '/addressMap': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          final userNumber = args?['userNumber']; // userNumber 가져오기
+          if (userNumber == null) {
             return Scaffold(
               body: Center(
-                child: Text('No address provided'),
+                child: Text('No user number provided'),
               ),
             );
           }
-          return AddressInfo(searchedAddress: address);
+          return AddressMapPage(userNumber: userNumber);
+        },
+        '/addressRegister': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          final userNumber = args?['userNumber']; // userNumber 가져오기
+          final address = args?['address'] as String?;
+          if (address == null || userNumber == null) {
+            return Scaffold(
+              body: Center(
+                child: Text('No address or user number provided'),
+              ),
+            );
+          }
+          return AddressInfo(searchedAddress: address, userNumber: userNumber);
         },
       },
     );
   }
 }
+

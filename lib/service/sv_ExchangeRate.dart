@@ -53,7 +53,7 @@ Future<List<ExchangeRate>> getExchangeRate() async {
 
   if (response.statusCode == 200) {
     final List<dynamic> responseData = json.decode(response.body);
-    print('Response data: $responseData'); // 서버로부터 받은 응답 출력
+    //print('Response data: $responseData'); // 서버로부터 받은 응답 출력
     final List<ExchangeRate> exchangeRates = responseData.map((data) {
       return ExchangeRate.fromJson(data);
     }).toList();
@@ -65,13 +65,13 @@ Future<List<ExchangeRate>> getExchangeRate() async {
 }
 
 
-void main() async {
-  try {
-    final List<ExchangeRate> exchangeRates = await getExchangeRate();
-    for (var exchangeRate in exchangeRates) {
-      print('Currency: ${exchangeRate.curName}, TTB: ${exchangeRate.ttb}, TTS: ${exchangeRate.tts}');
-    }
-  } catch (e) {
-    print('Error: $e');
-  }
-}
+// void main() async {
+//   try {
+//     final List<ExchangeRate> exchangeRates = await getExchangeRate();
+//     // for (var exchangeRate in exchangeRates) {
+//     //   print('Currency: ${exchangeRate.curName}, TTB: ${exchangeRate.ttb}, TTS: ${exchangeRate.tts}');
+//     // }
+//   } catch (e) {
+//     print('Error: $e');
+//   }
+// }

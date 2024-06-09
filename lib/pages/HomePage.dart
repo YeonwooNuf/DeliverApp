@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AddressRegisterPage(),
+                      builder: (context) => AddressRegisterPage(userNumber: widget.userNumber,),
                     ),
                   );
                 },

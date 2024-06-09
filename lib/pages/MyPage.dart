@@ -209,7 +209,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddressManagePage()),
+                          builder: (context) => AddressManagePage(userNumber: widget.userNumber,)),
                     );
                   },
                 ),
