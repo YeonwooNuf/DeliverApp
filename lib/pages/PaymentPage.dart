@@ -1,3 +1,6 @@
+
+import 'dart:convert';
+import 'dart:html';
 import 'package:delivery/pages/PaymentMethod.dart';
 import 'package:delivery/service/sv_ExchangeRate.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,7 @@ class PaymentPage extends StatefulWidget {
   final String selectedStoreName;
   final List<Map<String, dynamic>> selectedMenus;
   final String storeAddress;
+  final String userNumber;
   List<ExchangeRate> exchangeRates = []; // 환율 데이터를 담을 리스트
 
   PaymentPage({
@@ -16,6 +20,7 @@ class PaymentPage extends StatefulWidget {
     required this.selectedStoreName,
     required this.selectedMenus,
     required this.storeAddress,
+    required this.userNumber,
   });
 
   @override
@@ -97,6 +102,25 @@ class _PaymentPageState extends State<PaymentPage> {
     });
   }
 
+void _sendOrderToServer() async {
+    int total = getTotalPrice();
+    List<String> productNames = widget.selectedMenus
+    .map((menu) => menu['productName'] as String?) // 'productName'이 없을 경우 null 반환
+    .where((productName) => productName != null) // null이 아닌 값만 필터링
+    .cast<String>() // null이 없는 것으로 보장하기 위해 명시적으로 형변환
+    .toList();
+
+     print('Product Names: $productNames'); // Product Names 출력
+    // 서버로 전송할 데이터
+    var orderData = {
+      'storeId': widget.selectedStoreId,
+      'storeName': widget.selectedStoreName,
+      'productNames': productNames,
+      'storeAddress': widget.storeAddress,
+      'totalPrice': total,
+      'userNumber': widget.userNumber,
+      // 기타 필요한 데이터 추가
+    };
   @override
   Widget build(BuildContext context) {
     double payKoreanTotalPrice =

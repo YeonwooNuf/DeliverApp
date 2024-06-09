@@ -198,22 +198,24 @@ class _JapaneseState extends State<CategorySelect> {
 
   // 이미지 클릭 메서드
   Widget _Image(String storeImage_URL, String storeName, int storeId,
-    String storeAddress, String userNumber) {
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MenuSearchPage(
-                  storeImage_URL: storeImage_URL,
-                  storeName: storeName,
-                  storeId: storeId,
-                  storeAddress: storeAddress,
+      String storeAddress, String userNumber) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MenuSearchPage(
+                    storeImage_URL: storeImage_URL,
+                    storeName: storeName,
+                    storeId: storeId,
+                    storeAddress: storeAddress,
+                    userNumber: widget.userNumber,
+                  ),
                 ),
               ),
             );

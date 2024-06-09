@@ -3,6 +3,9 @@ import 'package:delivery/pages/SearchedPage.dart';
 
 class SearchPage extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController(); // TextEditingController 생성
+  final String userNumber; // Add userNumber parameter
+
+  SearchPage({required this.userNumber}); // Accept userNumber
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +65,7 @@ class SearchPage extends StatelessWidget {
                     Navigator.push( // 다음 페이지로 이동
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SearchedPage(keyword: keyword), // 검색어를 전달
+                        builder: (context) => SearchedPage(keyword: keyword, userNumber: userNumber), // 검색어를 전달
                       ),
                     );
                   },
