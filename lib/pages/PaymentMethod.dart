@@ -5,6 +5,7 @@ import 'package:bootpay/model/payload.dart';
 import 'package:bootpay/model/stat_item.dart';
 import 'package:bootpay/model/user.dart';
 import 'package:delivery/pages/MyPage.dart';
+import 'package:delivery/pages/OrderHistoryPage.dart';
 import 'package:delivery/pages/PaymentPage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,11 @@ class TotalPayment extends StatelessWidget {
   String androidApplicationId = '6638af18906692af33768590';
   String iosApplicationId = '6638af18906692af33768591';
 
+  final double payTotalPrice;
+  final String selectedStoreName;
+
+  TotalPayment({required this.payTotalPrice, required this.selectedStoreName});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,24 +42,6 @@ class TotalPayment extends StatelessWidget {
                 onPressed: () => bootpayTest(context),
                 child: const Text('통합결제 테스트', style: TextStyle(fontSize: 16.0)),
               ),
-              // Consumer<ItemListNotifier>(
-              //   builder: (context, itemListNotifier, child) {
-              //     if (itemListNotifier.products.isEmpty) {
-              //       return CircularProgressIndicator();
-              //     }
-              //     return ListView.builder(
-              //       shrinkWrap: true,
-              //       itemCount: itemListNotifier.products.length,
-              //       itemBuilder: (context, index) {
-              //         Product product = itemListNotifier.products[index];
-              //         return ListTile(
-              //           title: Text(product.productName),
-              //           subtitle: Text('Price: ${product.price}, Qty: ${product.qty}'),
-              //         );
-              //       },
-              //     );
-              //   },
-              // ),
             ],
           ),
         ),
@@ -91,14 +79,18 @@ class TotalPayment extends StatelessWidget {
       },
       onConfirm: (String data) {
         print('------- onConfirm: $data');
+        Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OrderHistoryPage()),
+        );
         return true;
       },
       onDone: (String data) {
         print('------- onDone: $data');
-        // Navigator.push(
-        //           context,
-        //           MaterialPageRoute(builder: (context) => MyPage()),
-        // );
+        Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => OrderHistoryPage()),
+        );
       },
     );
   }
@@ -110,30 +102,6 @@ class TotalPayment extends StatelessWidget {
     final itemListNotifier =
         Provider.of<ItemListNotifier>(context, listen: false);
 
-    List<Item> itemList = _convertProductsToItems(itemListNotifier.products);
-
-    int totalPrice = 0;
-
-    // Item item1 = Item();
-    // item1.name = "미키 '마우스"; // 주문정보에 담길 상품명
-    // item1.qty = 1; // 해당 상품의 주문 수량
-    // item1.id = "ITEM_CODE_MOUSE"; // 해당 상품의 고유 키
-    // item1.price = 500; // 상품의 가격
-
-    // Item item2 = Item();
-    // item2.name = "키보드"; // 주문정보에 담길 상품명
-    // item2.qty = 1; // 해당 상품의 주문 수량
-    // item2.id = "ITEM_CODE_KEYBOARD"; // 해당 상품의 고유 키
-    // item2.price = 500; // 상품의 가격
-    // List<Item> itemList2 = [item1, item2];
-
-    for (Item item in itemList) {
-      totalPrice += item.price! * item.qty!;
-      if (totalPrice == 0) {
-        totalPrice = 0;
-      }
-    }
-
     payload.webApplicationId = webApplicationId; // web application id
     payload.androidApplicationId =
         androidApplicationId; // android application id
@@ -144,8 +112,8 @@ class TotalPayment extends StatelessWidget {
     // 결제수단 설정. 값 안넣으면 통합결제(모든 결제수단)
     // payload.method = '카드';
     // payload.methods = ['card', 'phone', 'vbank', 'bank', 'kakao'];
-    payload.orderName = "테스트 상품"; //결제할 상품명
-    payload.price = totalPrice;
+    payload.orderName = selectedStoreName; //결제할 상품명
+    payload.price = payTotalPrice;
 
     payload.orderId = DateTime.now()
         .millisecondsSinceEpoch
@@ -157,7 +125,6 @@ class TotalPayment extends StatelessWidget {
       "callbackParam3": "value56",
       "callbackParam4": "value78",
     }; // 전달할 파라미터, 결제 후 되돌려 주는 값
-    payload.items = itemList; // 상품정보 배열
 
     User user = User(); // 구매자 정보
     user.username = "사용자 이름";
@@ -177,15 +144,5 @@ class TotalPayment extends StatelessWidget {
     payload.user = user;
     payload.extra = extra;
     return payload;
-  }
-
-  List<Item> _convertProductsToItems(List<Product> products) {
-    return products.map((product) {
-      return Item()
-        ..name = product.productName
-        ..qty = product.qty
-        ..id = product.productId.toString()
-        ..price = product.price;
-    }).toList();
   }
 }

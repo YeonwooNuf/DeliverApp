@@ -2,7 +2,7 @@ class Product {
   final int productId;
   final String productName;
   final int qty;
-  final int price;
+  final double price;
 
   Product({required this.productId, required this.productName, required this.qty, required this.price});
 

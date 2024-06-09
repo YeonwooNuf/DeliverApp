@@ -93,7 +93,7 @@ class LoginPage extends StatelessWidget {
                     )),
           );
 
-          MyPage(name: names[index], phone: phones[index]);
+          MyPage(name: names[index], phone: phones[index],userNumber:userNumbers[index]);
           FavoritePage(userNumber:userNumbers[index]);//즐겨찾기페이지로 유저번호 전달(기본키)
           HomePage(userNumber:userNumbers[index]);//홈페이지로 유저번호 전달(기본키)
         } else {

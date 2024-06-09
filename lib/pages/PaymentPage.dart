@@ -1,10 +1,11 @@
+
 import 'dart:convert';
 import 'dart:html';
-
+import 'package:delivery/pages/PaymentMethod.dart';
+import 'package:delivery/service/sv_ExchangeRate.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
-import 'PaymentMethod.dart';
+import 'package:delivery/pages/address/AddressChange.dart';
+import 'package:provider/provider.dart';
 
 class PaymentPage extends StatefulWidget {
   final int selectedStoreId;
@@ -12,6 +13,7 @@ class PaymentPage extends StatefulWidget {
   final List<Map<String, dynamic>> selectedMenus;
   final String storeAddress;
   final String userNumber;
+  List<ExchangeRate> exchangeRates = []; // 환율 데이터를 담을 리스트
 
   PaymentPage({
     required this.selectedStoreId,
@@ -28,19 +30,70 @@ class PaymentPage extends StatefulWidget {
 class _PaymentPageState extends State<PaymentPage> {
   bool isDisposableChecked = false;
   String? _selectedItem = '직접 받을게요 (부재 시 문 앞)';
+  String? dropdownValue = ''; // 드롭다운 메뉴에서 선택된 값
+  List<String> ttbValues = []; // ttb 값을 저장할 리스트
 
   @override
   void initState() {
     super.initState();
     print('Initial Menus: ${widget.selectedMenus}');
+    _loadExchangeRates(); // initState에서 환율 데이터를 가져옴
   }
 
-  int getTotalPrice() {
-    int total = 0;
-    for (var menu in widget.selectedMenus) {
-      total += menu['totalPrice'] as int;
+  // 환율 데이터를 가져와서 exchangeRates에 할당
+  void _loadExchangeRates() async {
+    try {
+      final rates = await getExchangeRate();
+      //_loadExchangeRates 함수가 데이터를 로드한 후 setState를 호출하여 UI를 갱신
+      setState(() {
+        widget.exchangeRates = rates;
+
+        if (widget.exchangeRates.isNotEmpty) {
+          dropdownValue = widget.exchangeRates[13].curUnit; //리스트 초기값 설정(KRW)
+        }
+        //ttb값 리스트를 가져옴.
+        ttbValues = rates.map((exchangeRate) => exchangeRate.ttb).toList();
+      });
+    } catch (e) {
+      print('Failed to load exchange rates: $e');
     }
-    return total;
+  }
+
+//한국돈 결제 금액 함수
+  double getKoreanTotalPrice() {
+    double totalKoreanPrice = 0;
+    for (var menu in widget.selectedMenus) {
+      totalKoreanPrice += menu['totalPrice'] as int;
+    }
+    return totalKoreanPrice;
+  }
+
+  //결제할 금액을 환율에 따라 변경
+  double calculateTotalPriceWithTtb(double totalPrice, String? selectedUnit) {
+    if (selectedUnit == null) return totalPrice; // 선택된 단위가 없으면 그대로 반환
+
+    // 선택된 단위의 ttb 값을 찾아서 totalPrice와 총 가격 계산
+    final index =
+        widget.exchangeRates.indexWhere((rate) => rate.curUnit == selectedUnit);
+
+    if (index != -1) {
+      String ttbString = widget.exchangeRates[index].ttb;
+      ttbString = ttbString.replaceAll(',', '');
+      double ttb = double.tryParse(ttbString) ?? 1.0;
+      // 한국 돈은 ttb가 0이므로 1로 치환하여 계산함.
+      switch (ttb) {
+        case 0:
+          ttb = 1;
+          break;
+        default:
+        // 다른 경우에 대한 처리
+      }
+
+      final calculatedPrice = totalPrice / ttb;
+      return double.parse(calculatedPrice.toStringAsFixed(2)); // 소수점 두 자리까지 표현
+    }
+
+    return totalPrice;
   }
 
   void _handleCheckboxChange(bool? value) {
@@ -68,33 +121,20 @@ void _sendOrderToServer() async {
       'userNumber': widget.userNumber,
       // 기타 필요한 데이터 추가
     };
-
-    // 데이터를 JSON 형식으로 변환
-    var body = jsonEncode(orderData);
-
-    // POST 요청 보내기
-    var response = await http.post(
-      Uri.parse('http://localhost:8080/orders'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: body,
-    );
-
-    // 응답 확인
-    if (response.statusCode == 200) {
-      print('주문내역이 성공적으로 전송되었습니다.');
-      // 여기서 필요한 처리를 수행하세요.
-    } else {
-      print('주문내역 전송에 실패했습니다.');
-      // 실패 시에 대한 처리를 수행하세요.
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    int payTotalPrice = getTotalPrice();
+    double payKoreanTotalPrice =
+        getKoreanTotalPrice(); // 연우야 이게 결제api쓸때 사용할 한국돈 결제 금액임
+
+
+    print('한국 돈 결제 금액: $payKoreanTotalPrice');
+
+
+    double payTotalPrice =
+        calculateTotalPriceWithTtb(payKoreanTotalPrice, dropdownValue);
     final screenWidth = MediaQuery.of(context).size.width;
+
+    String? addressType = Provider.of<ItemListNotifier>(context).addressType;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -128,7 +168,7 @@ void _sendOrderToServer() async {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                '집 (으)로 배달',
+                '${addressType} (으)로 배달',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
@@ -296,9 +336,8 @@ void _sendOrderToServer() async {
       bottomNavigationBar: Container(
         width: double.infinity,
         height:
-            MediaQuery.of(context).size.height * 0.18, // 높이를 버튼 두 개가 들어갈 정도로 조절
+            MediaQuery.of(context).size.height * 0.1, // 높이를 버튼 두 개가 들어갈 정도로 조절
         decoration: BoxDecoration(
-          color: Colors.white, // 배경색을 흰색으로 설정
           borderRadius: BorderRadius.circular(20), // 둥글게 설정
         ),
         child: Column(
@@ -307,43 +346,77 @@ void _sendOrderToServer() async {
           children: [
             ElevatedButton(
               onPressed: () {
-                // 두 번째 버튼의 동작을 정의합니다.
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF0A82FF), // 버튼의 배경색
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // 버튼도 둥글게 설정
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 23),
-              ),
-              child: Text(
-                '환율 계산',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _sendOrderToServer(); // _sendOrderToServer 함수 호출
-                TotalPayment().bootpayTest(context);
+                TotalPayment(payTotalPrice: payTotalPrice, selectedStoreName: widget.selectedStoreName,).bootpayTest(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10), // 버튼도 둥글게 설정
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 20,  vertical: 23),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 23),
               ),
-              child: Text(
-                '${payTotalPrice}원 결제하기',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center, // 수평 방향으로 중앙 정렬
+                children: [
+                  Expanded(
+                    child: Container(
+                      width: screenWidth * 0.01,
+                      child: DropdownButton<String>(
+                        value: dropdownValue,
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        iconSize: 20,
+                        elevation: 16,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                        underline: Container(
+                          height: 0,
+                          color: Colors.transparent,
+                        ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            dropdownValue = newValue!;
+                          });
+                          // 드롭다운 메뉴에서 선택된 값에 따라 동작을 정의
+                        },
+                        items: widget.exchangeRates
+                            .map((ExchangeRate exchangeRate) {
+                          return DropdownMenuItem<String>(
+                            value: exchangeRate.curUnit,
+                            child: Center(
+                              child: Text(
+                                exchangeRate.curUnit,
+                                style: TextStyle(
+                                  color: dropdownValue == exchangeRate.curUnit
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text(
+                    '${payTotalPrice}${dropdownValue} 결제하기',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
