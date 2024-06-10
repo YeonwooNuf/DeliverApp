@@ -203,6 +203,7 @@ class _JapaneseState extends State<CategorySelect> {
   }
 
   // 이미지 클릭 메서드
+
   Widget _Image(
     String storeName,
     int storeId,
@@ -212,6 +213,7 @@ class _JapaneseState extends State<CategorySelect> {
     String storeImg3,
     String userNumber,
   ) {
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
@@ -223,10 +225,12 @@ class _JapaneseState extends State<CategorySelect> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => MenuSearchPage(
+
                     storeImage_URL: storeImg1,
                     storeName: storeName,
                     storeId: storeId,
                     storeAddress: storeAddress,
+
                   ),
                 ),
               );

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 class ReviewPage extends StatefulWidget {
   // 각각의 변수를 final로 선언하여 변경 불가능하게 만듭니다.
-  final String restaurantName;
-  final String orderDetails;
+  final String storeName;
+  final String productNames;
 
   // 생성자에서 모든 변수를 필수적으로 받도록 설정합니다.
   ReviewPage({
     Key? key,
-    required this.restaurantName,
-    required this.orderDetails,
+    required this.storeName,
+    required this.productNames,
   }) : super(key: key);
 
   @override
@@ -83,7 +83,7 @@ class _ReviewPageState extends State<ReviewPage> {
               ),
               SizedBox(height: screenWidth * 0.02), // 간격
               Text(
-                widget.restaurantName, // 생성자를 통해 전달받은 가게 이름
+                widget.storeName, // 생성자를 통해 전달받은 가게 이름
                 style: TextStyle(
                   fontSize: screenWidth * 0.04,
                   color: Colors.black,
@@ -124,7 +124,7 @@ class _ReviewPageState extends State<ReviewPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.orderDetails, // 생성자를 통해 전달받은 주문 상세 정보
+                          widget.productNames, // 생성자를 통해 전달받은 주문 상세 정보
                           style: TextStyle(
                             fontSize: screenWidth * 0.04,
                             color: Colors.black,

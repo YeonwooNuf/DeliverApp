@@ -9,6 +9,7 @@ import 'package:delivery/pages/address/NewAddressPage.dart';
 import 'package:delivery/service/sv_user.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/login/SignUpPage.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 

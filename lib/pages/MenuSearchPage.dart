@@ -7,12 +7,14 @@ class MenuSearchPage extends StatefulWidget {
   final String storeName;
   final int storeId;
   final String storeAddress;
+  final String userNumber;
 
   MenuSearchPage(
       {required this.storeImage_URL,
       required this.storeName,
       required this.storeId,
-      required this.storeAddress});
+      required this.storeAddress,
+      required this.userNumber,});
 
   @override
   _MenuSearchPageState createState() => _MenuSearchPageState();
@@ -357,16 +359,16 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
 
   // 결제하기 버튼 클릭 시 실행되는 함수
   void _goToPaymentPage(List<Map<String, dynamic>> selectedMenus) async {
-    // PaymentPage로 이동하여 데이터 전달
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PaymentPage(
-          selectedStoreId: widget.storeId,
-          selectedStoreName: widget.storeName,
-          selectedMenus: selectedMenus,
-          storeAddress: widget.storeAddress,
-        ),
+  // PaymentPage로 이동하여 데이터 전달
+  final result = await Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PaymentPage(
+        selectedStoreId: widget.storeId,
+        selectedStoreName: widget.storeName,
+        selectedMenus: selectedMenus,
+        storeAddress: widget.storeAddress,
+        userNumber: widget.userNumber,
       ),
     ).then((result) {
       // 결과값을 확인하고 페이지를 새로고침

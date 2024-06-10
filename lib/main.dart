@@ -1,3 +1,4 @@
+import 'package:delivery/pages/PaymentPage.dart';
 import 'package:delivery/pages/address/AddressInfo.dart';
 import 'package:delivery/pages/address/AddressMapPage.dart';
 import 'package:delivery/pages/address/AddressRegisterPage.dart';
@@ -38,10 +39,10 @@ class MainApp extends StatelessWidget {
         body: TabBarView(
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            HomePage(userNumber: userNumber),
-            FavoritePage(userNumber: userNumber),
-            OrderHistoryPage(),
-            MyPage(name: name, phone: phone, userNumber: userNumber),
+            HomePage(userNumber: userNumber,),
+            FavoritePage(userNumber: userNumber,),
+            OrderHistoryPage(userNumber: userNumber,),
+            MyPage(name: name, phone: phone),
           ],
         ),
         bottomNavigationBar: Bottom(),
