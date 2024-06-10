@@ -5,6 +5,11 @@ import 'package:http/http.dart' as http;
 import 'package:delivery/pages/address/AddressInfo.dart';
 
 class AddressSearch extends StatefulWidget {
+
+  final String userNumber;
+
+  const AddressSearch({super.key, required this.userNumber});
+  
   @override
   _AddressSearchState createState() => _AddressSearchState();
 }
@@ -239,6 +244,7 @@ class _AddressSearchState extends State<AddressSearch> {
                             MaterialPageRoute(
                               builder: (context) => AddressInfo(
                                 searchedAddress: _searchResults[index],
+                                userNumber: widget.userNumber,
                               ),
                             ),
                           );

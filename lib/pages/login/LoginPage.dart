@@ -3,6 +3,9 @@ import 'package:delivery/main.dart';
 import 'package:delivery/pages/FavoritePage.dart';
 import 'package:delivery/pages/HomePage.dart';
 import 'package:delivery/pages/MyPage.dart';
+import 'package:delivery/pages/address/AddressManagePage.dart';
+import 'package:delivery/pages/address/AddressRegisterPage.dart';
+import 'package:delivery/pages/address/NewAddressPage.dart';
 import 'package:delivery/service/sv_user.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/login/SignUpPage.dart';
@@ -96,6 +99,9 @@ class LoginPage extends StatelessWidget {
           MyPage(name: names[index], phone: phones[index],userNumber:userNumbers[index]);
           FavoritePage(userNumber:userNumbers[index]);//즐겨찾기페이지로 유저번호 전달(기본키)
           HomePage(userNumber:userNumbers[index]);//홈페이지로 유저번호 전달(기본키)
+          AddressRegisterPage(userNumber:userNumbers[index]);
+          NewAddressPage(userNumber:userNumbers[index]);
+          AddressManagePage(userNumber:userNumbers[index]);
         } else {
           // 아이디 또는 비밀번호가 올바르지 않은 경우
           showDialog(

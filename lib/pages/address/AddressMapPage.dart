@@ -6,6 +6,10 @@ import 'package:http/http.dart' as http;
 import 'package:delivery/pages/address/AddressInfo.dart';
 
 class AddressMapPage extends StatefulWidget {
+
+  final String userNumber;
+
+  const AddressMapPage({super.key, required this.userNumber});
   @override
   _AddressMapPageState createState() => _AddressMapPageState();
 }
@@ -124,7 +128,7 @@ class _AddressMapPageState extends State<AddressMapPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddressInfo(searchedAddress: _location),
+        builder: (context) => AddressInfo(searchedAddress: _location,userNumber: widget.userNumber,),
       ),
     );
   }
