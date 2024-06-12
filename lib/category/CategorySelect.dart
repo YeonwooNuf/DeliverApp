@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:delivery/dto/favorite_dto.dart';
 import 'package:delivery/pages/MenuSearchPage.dart';
 import 'package:delivery/service/sv_favorite.dart';
@@ -6,17 +8,14 @@ import 'package:delivery/service/sv_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 class CategorySelect extends StatefulWidget {
   final String CategoryName;
   final String userNumber;
-
   CategorySelect({required this.CategoryName, required this.userNumber});
-
   @override
   _JapaneseState createState() => _JapaneseState();
 }
-
 class _JapaneseState extends State<CategorySelect> {
   var currentValue = '1'; // 드롭다운메뉴 변수
   final List<String> _items = <String>['가나다순', '신규매장순']; // 드롭다운메뉴
@@ -33,36 +32,59 @@ class _JapaneseState extends State<CategorySelect> {
   ];
   late int _currentIndex; // 초기탭 배열번호 선언
   bool IsFilled = false;
-
   // 매장정보 따로 받아옴.
   late List<Map<String, dynamic>> _storeName = [];
   late List<Map<String, dynamic>> _storeImg = [];
-
   late List<Map<String, dynamic>> _allStores = []; // 매장 정보 전체 받아옴
-
   @override
   void initState() {
     super.initState();
     _currentIndex = _titles.indexOf(widget.CategoryName); // initState 메서드 내에서 호출
     _fetchStoreData(); // 데이터 불러오기
   }
-
   // 스토어 데이터를 불러오는 비동기 함수
   Future<void> _fetchStoreData() async {
     _storeName = await getStoreName();
     _storeImg = await getStoreImg();
     _allStores = await getAllStores();
-
+    
+    for (var store in _allStores) {
+    print(store);
+    double averageRating = await getStoreRating(store['storeId']);
+    store['averageRating'] = averageRating; // 가져온 평균 별점을 가게 정보에 추가
     print('매장정보들:');
-    _allStores.forEach((store) {
-      print(store);
-    });
-
-    setState(() {}); // 상태 업데이트
-
-    // 각 카테고리를 콘솔에 출력
   }
+  
+  setState(() {}); // 상태 업데이트
+  }
+  //별점평균 불러오는 비동기 함수
+  Future<double> getStoreRating(int storeId) async {
+  try {
+    final response = await http.get(
+      Uri.parse('http://localhost:8080/reviews/$storeId/rating'),
+      headers: {'Content-Type': 'application/json'},
+    );
 
+    if (response.statusCode == 200) {
+      final dynamic responseData = jsonDecode(utf8.decode(response.bodyBytes));
+      if (responseData is Map<String, dynamic> && responseData.containsKey('averageRating')) {
+        final averageRating = responseData['averageRating'];
+        if (averageRating is double) {
+          return averageRating;
+        } else {
+          throw Exception('Invalid average rating format: $averageRating');
+        }
+      } else {
+        throw Exception('Invalid response format: $responseData');
+      }
+    } else {
+      throw Exception('Failed to fetch store rating: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error fetching store rating: $e');
+    throw e;
+  }
+}
   // 정렬 함수 추가
   void _sortStores() {
     setState(() {
@@ -73,7 +95,6 @@ class _JapaneseState extends State<CategorySelect> {
       }
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -155,7 +176,6 @@ class _JapaneseState extends State<CategorySelect> {
       ),
     );
   }
-
   //맨위에 있는 필터 메서드
   Widget _Filter() {
     return Container(
@@ -195,81 +215,74 @@ class _JapaneseState extends State<CategorySelect> {
       ),
     );
   }
-
   // 이미지 클릭 메서드
   Widget _Image(String storeImage_URL, String storeName, int storeId,
-      String storeAddress, String userNumber) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    String storeAddress, String userNumber, double averageRating) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    child: GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MenuSearchPage(
+              storeImage_URL: storeImage_URL,
+              storeName: storeName,
+              storeId: storeId,
+              storeAddress: storeAddress,
+              userNumber: widget.userNumber,
+            ),
+          ),
+        );
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MenuSearchPage(
-                    storeImage_URL: storeImage_URL,
-                    storeName: storeName,
-                    storeId: storeId,
-                    storeAddress: storeAddress,
-                    userNumber: widget.userNumber,
-                  ),
-                ),
-              ),
-            );
-          },
-          child: Stack(
+          Stack(
             children: [
               Container(
-                height: 180,
+                height: 150,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black26,
-                      blurRadius: 15,
-                      offset: Offset(5, 10),
+                      blurRadius: 10,
+                      offset: Offset(0, 5),
                     ),
                   ],
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: const Color.fromARGB(66, 13, 13, 13), width: 3), // 얇은 회색 테두리 추가
-                    ),
-                    child: Image.network(
-                      storeImage_URL,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity,
-                      loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          );
-                        }
-                      },
-                      errorBuilder: (BuildContext context, Object error,
-                          StackTrace? stackTrace) {
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    storeImage_URL,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      } else {
                         return Center(
-                          child: Icon(
-                            Icons.error,
-                            color: Colors.red,
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
                           ),
                         );
-                      },
-                    ),
+                      }
+                    },
+                    errorBuilder: (BuildContext context, Object error,
+                        StackTrace? stackTrace) {
+                      return Center(
+                        child: Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -285,11 +298,8 @@ class _JapaneseState extends State<CategorySelect> {
               ),
             ],
           ),
-        ),
-        SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
+          SizedBox(height: 8), // 이미지와 매장명 간의 간격 조절
+          Text(
             storeName,
             style: TextStyle(
               color: Colors.black,
@@ -297,12 +307,30 @@ class _JapaneseState extends State<CategorySelect> {
               fontSize: 20,
             ),
           ),
-        ),
-      ],
+          SizedBox(height: 4), // 매장명과 별점 간의 간격 조절
+          Row(
+            children: [
+              Icon(
+                Icons.star,
+                color: Colors.amber,
+                size: 20,
+              ),
+              SizedBox(width: 4), // 별점 아이콘과 평점 간의 간격 조절
+              Text(
+                averageRating.toStringAsFixed(1), // 평균 별점 표시 (소수점 첫 번째 자리까지)
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }
-
 // 이미지 위젯들을 반환하는 메서드
   Widget _buildImagesForCategory(int categoryIndex, String userNumber) {
     if (_storeName.isEmpty || _storeImg.isEmpty) {
@@ -349,7 +377,6 @@ class _JapaneseState extends State<CategorySelect> {
       if (filteredStoreData.isEmpty) {
         return SizedBox.shrink();
       }
-
       // 필터링된 데이터에 대해 이미지 위젯 생성
       return Column(
         children: List.generate(filteredStoreData.length, (index) {
@@ -366,46 +393,47 @@ class _JapaneseState extends State<CategorySelect> {
                 orElse: () => {'storeName': '매장정보 없음'}, // 매장명이 없을 때 처리
               )['storeName'] ??
               '매장정보 없음';
+          final averageRating = _allStores.firstWhere(
+                (element) => element['storeId'] == storeId,
+                orElse: () => {'averageRating': 0.0}, // 별점이 없을 때 처리
+              )['averageRating'] ?? 0.0;
           return _Image(
               storeImg, // 이미지 URL
               storeName, // 스토어 이름
               storeId,
               storeAddress,
-              userNumber);
+              userNumber,
+              averageRating,);
         }),
       );
     }
   }
 }
-
 // 하트 아이콘
 class HeartIconButton extends StatefulWidget {
   final String userNumber;
   final String storeId;
   final String storeImg;
   final String storeName;
-
+  final double? rating;
   HeartIconButton({
     required this.userNumber,
     required this.storeId,
     required this.storeImg,
     required this.storeName,
+    this.rating,
   });
-
   @override
   _HeartIconButtonState createState() => _HeartIconButtonState();
 }
-
 class _HeartIconButtonState extends State<HeartIconButton> {
   bool isFilled = false;
-
   @override
   void initState() {
     super.initState();
     // 사용자의 즐겨찾기 목록을 로드하여 해당 상점이 있는지 확인합니다.
     checkIfStoreIsFavorite();
   }
-
   // 사용자의 즐겨찾기 목록을 로드하여 해당 상점이 있는지 확인하는 함수
   Future<void> checkIfStoreIsFavorite() async {
     List<Map<String, dynamic>> favorites = await getUserFavorites(widget.userNumber);
@@ -414,7 +442,6 @@ class _HeartIconButtonState extends State<HeartIconButton> {
       isFilled = favorites.any((favorite) => favorite['favoriteStoreId'].toString() == widget.storeId);
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return IconButton(
@@ -422,12 +449,11 @@ class _HeartIconButtonState extends State<HeartIconButton> {
           ? Icon(Icons.favorite, color: Colors.red)
           : Icon(Icons.favorite_border, color: Colors.white),
       onPressed: () async {
-        // 상태를 먼저 변경
+        // 상태를 먼저 변경합
         setState(() {
           isFilled = !isFilled;
         });
-
-        // 상태 변경 후, 즐겨찾기 추가 또는 삭제 
+        // 상태 변경 후, 즐겨찾기 추가 또는 삭제 로직을 처리
         if (isFilled) {
           // 즐겨찾기를 추가하는 로직
           final favorite = FavoriteDto(
@@ -435,9 +461,8 @@ class _HeartIconButtonState extends State<HeartIconButton> {
             favorite_storeId: widget.storeId,
             favorite_storeImg: widget.storeImg,
             favorite_storeName: widget.storeName,
-            rating: '5', // 리뷰 페이지 만들면 변수 갖다 박아주세요 ^^
+            rating: widget.rating.toString(), // 리뷰 페이지 만들면 변수 갖다 박아주세요 ^^
           );
-
           print('서버로 전송하는 favorite데이터: $favorite');
           try {
             await saveFavorite(favorite); // 하트 채우면 즐겨찾기 저장
@@ -452,20 +477,7 @@ class _HeartIconButtonState extends State<HeartIconButton> {
             print('삭제 실패: $e');
           }
         }
-
-        // 즐겨찾기 개수를 업데이트
-        updateFavoritesCount(isFilled);
       },
     );
   }
-
-  // 즐겨찾기 개수를 업데이트하는 함수 (추가된 부분)
-  void updateFavoritesCount(bool isFilled) async {
-    final prefs = await SharedPreferences.getInstance();
-    final currentFavoritesCount = prefs.getInt('favoritesCount') ?? 0;
-    setState(() {
-      // 하트가 채워져 있는 경우에만 즐겨찾기 개수를 증가
-      final newFavoritesCount = isFilled ? currentFavoritesCount + 1 : currentFavoritesCount - 1;
-      prefs.setInt('favoritesCount', newFavoritesCount);
-    });
 }

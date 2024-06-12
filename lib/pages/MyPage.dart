@@ -18,6 +18,7 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   int favoritesCount = 0;
+  int reviewsCount = 0;
 
   @override
   void initState() {
@@ -31,7 +32,12 @@ class _MyPageState extends State<MyPage> {
       favoritesCount = prefs.getInt('favoritesCount') ?? 0;
     });
   }
-
+  Future<void> _fetchReviewsCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      reviewsCount = prefs.getInt('reviewsCount') ?? 0;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -54,6 +60,7 @@ class _MyPageState extends State<MyPage> {
         phone: widget.phone,
         userNumber: widget.userNumber,
         updateFavoritesCount: _updateFavoritesCount,
+        updateReviewsCount: _updateReviewsCount,
       ),
     );
   }
@@ -64,6 +71,11 @@ class _MyPageState extends State<MyPage> {
       favoritesCount = count;
     });
   }
+  void _updateReviewsCount(int count) {
+    setState(() {
+      reviewsCount = count;
+    });
+  }
 }
 
 class DeliveryScreen extends StatefulWidget {
@@ -71,12 +83,14 @@ class DeliveryScreen extends StatefulWidget {
   final String phone;
   final String userNumber;
   final Function(int) updateFavoritesCount;
+  final Function(int) updateReviewsCount;
 
   DeliveryScreen({
     required this.name,
     required this.phone,
     required this.userNumber,
     required this.updateFavoritesCount,
+    required this.updateReviewsCount,
   });
 
   @override
@@ -85,6 +99,7 @@ class DeliveryScreen extends StatefulWidget {
 
 class _DeliveryScreenState extends State<DeliveryScreen> {
   int favoritesCount = 0;
+  int reviewsCount = 0;
 
   String formatPhoneNumber(String phoneNumber) {
     // 전화번호 형식 변환(사이사이 - 추가되게)
@@ -103,6 +118,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
   void initState() {
     super.initState();
     _fetchFavoritesCount();
+    _fetchReviewsCount();
   }
 
 
@@ -113,6 +129,14 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       favoritesCount = prefs.getInt('favoritesCount') ?? 0;
     });
   }
+
+  Future<void> _fetchReviewsCount() async {
+  final prefs = await SharedPreferences.getInstance();
+  setState(() {
+    reviewsCount = prefs.getInt('reviewsCount') ?? 0;
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +165,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
                 CircleAvatar(
                   radius: 20,
                   child: Text(
-                    '1',
+                    '$reviewsCount',
                     style: TextStyle(fontSize: 18),
                   ),
                   backgroundColor: Colors.grey[300],
