@@ -1,4 +1,5 @@
 import 'package:delivery/pages/HomePage.dart';
+import 'package:delivery/pages/address/AddressRegisterPage.dart';
 import 'package:delivery/service/sv_homeAddress.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -275,11 +276,13 @@ class AddressInfoState extends State<AddressInfo> {
 
                         // HomeAddressDto 생성
                         final homeAddressDto = HomeAddressDto(
-                          addressUserNumber: int.parse(widget.userNumber), // 적절한 사용자 번호로 변경하세요.
+                          homeAddressNumber: '',
+                          addressUserNumber: int.parse(widget.userNumber), 
                           address: combinedAddress,
                           addressCategory: _homeColor == Colors.black12 ? '집'
                               : _workColor == Colors.black12 ? '회사'
-                                  : _locationColor == Colors.black12 ? '기타':alias
+                                  : _locationColor == Colors.black12 ? '기타':alias,
+                                  addressSelect: false
                         );
 
                         // 서버로 데이터 전송
@@ -289,7 +292,7 @@ class AddressInfoState extends State<AddressInfo> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(userNumber: widget.userNumber),
+                            builder: (context) => AddressRegisterPage(userNumber: widget.userNumber)
                           ),
                         );
                          showDialog(

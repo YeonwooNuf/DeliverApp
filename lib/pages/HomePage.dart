@@ -1,5 +1,6 @@
 import 'package:delivery/category/CategorySelect.dart';
 import 'package:delivery/pages/SearchPage.dart';
+import 'package:delivery/service/sv_homeAddress.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/address/AddressRegisterPage.dart';
 import 'package:delivery/service/sv_ExchangeRate.dart';
@@ -7,11 +8,12 @@ import 'package:delivery/pages/address/AddressChange.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 
-
-
 class HomePage extends StatelessWidget {
   final String userNumber;
-  const HomePage({Key? key,required this.userNumber}) : super(key: key);
+  const HomePage({
+    Key? key,
+    required this.userNumber,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,18 +22,12 @@ class HomePage extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: const Color.fromARGB(255, 216, 214, 214),
         fontFamily: "MangoDdobak",
-    //     textTheme: TextTheme(
-    //   // 여기에서 모든 텍스트 스타일을 변경합니다.
-    //   bodyText1: TextStyle(fontWeight: FontWeight.w700), // 예시로 bodyText1을 변경하였습니다. 필요에 따라 다른 스타일도 변경할 수 있습니다.
-    //   bodyText2: TextStyle(fontWeight: FontWeight.w700),
-    //   // 추가적으로 필요한 스타일이 있다면 여기에 추가합니다.
-    // ),
       ),
       home: Scaffold(
         resizeToAvoidBottomInset: false, // 키보드로 인한 화면 크기 조정 방지
         body: Directionality(
           textDirection: TextDirection.ltr,
-          child: HomeScreen(selectedIndex: 0,userNumber: userNumber),
+          child: HomeScreen(selectedIndex: 0, userNumber: userNumber),
         ),
       ),
     );
@@ -41,7 +37,9 @@ class HomePage extends StatelessWidget {
 class HomeScreen extends StatefulWidget {
   final int selectedIndex;
   final String userNumber;
-  const HomeScreen({Key? key, required this.selectedIndex, required this.userNumber}) : super(key: key);
+  const HomeScreen(
+      {Key? key, required this.selectedIndex, required this.userNumber})
+      : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -49,11 +47,33 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isExpanded = true;
+  late List<Map<String, dynamic>> _selectedAddresses = [];
+  @override
+  void initState() {
+    super.initState();
+    _fetchAddressData(); // 비동기 함수 호출
+  }
 
-  String selectedAddress = '';
+  Future<void> _fetchAddressData() async {
+    List<Map<String, dynamic>> allAddresses =
+        await getAddressListByuser(widget.userNumber);
+
+    // 선택된 주소 목록 중에서 selectAddress 값이 true인 주소들만 필터링
+    List<Map<String, dynamic>> selectedAddresses = allAddresses
+        .where((address) => address['addressSelect'] == true)
+        .toList();
+
+    // 필터링된 주소 목록을 상태에 반영
+    setState(() {
+      _selectedAddresses = selectedAddresses;
+    });
+    allAddresses.forEach((address) {
+      print(
+          'Address: ${address['address']}, SelectAddress: ${address['addressSelect']}');
+    });
+  }
 
   Widget _appBar() {
-    String selectedAddress = Provider.of<ItemListNotifier>(context).selectedAddress;
     String? addressType = Provider.of<ItemListNotifier>(context).addressType;
 
     return SafeArea(
@@ -70,27 +90,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AddressRegisterPage(userNumber: widget.userNumber,),
+                      builder: (context) => AddressRegisterPage(
+                        userNumber: widget.userNumber,
+                      ),
                     ),
                   );
                 },
                 child: Row(
-                  mainAxisSize: MainAxisSize.min, // Row의 크기를 내용물에 맞게 조정
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.location_on, color: Colors.black,),
-                    SizedBox(width: 8), // 아이콘과 텍스트 사이에 간격 추가
+                    Icon(Icons.location_on, color: Colors.black),
+                    SizedBox(width: 8),
                     Text(
-                      addressType, // Add the selected address value here
+                      _selectedAddresses.isNotEmpty
+                          ? (_selectedAddresses[0]['address'].length > 13
+                              ? _selectedAddresses[0]['address']
+                                      .substring(0, 16) +
+                                  '...' // 13글자 넘어가면 생략 부호를 붙입니다.
+                              : _selectedAddresses[0]['address'])
+                          : '', // 첫 번째 주소 표시
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700),
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w700),
                     ),
                     Icon(Icons.keyboard_arrow_down, color: Color(0xFF0892D0)),
-                    SizedBox(width: 8), // 아이콘과 텍스트 사이에 간격 추가
-                    Text(
-                      '              Inha Delivery',
-                      style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.w700),
-                    ),
                   ],
                 ),
               ),
@@ -120,16 +146,22 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => SearchPage(userNumber: widget.userNumber,),
+                                builder: (context) => SearchPage(
+                                  userNumber: widget.userNumber,
+                                ),
                               ),
                             );
                           },
                           style: TextStyle(color: Colors.black),
                           decoration: InputDecoration(
                             hintText: "  검색어를 입력해주세요",
-                            hintStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontSize: 18,
-                              fontFamily: "MangoDdobak"), // Pretendard 글꼴 설정 // 힌트 텍스트의 글씨 크기 조절
+                            hintStyle: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                    fontSize: 18,
+                                    fontFamily:
+                                        "MangoDdobak"), // Pretendard 글꼴 설정 // 힌트 텍스트의 글씨 크기 조절
                             border: InputBorder.none,
                             prefixIcon: Icon(Icons.search),
                           ),
@@ -230,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _exchangeRateContents(double screenHeight, double screenWidth) {
     return FutureBuilder<List<ExchangeRate>>(
-      future:  getExchangeRate(),
+      future: getExchangeRate(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -281,39 +313,51 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Row(
                             children: [
-                              _roundedContainer('assets/images/bibimbap.png', '한식', () {
+                              _roundedContainer(
+                                  'assets/images/bibimbap.png', '한식', () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          CategorySelect(CategoryName: '한식',userNumber: widget.userNumber,)),
+                                      builder: (context) => CategorySelect(
+                                            CategoryName: '한식',
+                                            userNumber: widget.userNumber,
+                                          )),
                                 );
                               }),
                               SizedBox(width: 8),
-                              _roundedContainer('assets/images/Japanese.png', '일식', () {
+                              _roundedContainer(
+                                  'assets/images/Japanese.png', '일식', () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          CategorySelect(CategoryName: '일식', userNumber: widget.userNumber,)),
+                                      builder: (context) => CategorySelect(
+                                            CategoryName: '일식',
+                                            userNumber: widget.userNumber,
+                                          )),
                                 );
                               }),
                               SizedBox(width: 8),
-                              _roundedContainer('assets/images/Chinese.jpg', '중국집', () {
+                              _roundedContainer(
+                                  'assets/images/Chinese.jpg', '중국집', () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          CategorySelect(CategoryName: '중국집', userNumber: widget.userNumber,)),
+                                      builder: (context) => CategorySelect(
+                                            CategoryName: '중국집',
+                                            userNumber: widget.userNumber,
+                                          )),
                                 );
                               }),
                               SizedBox(width: 8),
-                              _roundedContainer('assets/images/Chicken.png', '치킨', () {
+                              _roundedContainer(
+                                  'assets/images/Chicken.png', '치킨', () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          CategorySelect(CategoryName: '치킨',userNumber: widget.userNumber,)),
+                                      builder: (context) => CategorySelect(
+                                            CategoryName: '치킨',
+                                            userNumber: widget.userNumber,
+                                          )),
                                 );
                               }),
                             ],
@@ -321,39 +365,51 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(height: 8),
                           Row(
                             children: [
-                              _roundedContainer('assets/images/Pizza.png', '피자', () {
+                              _roundedContainer('assets/images/Pizza.png', '피자',
+                                  () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          CategorySelect(CategoryName: '피자',userNumber: widget.userNumber,)),
+                                      builder: (context) => CategorySelect(
+                                            CategoryName: '피자',
+                                            userNumber: widget.userNumber,
+                                          )),
                                 );
                               }),
                               SizedBox(width: 8),
-                              _roundedContainer('assets/images/Hamburger.png', '햄버거', () {
+                              _roundedContainer(
+                                  'assets/images/Hamburger.png', '햄버거', () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          CategorySelect(CategoryName: '햄버거',userNumber: widget.userNumber,)),
+                                      builder: (context) => CategorySelect(
+                                            CategoryName: '햄버거',
+                                            userNumber: widget.userNumber,
+                                          )),
                                 );
                               }),
                               SizedBox(width: 8),
-                              _roundedContainer('assets/images/tteok.png', '분식', () {
+                              _roundedContainer('assets/images/tteok.png', '분식',
+                                  () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          CategorySelect(CategoryName: '분식',userNumber: widget.userNumber,)),
+                                      builder: (context) => CategorySelect(
+                                            CategoryName: '분식',
+                                            userNumber: widget.userNumber,
+                                          )),
                                 );
                               }),
                               SizedBox(width: 8),
-                              _roundedContainer('assets/images/Jokbal.jpg', '족발', () {
+                              _roundedContainer(
+                                  'assets/images/Jokbal.jpg', '족발', () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          CategorySelect(CategoryName: '족발',userNumber: widget.userNumber,)),
+                                      builder: (context) => CategorySelect(
+                                            CategoryName: '족발',
+                                            userNumber: widget.userNumber,
+                                          )),
                                 );
                               }),
                             ],
@@ -361,7 +417,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: screenHeight * 0.03),  //카테고리랑 환율 간격
+                    SizedBox(height: screenHeight * 0.03), //카테고리랑 환율 간격
                     ExpansionPanelList(
                       expansionCallback: (int index, bool isExpanded) {
                         setState(() {
@@ -371,7 +427,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         ExpansionPanel(
                           backgroundColor: Colors.white,
-                          headerBuilder: (BuildContext context, bool isExpanded) {
+                          headerBuilder:
+                              (BuildContext context, bool isExpanded) {
                             return Container(
                               alignment: Alignment.centerLeft, // 제목을 화면 왼쪽에 정렬
                               padding: const EdgeInsets.all(16),
@@ -394,7 +451,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 bottomLeft: Radius.circular(20.0),
                                 bottomRight: Radius.circular(20.0),
                               ),
-                              child: _exchangeRateContents(screenHeight, screenWidth),
+                              child: _exchangeRateContents(
+                                  screenHeight, screenWidth),
                             ),
                           ),
                           isExpanded: _isExpanded, // 패널이 확장된 상태로 시작
@@ -413,7 +471,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
- 
     return Scaffold(
       body: Column(
         children: [

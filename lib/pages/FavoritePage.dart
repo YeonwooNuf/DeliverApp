@@ -216,6 +216,7 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
+
   // 추천 위젯 생성
   Widget buildRecommendationWidget() {
     return mostFrequentCategory.isNotEmpty
