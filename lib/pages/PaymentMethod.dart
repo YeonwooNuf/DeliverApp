@@ -22,10 +22,10 @@ class TotalPayment extends StatelessWidget {
   String androidApplicationId = '6638af18906692af33768590';
   String iosApplicationId = '6638af18906692af33768591';
 
-  final double payTotalPrice;
+  final double payKoreanTotalPrice;
   final String selectedStoreName;
 
-  TotalPayment({required this.payTotalPrice, required this.selectedStoreName});
+  TotalPayment({required this.payKoreanTotalPrice, required this.selectedStoreName});
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +113,7 @@ class TotalPayment extends StatelessWidget {
     // payload.method = '카드';
     // payload.methods = ['card', 'phone', 'vbank', 'bank', 'kakao'];
     payload.orderName = selectedStoreName; //결제할 상품명
-    payload.price = payTotalPrice;
+    payload.price = payKoreanTotalPrice;
 
     payload.orderId = DateTime.now()
         .millisecondsSinceEpoch

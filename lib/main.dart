@@ -42,7 +42,9 @@ class MainApp extends StatelessWidget {
             HomePage(userNumber: userNumber,),
             FavoritePage(userNumber: userNumber,),
             OrderHistoryPage(userNumber: userNumber,),
+
             MyPage(name: name, phone: phone,userNumber: userNumber,),
+
           ],
         ),
         bottomNavigationBar: Bottom(),
