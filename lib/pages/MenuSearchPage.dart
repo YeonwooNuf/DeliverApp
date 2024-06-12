@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:delivery/pages/PaymentPage.dart';
 import 'package:delivery/service/sv_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class MenuSearchPage extends StatefulWidget {
   final String storeImage_URL;
@@ -14,7 +17,7 @@ class MenuSearchPage extends StatefulWidget {
       required this.storeName,
       required this.storeId,
       required this.storeAddress,
-      required this.userNumber,});
+      required this.userNumber});
 
   @override
   _MenuSearchPageState createState() => _MenuSearchPageState();
@@ -22,6 +25,7 @@ class MenuSearchPage extends StatefulWidget {
 
 class _MenuSearchPageState extends State<MenuSearchPage> {
   late List<Map<String, dynamic>> _filteredMenus = [];
+  late List<Map<String, dynamic>> _reviews = [];
   bool _isPaymentButtonVisible = false;
   int _selectedQuantity = 1;
   int _totalPrice = 0;
@@ -30,6 +34,7 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
   void initState() {
     super.initState();
     _fetchMenuData();
+    _fetchReviewData();
   }
 
   // 메뉴 정보를 불러오는 비동기 함수
@@ -46,6 +51,27 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
         print(menu);
       });
     });
+  }
+
+  // 리뷰 정보를 불러오는 비동기 함수
+  Future<void> _fetchReviewData() async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://localhost:8080/reviews/store/${widget.storeName}'), // 수정된 부분: 리뷰 정보를 가져오는 엔드포인트 URL
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final List<Map<String, dynamic>> reviews = List<Map<String, dynamic>>.from(jsonDecode(utf8.decode(response.bodyBytes)));
+        setState(() {
+          _reviews = reviews; // 리뷰 데이터를 저장
+        });
+      } else {
+        throw Exception('Failed to fetch reviews: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching reviews: $e');
+    }
   }
 
   @override
@@ -151,23 +177,23 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
               ),
             ),
             Padding(
-  padding: EdgeInsets.all(20),
-  child: Container(
-    height: MediaQuery.of(context).size.height * 0.15, // 리뷰 박스 높이 설정
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal, // 가로 스크롤
-      itemCount: 3, // 리뷰 박스 개수 (예시로 3개)
-      itemBuilder: (context, index) {
-        return Row(
-          children: [
-            _ReviewBox(context),
-            SizedBox(width: 20), // 간격 추가
-          ],
-        );
-      },
-    ),
-  ),
-),
+              padding: EdgeInsets.all(20),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.15, // 리뷰 박스 높이 설정
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal, // 가로 스크롤
+                  itemCount: _reviews.length, // 리뷰 박스 개수 (예시로 3개)
+                  itemBuilder: (context, index) {
+                    return Row(
+                      children: [
+                        _ReviewBox(context, index),
+                        SizedBox(width: 20), // 간격 추가
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
             SizedBox(height: 20),
             Container(
               decoration: BoxDecoration(
@@ -359,16 +385,17 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
 
   // 결제하기 버튼 클릭 시 실행되는 함수
   void _goToPaymentPage(List<Map<String, dynamic>> selectedMenus) async {
-  // PaymentPage로 이동하여 데이터 전달
-  final result = await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => PaymentPage(
-        selectedStoreId: widget.storeId,
-        selectedStoreName: widget.storeName,
-        selectedMenus: selectedMenus,
-        storeAddress: widget.storeAddress,
-        userNumber: widget.userNumber,
+    // PaymentPage로 이동하여 데이터 전달
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PaymentPage(
+          selectedStoreId: widget.storeId,
+          selectedStoreName: widget.storeName,
+          selectedMenus: selectedMenus,
+          storeAddress: widget.storeAddress,
+          userNumber: widget.userNumber,
+        ),
       ),
     ).then((result) {
       // 결과값을 확인하고 페이지를 새로고침
@@ -382,22 +409,40 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
   }
 
   //리뷰박스 ui
-  Widget _ReviewBox(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.65,
-      height: MediaQuery.of(context).size.height * 0.1,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey), // 회색 테두리 추가
+  Widget _ReviewBox(BuildContext context, int index) {
+  final review = _reviews[index];
+  return Container(
+    width: MediaQuery.of(context).size.width * 0.65,
+    height: MediaQuery.of(context).size.height * 0.15,
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey), // 회색 테두리 추가
+    ),
+    child: Padding(
+      padding: EdgeInsets.all(10), // 여백 추가
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '주문한 메뉴: ${review['productNames']}',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            softWrap: true, // 자동으로 줄바꿈 설정
+          ),
+          Flexible(
+            child: Text(
+              '리뷰: ${review['reviewContent']}',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              softWrap: true, // 자동으로 줄바꿈 설정
+              overflow: TextOverflow.ellipsis, // 새로운 오버플로우 발생 시 생략하여 표시
+            ),
+          ),
+          Text(
+            '평점: ${review['rating']}',
+            style: TextStyle(fontSize: 14),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: EdgeInsets.only(
-            left: 10, top: 10, bottom: 10, right: 175), // 왼쪽 여백 추가
-        child: Container(
-          width: MediaQuery.of(context).size.height * 0.01,
-          height: MediaQuery.of(context).size.height * 0.01,
-          color: Colors.black,
-        ),
-      ),
-    );
-  }
+    ),
+  );
+}
+
 }

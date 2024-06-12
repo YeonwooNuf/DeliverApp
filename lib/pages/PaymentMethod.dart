@@ -81,7 +81,7 @@ class TotalPayment extends StatelessWidget {
         print('------- onConfirm: $data');
         Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => OrderHistoryPage()),
+                  MaterialPageRoute(builder: (context) => OrderHistoryPage(userNumber: '',)),
         );
         return true;
       },
@@ -89,7 +89,7 @@ class TotalPayment extends StatelessWidget {
         print('------- onDone: $data');
         Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => OrderHistoryPage()),
+                  MaterialPageRoute(builder: (context) => OrderHistoryPage(userNumber: '',)),
         );
       },
     );
