@@ -159,7 +159,7 @@ class _FavoritePageState extends State<FavoritePage> {
               storeImage_URL: imagePath,
               storeName: title,
               storeId: favoriteStoreId,
-              storeAddress: storeAddress,
+              storeAddress: storeAddress, userNumber: widget.userNumber,
             ),
           ),
         );

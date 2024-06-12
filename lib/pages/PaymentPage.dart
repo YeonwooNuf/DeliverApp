@@ -1,6 +1,7 @@
 
 import 'dart:convert';
 import 'dart:html';
+import 'package:http/http.dart' as http;
 import 'package:delivery/pages/PaymentMethod.dart';
 import 'package:delivery/service/sv_ExchangeRate.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class PaymentPage extends StatefulWidget {
   final String storeAddress;
   final String userNumber;
   List<ExchangeRate> exchangeRates = []; // 환율 데이터를 담을 리스트
-
+  
   PaymentPage({
     required this.selectedStoreId,
     required this.selectedStoreName,
@@ -102,29 +103,64 @@ class _PaymentPageState extends State<PaymentPage> {
     });
   }
 
-void _sendOrderToServer() async {
-    int total = getTotalPrice();
-    List<String> productNames = widget.selectedMenus
-    .map((menu) => menu['productName'] as String?) // 'productName'이 없을 경우 null 반환
-    .where((productName) => productName != null) // null이 아닌 값만 필터링
-    .cast<String>() // null이 없는 것으로 보장하기 위해 명시적으로 형변환
-    .toList();
+  int getTotalPrice() {
+    int total = 0;
+    for (var menu in widget.selectedMenus) {
+      total += menu['totalPrice'] as int;
+    }
+    return total;
+  }
 
-     print('Product Names: $productNames'); // Product Names 출력
-    // 서버로 전송할 데이터
-    var orderData = {
-      'storeId': widget.selectedStoreId,
-      'storeName': widget.selectedStoreName,
-      'productNames': productNames,
-      'storeAddress': widget.storeAddress,
-      'totalPrice': total,
-      'userNumber': widget.userNumber,
-      // 기타 필요한 데이터 추가
-    };
+  void _sendOrderToServer() async {
+  int total = getTotalPrice();
+  List<String> productNames = widget.selectedMenus
+      .map((menu) => menu['productName'] as String?) // 'productName'이 없을 경우 null 반환
+      .where((productName) => productName != null) // null이 아닌 값만 필터링
+      .cast<String>() // null이 없는 것으로 보장하기 위해 명시적으로 형변환
+      .toList();
+
+  print('Product Names: $productNames'); // Product Names 출력
+  // 서버로 전송할 데이터
+  var orderData = {
+    'storeId': widget.selectedStoreId,
+    'storeName': widget.selectedStoreName,
+    'productNames': productNames,
+    'storeAddress': widget.storeAddress,
+    'totalPrice': total,
+    'userNumber': widget.userNumber,
+    // 기타 필요한 데이터 추가
+  };
+
+  // 여기에 서버로 데이터를 전송하는 코드를 추가합니다.
+  // 예를 들어, HTTP POST 요청을 보내거나 다른 방법으로 데이터를 전송할 수 있습니다.
+  // 이 예제에서는 HTTP POST 요청을 보내는 방법을 보여드리겠습니다.
+  try {
+    // 서버 URL을 여기에 입력합니다.
+    var url = 'http://localhost:8080/orders';
+
+    // HTTP POST 요청을 보냅니다.
+    var response = await http.post(
+      Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(orderData),
+    );
+
+    // 서버 응답을 출력합니다.
+    print('Server Response: ${response.statusCode}');
+    print('Server Response Body: ${response.body}');
+  } catch (e) {
+    // 오류가 발생한 경우 오류 메시지를 출력합니다.
+    print('Failed to send order to server: $e');
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     double payKoreanTotalPrice =
-        getKoreanTotalPrice(); // 연우야 이게 결제api쓸때 사용할 한국돈 결제 금액임
+        getKoreanTotalPrice(); // 
+        String selectedAddress = Provider.of<ItemListNotifier>(context).selectedAddress;
 
 
     print('한국 돈 결제 금액: $payKoreanTotalPrice');
@@ -168,7 +204,7 @@ void _sendOrderToServer() async {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                '${addressType} (으)로 배달',
+                '${selectedAddress} (으)로 배달',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
@@ -347,6 +383,7 @@ void _sendOrderToServer() async {
             ElevatedButton(
               onPressed: () {
                 TotalPayment(payTotalPrice: payTotalPrice, selectedStoreName: widget.selectedStoreName,).bootpayTest(context);
+                _sendOrderToServer();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,

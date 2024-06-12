@@ -1,17 +1,17 @@
-class Product {
-  final int productId;
-  final String productName;
-  final int qty;
-  final double price;
+// class Product {
+//   final int productId;
+//   final String productName;
+//   final int qty;
+//   final double price;
 
-  Product({required this.productId, required this.productName, required this.qty, required this.price});
+//   Product({required this.productId, required this.productName, required this.qty, required this.price});
 
-  factory Product.fromJson(Map<String, dynamic> json) {
-    return Product(
-      productId: json['productId'],
-      productName: json['productName'],
-      qty: json['qty'],
-      price: json['price'],
-    );
-  }
-}
+//   factory Product.fromJson(Map<String, dynamic> json) {
+//     return Product(
+//       productId: json['productId'],
+//       productName: json['productName'],
+//       qty: json['qty'],
+//       price: json['price'],
+//     );
+//   }
+// }

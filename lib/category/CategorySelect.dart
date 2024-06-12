@@ -229,7 +229,7 @@ class _JapaneseState extends State<CategorySelect> {
                     storeImage_URL: storeImg1,
                     storeName: storeName,
                     storeId: storeId,
-                    storeAddress: storeAddress,
+                    storeAddress: storeAddress, userNumber: widget.userNumber,
 
                   ),
                 ),

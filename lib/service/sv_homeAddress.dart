@@ -58,4 +58,88 @@ Future<List<Map<String, dynamic>>> getAddressListByCategory(String userNumber, S
     }
   }
 
+
+//유저 번호에 맞는 모든 주소리스트들
+  Future<List<Map<String, dynamic>>> getAddressListByuser(String userNumber) async {
+    final response = await http.get(
+      Uri.parse('http://localhost:8080/api/HomeAddress/allAddresses/$userNumber'),
+      headers: {'Content-Type': 'application/json; charset=utf-8'},
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      List<Map<String, dynamic>> addressList = List<Map<String, dynamic>>.from(data);
+
+
+      print(' address list: $addressList');
+      print(' address userNumber: $userNumber');
+      return addressList;
+    } else {
+      throw Exception('Failed to load user addresses');
+    }
+    
+  }
+  //주소 삭제 기능
+Future<void> deleteAddress(int userNumber, int homeAddressNumber) async {
+  final url = 'http://localhost:8080/api/HomeAddress/delete-addresses/$userNumber/$homeAddressNumber';
+
+  final response = await http.delete(
+    Uri.parse(url),
+    headers: {'Content-Type': 'application/json; charset=UTF-8'},
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('주소 삭제 실패');
+  }
+}
+
+
+
+
+
+
+
+
+
+  //선택된 주소의 true false 값 넘기는 코드
+  void updateAddressSelectStatus(int homeAddressNumber,  int userNumber, String address,String category,  bool selectStatus,) async {
+  // URL to your backend API endpoint for updating address select status
+  String apiUrl = 'http://localhost:8080/api/HomeAddress/updateAddressSelect';
+
+  // JSON body data to send in the request
+  Map<String, dynamic> requestBody = {
+    'homeAddressNumber': homeAddressNumber,
+    'addressUserNumber':userNumber,
+    'address':address,
+    'addressCategory':category,
+    'addressSelect': selectStatus,
+  };
+
+  // Convert the request body to JSON format
+  String jsonData = jsonEncode(requestBody);
+
+  try {
+    // Send a POST request to the backend API
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonData,
+    );
+
+    // Check if the request was successful (status code 200)
+    if (response.statusCode == 200) {
+      // Handle successful response
+      print('Address select status updated successfully');
+    } else {
+      // Handle other status codes (e.g., error or validation failure)
+      print('Failed to update address select status: ${response.statusCode}');
+    }
+  } catch (error) {
+    // Handle any errors that occur during the HTTP request
+    print('Error updating address select status: $error');
+  }
+}
+
   
