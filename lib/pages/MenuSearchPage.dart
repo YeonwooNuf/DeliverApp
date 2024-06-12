@@ -397,7 +397,7 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
           userNumber: widget.userNumber,
         ),
       ),
-    ).then((result) {
+    )).then((result) {
       // 결과값을 확인하고 페이지를 새로고침
       if (result == true) {
         setState(() {

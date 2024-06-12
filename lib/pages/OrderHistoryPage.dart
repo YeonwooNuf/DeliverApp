@@ -1,43 +1,13 @@
-import 'dart:convert';
+import 'package:delivery/service/sv_orderHistory.dart';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/ReviewPage.dart';
-import 'package:http/http.dart' as http;
 
 class OrderHistoryPage extends StatelessWidget {
   final String userNumber;
 
   OrderHistoryPage({Key? key, required this.userNumber}) : super(key: key);
 
-  Future<List<Map<String, dynamic>>> fetchOrders() async {
-    var url = Uri.http('localhost:8080', '/orderhistory', {'userNumber': userNumber});
-    var response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      var utf8Body = utf8.decode(response.bodyBytes);
-      List<dynamic> data = json.decode(utf8Body);
-      return data.map((order) => order as Map<String, dynamic>).toList();
-    } else {
-      return [];
-    }
-  }
-Future<String?> fetchImageUrl(int storeId) async {
-  var url = Uri.http('localhost:8080', '/api/store/$storeId/image');
-  var response = await http.get(url);
-
-  if (response.statusCode == 200) {
-    try {
-      return response.body;
-    } catch (e) {
-      print('JSON 파싱 오류: $e');
-      print(response.body);
-
-      return null;
-    }
-  } else {
-    print('HTTP 요청 오류: ${response.statusCode}');
-    return null;
-  }
-}
+  
 
 
   @override
@@ -50,7 +20,7 @@ Future<String?> fetchImageUrl(int storeId) async {
         title: Text('과거주문내역'),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: fetchOrders(),
+        future: fetchOrders(userNumber),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());

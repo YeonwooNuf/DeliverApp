@@ -159,7 +159,8 @@ class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     double payKoreanTotalPrice =
-        getKoreanTotalPrice(); // 연우야 이게 결제api쓸때 사용할 한국돈 결제 금액임
+        getKoreanTotalPrice(); // 
+        String selectedAddress = Provider.of<ItemListNotifier>(context).selectedAddress;
 
 
     print('한국 돈 결제 금액: $payKoreanTotalPrice');
@@ -203,7 +204,7 @@ class _PaymentPageState extends State<PaymentPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                '${addressType} (으)로 배달',
+                '${selectedAddress} (으)로 배달',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8),
@@ -381,7 +382,9 @@ class _PaymentPageState extends State<PaymentPage> {
           children: [
             ElevatedButton(
               onPressed: () {
+
                 TotalPayment(payKoreanTotalPrice: payKoreanTotalPrice, selectedStoreName: widget.selectedStoreName,).bootpayTest(context);
+
                 _sendOrderToServer();
               },
               style: ElevatedButton.styleFrom(

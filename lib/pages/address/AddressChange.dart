@@ -19,14 +19,14 @@ class ItemListNotifier extends ChangeNotifier {
 
   List<String> get addresses => _addresses;
 
-  final ProductService _productService = ProductService();
-  List<Product> _products = [];
-
-  List<Product> get products => _products;
-
-  // List<Item> _itemList = [];
-
-  // List<Item> get itemList => _itemList;
+ String _selectedAddress = '';
+  
+  String get selectedAddress => _selectedAddress;
+  
+  void setSelectedAddress(String address) {
+    _selectedAddress = address;
+    notifyListeners();
+  }
 
   String _addressType = '';
   String get addressType => _addressType;
@@ -37,13 +37,22 @@ class ItemListNotifier extends ChangeNotifier {
   String _workAddress = '우리 학교는 인하공전';
   String get otherAddresses => otherAddresses;
 
-  String _selectedAddress = '';
-  String get selectedAddress => _selectedAddress;
+  // String _selectedAddress = '';
+  // //String get selectedAddress => _selectedAddress;
+
+  // String selectedAddress = '';
+
+  
 
   int selectedIndex = -2;
+  //변경된 주소 homePage에 반영
+  // void updateSelectedAddress(String address) {
+  //   selectedAddress = address;
+  //   notifyListeners();
+  // }
 
   Future<void> fetchProducts() async {
-    _products = await _productService.fetchProducts();
+    //_products = await _productService.fetchProducts();
     notifyListeners();
   }
 
