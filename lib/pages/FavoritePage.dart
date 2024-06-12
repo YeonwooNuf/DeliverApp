@@ -27,6 +27,7 @@ class _FavoritePageState extends State<FavoritePage> {
     selectedFilter = filterOptions[0];
     _fetchFavoriteData();
   }
+  
 
   Future<void> _fetchFavoriteData() async {
     try {

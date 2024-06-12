@@ -3,6 +3,10 @@ import 'package:delivery/pages/address/AddressSearch.dart';
 import 'package:delivery/pages/address/AddressMapPage.dart'; // AddressMap import
 
 class NewAddressPage extends StatefulWidget {
+
+  final String userNumber;
+
+  const NewAddressPage({super.key, required this.userNumber});
   @override
   _NewAddressPageState createState() => _NewAddressPageState();
 }
@@ -25,7 +29,7 @@ class _NewAddressPageState extends State<NewAddressPage> {
                 // 도로명, 건물 또는 지번으로 검색 기능 구현
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AddressSearch()),
+                  MaterialPageRoute(builder: (context) => AddressSearch(userNumber: widget.userNumber,)),
                 );
               },
               decoration: InputDecoration(
@@ -45,7 +49,7 @@ class _NewAddressPageState extends State<NewAddressPage> {
                   // 현재 위치로 주소 찾기 기능 구현
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddressMapPage()),
+                    MaterialPageRoute(builder: (context) => AddressMapPage(userNumber: widget.userNumber,)),
                   );
                 },
                 icon: Icon(Icons.my_location), // 현재 위치 아이콘 추가
