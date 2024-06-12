@@ -20,6 +20,7 @@ class _FavoritePageState extends State<FavoritePage> {
   late List<Widget> favorites = [];
   late List<Map<String, dynamic>> allFavorites = [];
   late List<Map<String, dynamic>> allStores = [];
+  late String mostFrequentCategory = '';
 
   @override
   void initState() {
@@ -50,6 +51,8 @@ class _FavoritePageState extends State<FavoritePage> {
         allStores = _fetchedAllStores;
 
         favorites = buildFavoritesList(allFavorites);
+
+        mostFrequentCategory = calculateMostFrequentCategory(allFavorites);
 
         print('Fetched favorites: $allFavorites');
       });
@@ -110,6 +113,34 @@ class _FavoritePageState extends State<FavoritePage> {
     }).toList();
   }
 
+  // 가장 많은 카테고리를 찾는 함수
+  String calculateMostFrequentCategory(
+      List<Map<String, dynamic>> favoritesData) {
+    Map<String, int> categoryCount = {};
+    for (var favorite in favoritesData) {
+      String category = allStores.firstWhere(
+            (store) => store['storeId'] == favorite['favoriteStoreId'],
+            orElse: () => {},
+          )['category'] ??
+          '';
+
+      if (category.isNotEmpty) {
+        categoryCount[category] = (categoryCount[category] ?? 0) + 1;
+      }
+    }
+
+    String mostFrequent = '';
+    int maxCount = 0;
+    categoryCount.forEach((category, count) {
+      if (count > maxCount) {
+        maxCount = count;
+        mostFrequent = category;
+      }
+    });
+
+    return mostFrequent;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -137,6 +168,8 @@ class _FavoritePageState extends State<FavoritePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  // 추천 위젯 추가
+            buildRecommendationWidget(),
                   DropdownButton<String>(
                     value: selectedFilter,
                     underline: Container(),
@@ -183,6 +216,23 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
+  // 추천 위젯 생성
+  Widget buildRecommendationWidget() {
+    return mostFrequentCategory.isNotEmpty
+        ? Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            child: Text(
+              '추천: $mostFrequentCategory',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          )
+        : SizedBox.shrink();
+  }
+  
   Widget buildItemWidget(
   int favoriteStoreId,
   String title,
@@ -258,10 +308,21 @@ class _FavoritePageState extends State<FavoritePage> {
                         ),
                       ],
                     ),
+
                   ],
                 ),
               ),
               IconButton(
+// <<<<<<< yeonwoo
+//                 icon: Icon(Icons.delete),
+//                 onPressed: () async {
+//                   try {
+//                     await deleteFavorite(int.parse(widget.userNumber), favoriteStoreId);
+//                     _fetchFavoriteData(); // 데이터 갱신
+//                   } catch (e) {
+//                     print('Error deleting favorite: $e');
+//                   }
+// =======
                 icon: Icon(Icons.delete, color: Colors.black),
                 onPressed: () async {
                   await deleteFavorite(
