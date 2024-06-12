@@ -322,7 +322,7 @@ class _PaymentPageState extends State<PaymentPage> {
           children: [
             ElevatedButton(
               onPressed: () {
-                TotalPayment(payTotalPrice: payTotalPrice, selectedStoreName: widget.selectedStoreName,).bootpayTest(context);
+                TotalPayment(payKoreanTotalPrice: payKoreanTotalPrice, selectedStoreName: widget.selectedStoreName,).bootpayTest(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
