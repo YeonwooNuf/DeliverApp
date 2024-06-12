@@ -1,3 +1,4 @@
+import 'package:delivery/pages/PaymentPage.dart';
 import 'package:delivery/pages/address/AddressInfo.dart';
 import 'package:delivery/pages/address/AddressMapPage.dart';
 import 'package:delivery/pages/address/AddressRegisterPage.dart';
@@ -38,10 +39,10 @@ class MainApp extends StatelessWidget {
         body: TabBarView(
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            HomePage(userNumber: userNumber),
-            FavoritePage(userNumber: userNumber),
-            OrderHistoryPage(),
-            MyPage(name: name, phone: phone, userNumber: userNumber),
+            HomePage(userNumber: userNumber,),
+            FavoritePage(userNumber: userNumber,),
+            OrderHistoryPage(userNumber: userNumber,),
+            MyPage(name: name, phone: phone, userNumber: userNumber,),
           ],
         ),
         bottomNavigationBar: Bottom(),
@@ -82,19 +83,33 @@ class _MyAppState extends State<MyApp> {
             userNumber: args['userNumber'],
           );
         },
-        '/addressMap': (context) => AddressMapPage(),
-        '/addressRegister': (context) {
-          final address = ModalRoute.of(context)?.settings.arguments as String?;
-          if (address == null) {
+        '/addressMap': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          final userNumber = args?['userNumber']; // userNumber 가져오기
+          if (userNumber == null) {
             return Scaffold(
               body: Center(
-                child: Text('No address provided'),
+                child: Text('No user number provided'),
               ),
             );
           }
-          return AddressInfo(searchedAddress: address);
+          return AddressMapPage(userNumber: userNumber);
+        },
+        '/addressRegister': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+          final userNumber = args?['userNumber']; // userNumber 가져오기
+          final address = args?['address'] as String?;
+          if (address == null || userNumber == null) {
+            return Scaffold(
+              body: Center(
+                child: Text('No address or user number provided'),
+              ),
+            );
+          }
+          return AddressInfo(searchedAddress: address, userNumber: userNumber);
         },
       },
     );
   }
 }
+

@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/MenuSearchPage.dart';
 import 'package:delivery/service/sv_favorite.dart';
 import 'package:delivery/service/sv_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class FavoritePage extends StatefulWidget {
   final String userNumber;
@@ -26,12 +28,23 @@ class _FavoritePageState extends State<FavoritePage> {
     selectedFilter = filterOptions[0];
     _fetchFavoriteData();
   }
+  
 
   Future<void> _fetchFavoriteData() async {
     try {
-      List<Map<String, dynamic>> _fetchedFavoriteData =
-          await getUserFavorites(widget.userNumber);
+      List<Map<String, dynamic>> _fetchedFavoriteData = await getUserFavorites(widget.userNumber);
       List<Map<String, dynamic>> _fetchedAllStores = await getAllStores();
+
+      // 각 즐겨찾기에 평점 정보를 추가합니다.
+      for (var favorite in _fetchedFavoriteData) {
+        double averageRating = 0.0;
+        try {
+          averageRating = await getStoreRating(favorite['favoriteStoreId']);
+        } catch (e) {
+          print('Error fetching rating for store ${favorite['favoriteStoreId']}: $e');
+        }
+        favorite['averageRating'] = averageRating;
+      }
 
       setState(() {
         allFavorites = _fetchedFavoriteData;
@@ -52,21 +65,49 @@ class _FavoritePageState extends State<FavoritePage> {
     }
   }
 
+  Future<double> getStoreRating(int storeId) async {
+  try {
+    final response = await http.get(
+      Uri.parse('http://localhost:8080/reviews/$storeId/rating'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final dynamic responseData = jsonDecode(utf8.decode(response.bodyBytes));
+      if (responseData is Map<String, dynamic> && responseData.containsKey('averageRating')) {
+        final averageRating = responseData['averageRating'];
+        if (averageRating is double) {
+          return averageRating;
+        } else {
+          throw Exception('Invalid average rating format: $averageRating');
+        }
+      } else {
+        throw Exception('Invalid response format: $responseData');
+      }
+    } else {
+      throw Exception('Failed to fetch store rating: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error fetching store rating: $e');
+    throw e;
+  }
+}
+
   // 즐겨찾기에 추가한 매장들만 필터링 해주는 함수
   List<Widget> buildFavoritesList(List<Map<String, dynamic>> favoritesData) {
     return favoritesData.map<Widget>((favorite) {
       Map<String, dynamic> store = allStores.firstWhere(
-        (store) =>
-            store['storeId'] ==
-            favorite['favoriteStoreId'], // 아이디 값이 같은 매장의 정보들만 필터링
+        (store) => store['storeId'] == favorite['favoriteStoreId'],
         orElse: () => {},
       );
+
+      double averageRating = favorite['averageRating'] ?? 0.0;
 
       return buildItemWidget(
         favorite['favoriteStoreId'] as int,
         favorite['favoriteStoreName'],
         favorite['favorite_storeImg'],
-        favorite['rating'].toString(),
+        averageRating.toString(),
         store['storeAddress'] ?? '주소를 찾을 수 없음',
       );
     }).toList();
@@ -191,12 +232,12 @@ class _FavoritePageState extends State<FavoritePage> {
           )
         : SizedBox.shrink();
   }
-
+  
   Widget buildItemWidget(
   int favoriteStoreId,
   String title,
   String imagePath,
-  String starRating,
+  String averageRating, // 변경: averageRating으로 수정
   String storeAddress,
 ) {
   return GestureDetector(
@@ -209,6 +250,7 @@ class _FavoritePageState extends State<FavoritePage> {
             storeName: title,
             storeId: favoriteStoreId,
             storeAddress: storeAddress,
+            userNumber: widget.userNumber,
           ),
         ),
       );
@@ -249,44 +291,51 @@ class _FavoritePageState extends State<FavoritePage> {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 5.0),
                     Row(
                       children: [
                         ...List.generate(
-                          int.parse(starRating),
+                          double.parse(averageRating).round(), // 변경: double로 파싱한 후 반올림하여 사용
                           (index) => Icon(Icons.star,
-                              color: Colors.yellow, size: 20),
+                              color: Colors.yellow, size: 16), // 별 아이콘 크기 조정
                         ),
                         SizedBox(width: 4),
                         Text(
-                          starRating,
+                          double.parse(averageRating).toStringAsFixed(1), // 한 자리까지만 표시
                           style: TextStyle(
                             fontSize: 12.0,
-                            color: Colors.grey,
+                            color: Colors.black,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 5.0),
-                    Text(
-                      storeAddress,
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey,
-                      ),
-                    ),
+
                   ],
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.delete),
+// <<<<<<< yeonwoo
+//                 icon: Icon(Icons.delete),
+//                 onPressed: () async {
+//                   try {
+//                     await deleteFavorite(int.parse(widget.userNumber), favoriteStoreId);
+//                     _fetchFavoriteData(); // 데이터 갱신
+//                   } catch (e) {
+//                     print('Error deleting favorite: $e');
+//                   }
+// =======
+                icon: Icon(Icons.delete, color: Colors.black),
                 onPressed: () async {
-                  try {
-                    await deleteFavorite(int.parse(widget.userNumber), favoriteStoreId);
-                    _fetchFavoriteData(); // 데이터 갱신
-                  } catch (e) {
-                    print('Error deleting favorite: $e');
-                  }
+                  await deleteFavorite(
+                      int.parse(widget.userNumber), favoriteStoreId);
+                  setState(() {
+                    allFavorites.removeWhere((favorite) =>
+                        favorite['favoriteStoreId'] == favoriteStoreId); // 클릭하면 바로 상태 업데이트
+                    favorites = buildFavoritesList(allFavorites);
+                  });
+
+                  // 즐겨찾기 수를 SharedPreferences에 저장
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setInt('favoritesCount', allFavorites.length);
                 },
               ),
             ],

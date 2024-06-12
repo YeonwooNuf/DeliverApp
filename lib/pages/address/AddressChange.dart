@@ -35,7 +35,7 @@ class ItemListNotifier extends ChangeNotifier {
   String get homeAddress => _homeAddress;
 
   String _workAddress = '우리 학교는 인하공전';
-  String get workAddress => _workAddress;
+  String get otherAddresses => otherAddresses;
 
   String _selectedAddress = '';
   String get selectedAddress => _selectedAddress;

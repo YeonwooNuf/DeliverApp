@@ -1,219 +1,190 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:delivery/pages/ReviewPage.dart';
+import 'package:http/http.dart' as http;
 
 class OrderHistoryPage extends StatelessWidget {
-  // 주문 내역 리스트
-  final List<Map<String, String>> orders = [
-    {
-      'restaurantName': '동대문엽기떡볶이',
-      'orderTime': '2024-04-11 18:28',
-      'orderStatus': '배달 완료',
-      'orderItem': '실속세트',
-      'orderDetails': '떡볶이, [엽기] 착한맛',
-      'orderTotal': '합계 17,500원',
-    },
-    {
-      'restaurantName': '청년다방',
-      'orderTime': '2024-04-11 18:28',
-      'orderStatus': '배달 완료',
-      'orderItem': '실속세트',
-      'orderDetails': '차돌박이 떡볶이, 버터감자',
-      'orderTotal': '합계 17,500원',
-    },
-    {
-      'restaurantName': '백소정',
-      'orderTime': '2024-04-11 18:28',
-      'orderStatus': '배달 완료',
-      'orderItem': '세트',
-      'orderDetails': '돈가스모밀세트',
-      'orderTotal': '합계 10,500원',
-    },
-    // 추가 주문 내역을 여기에 추가할 수 있습니다.
-  ];
+  final String userNumber;
+
+  OrderHistoryPage({Key? key, required this.userNumber}) : super(key: key);
+
+  Future<List<Map<String, dynamic>>> fetchOrders() async {
+    var url = Uri.http('localhost:8080', '/orderhistory', {'userNumber': userNumber});
+    var response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      var utf8Body = utf8.decode(response.bodyBytes);
+      List<dynamic> data = json.decode(utf8Body);
+      return data.map((order) => order as Map<String, dynamic>).toList();
+    } else {
+      return [];
+    }
+  }
+Future<String?> fetchImageUrl(int storeId) async {
+  var url = Uri.http('localhost:8080', '/api/store/$storeId/image');
+  var response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    try {
+      return response.body;
+    } catch (e) {
+      print('JSON 파싱 오류: $e');
+      print(response.body);
+
+      return null;
+    }
+  } else {
+    print('HTTP 요청 오류: ${response.statusCode}');
+    return null;
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          '과거주문내역',
-          style: TextStyle(
-            fontFamily: 'MangoDdobak',
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
+        title: Text('과거주문내역'),
       ),
-      body: Container(
-        color: Colors.white,
-        padding: EdgeInsets.all(screenWidth * 0.04),
-        child: Column(
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: fetchOrders(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            List<Map<String, dynamic>> orders = snapshot.data ?? [];
+            return buildOrderList(orders, screenWidth, screenHeight);
+          }
+        },
+      ),
+    );
+  }
+
+Widget buildOrderList(List<Map<String, dynamic>> orders, double screenWidth, double screenHeight) {
+  return ListView.builder(
+    itemCount: orders.length,
+    itemBuilder: (context, index) {
+      final order = orders[index];
+      final storeId = order['storeId'];
+
+      return Container(
+        margin: EdgeInsets.all(screenWidth * 0.02),
+        padding: EdgeInsets.all(screenWidth * 0.02),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(screenWidth * 0.02),
+        ),
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: '검색어를 입력하세요',
-                hintStyle: TextStyle(
-                  fontFamily: 'MangoDdobak',
-                  color: Colors.grey,
-                ),
-                prefixIcon: Icon(
-                  Icons.search,
-                  color: Colors.black,
-                ),
+            Expanded(
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    order['storeName'] ?? '',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth * 0.045,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  Text(
+                    order['orderTime'] ?? '',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: screenWidth * 0.035,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  Text(
+                    order['productNames'] ?? '',
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.04,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  Text(
+                    '${order['totalPrice']}원',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth * 0.04,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.01),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ReviewPage(
+                            storeName: order['storeName'] ?? '',
+                            productNames: order['productNames'] ?? '',
+                            userNumber: (order['userNumber'] ?? '').toString(),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      '리뷰 쓰기',
+                      style: TextStyle(
+                        fontFamily: 'MangoDdobak',
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(screenWidth * 0.05),
+                      ),
+                      fixedSize: Size(screenWidth, screenWidth * 0.07),
+                      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.12, vertical: screenWidth * 0.035),
+                    ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: screenWidth * 0.05),
             Expanded(
-              child: ListView.builder(
-                itemCount: orders.length,
-                itemBuilder: (context, index) {
-                  return buildOrderHistoryItem(context, index);
+              flex: 1,
+              child: FutureBuilder<String?>(
+                future: fetchImageUrl(storeId),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    String? imageUrl = snapshot.data;
+                    return imageUrl != null
+                        ? Container(
+                            width: screenWidth * 0.6, // 정사각형으로 만들기 위해 너비와 높이를 같게 설정
+                            height: screenWidth * 0.4,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(imageUrl),
+                                fit: BoxFit.contain, // 이미지가 컨테이너를 꽉 채우도록 설정
+                              ),
+                              borderRadius: BorderRadius.circular(12), // 필요한 경우, 모서리를 둥글게 설정
+                            ),
+                          )
+                        : Placeholder(
+                            fallbackWidth: screenWidth * 0.1,
+                            fallbackHeight: screenWidth * 0.1,
+                          );
+                  }
                 },
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget buildOrderHistoryItem(BuildContext context, int index) {
-    final order = orders[index];
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    return Container(
-      margin: EdgeInsets.only(bottom: screenWidth * 0.05),
-      padding: EdgeInsets.all(screenWidth * 0.04),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(screenWidth * 0.03),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      order['restaurantName']!,
-                      style: TextStyle(
-                        fontFamily: 'MangoDdobak',
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        fontSize: screenWidth * 0.05,
-                      ),
-                    ),
-                    Text(
-                      order['orderTime']!,
-                      style: TextStyle(
-                        fontFamily: 'MangoDdobak',
-                        color: Colors.grey,
-                        fontSize: screenWidth * 0.035,
-                      ),
-                    ),
-                    Text(
-                      order['orderStatus']!,
-                      style: TextStyle(
-                        fontFamily: 'MangoDdobak',
-                        color: Colors.black,
-                        fontSize: screenWidth * 0.035,
-                      ),
-                    ),
-                    SizedBox(height: screenWidth * 0.05),
-                  ],
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(screenWidth * 0.03),
-                child: Image.asset(
-                  'assets/images/${index + 1}.png', // 이미지 경로
-                  width: screenWidth * 0.2,
-                  height: screenWidth * 0.2,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 0),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                order['orderItem']!,
-                style: TextStyle(
-                  fontFamily: 'MangoDdobak',
-                  fontWeight: FontWeight.w500,
-                  fontSize: screenWidth * 0.04,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(height: screenWidth * 0.01),
-              Text(
-                order['orderDetails']!,
-                style: TextStyle(
-                  fontFamily: 'MangoDdobak',
-                  fontWeight: FontWeight.w500,
-                  fontSize: screenWidth * 0.04,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(height: screenWidth * 0.01),
-              Text(
-                order['orderTotal']!,
-                style: TextStyle(
-                  fontFamily: 'MangoDdobak',
-                  fontSize: screenWidth * 0.04,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: screenWidth * 0.01),
-          Center(
-            child: Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ReviewPage(
-                        restaurantName: order['restaurantName']!,
-                        orderDetails: order['orderDetails']!,
-                      ),
-                    ),
-                  );
-                },
-                child: Text(
-                  '리뷰 쓰기',
-                  style: TextStyle(
-                    fontFamily: 'MangoDdobak',
-                    color: Colors.white,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(screenWidth * 0.05),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.12, vertical: screenWidth * 0.035),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+      );
+    },
+  );
+}
 }

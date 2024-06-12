@@ -121,3 +121,25 @@ Future<List<Map<String, dynamic>>> getAllStores() async {
     throw Exception('Failed to fetch store information');
   }
 }
+
+// Future<double> getStoreRating(int storeId) async {
+//   final response = await http.get(Uri.parse('https://api.example.com/store/$storeId/rating'));
+
+//   if (response.statusCode == 200) {
+//     final data = jsonDecode(response.body);
+//     print('Fetched data for store $storeId: $data'); // 디버깅을 위한 출력
+
+//     if (data is Map<String, dynamic>) {
+//       final rating = data['rating'];
+//       if (rating is num) {
+//         return rating.toDouble();
+//       } else {
+//         throw TypeError();
+//       }
+//     } else {
+//       throw TypeError();
+//     }
+//   } else {
+//     throw Exception('Failed to load store rating');
+//   }
+// }

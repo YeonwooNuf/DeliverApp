@@ -71,7 +71,7 @@ class TotalPayment extends StatelessWidget {
         Bootpay().dismiss(context); //명시적으로 부트페이 뷰 종료 호출
         Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PaymentPage(selectedStoreId: 0, selectedMenus: [], selectedStoreName: '', storeAddress: '',))
+                  MaterialPageRoute(builder: (context) => PaymentPage(selectedStoreId: 0, selectedMenus: [], selectedStoreName: '', storeAddress: '', userNumber: '',))
         );
       },
       onIssued: (String data) {
@@ -81,7 +81,7 @@ class TotalPayment extends StatelessWidget {
         print('------- onConfirm: $data');
         Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => OrderHistoryPage()),
+                  MaterialPageRoute(builder: (context) => OrderHistoryPage(userNumber: '',)),
         );
         return true;
       },
@@ -89,7 +89,7 @@ class TotalPayment extends StatelessWidget {
         print('------- onDone: $data');
         Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => OrderHistoryPage()),
+                  MaterialPageRoute(builder: (context) => OrderHistoryPage(userNumber: '',)),
         );
       },
     );

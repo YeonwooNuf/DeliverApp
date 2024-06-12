@@ -1,12 +1,17 @@
+import 'package:delivery/pages/HomePage.dart';
+import 'package:delivery/service/sv_homeAddress.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/pages/address/AddressChange.dart';
-import 'package:delivery/pages/address/AddressRegisterPage.dart';
+import 'package:delivery/dto/homeAddress_dto.dart'; // HomeAddressDto를 사용하기 위해 추가
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AddressInfo extends StatefulWidget {
   final String searchedAddress;
+  final String userNumber;
 
-  AddressInfo({Key? key, required this.searchedAddress}) : super(key: key);
+  AddressInfo({Key? key, required this.searchedAddress, required this.userNumber}) : super(key: key);
 
   @override
   AddressInfoState createState() => AddressInfoState();
@@ -49,6 +54,8 @@ class AddressInfoState extends State<AddressInfo> {
 
   @override
   void dispose() {
+    _detailAddressController.dispose();
+    _directionsController.dispose();
     _aliasController.dispose();
     super.dispose();
   }
@@ -78,6 +85,7 @@ class AddressInfoState extends State<AddressInfo> {
             ),
             SizedBox(height: 16.0),
             TextField(
+              controller: _detailAddressController, // controller 추가
               decoration: InputDecoration(
                 hintText: '상세주소 (아파트/동/호)',
                 hintStyle:
@@ -86,14 +94,10 @@ class AddressInfoState extends State<AddressInfo> {
               style: TextStyle(
                 fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
               ),
-              onChanged: (value) {
-                setState(() {
-                  detailAddress = value;
-                });
-              },
             ),
             SizedBox(height: 16.0),
             TextField(
+              controller: _directionsController, // controller 추가
               decoration: InputDecoration(
                 hintText: '길 안내 (예: 1층에 메가커피가 있는 건물, 공동현관 비밀번호 #1234)',
                 hintStyle:
@@ -102,11 +106,6 @@ class AddressInfoState extends State<AddressInfo> {
               style: TextStyle(
                 fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
               ),
-              onChanged: (value) {
-                setState(() {
-                  directions = value;
-                });
-              },
             ),
             SizedBox(height: 16.0),
             if (_locationColor == Colors.black12)
@@ -120,11 +119,6 @@ class AddressInfoState extends State<AddressInfo> {
                 style: TextStyle(
                   fontWeight: FontWeight.w700, // 이 부분에 FontWeight.w700 추가
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    alias = value; // 입력받은 별칭을 저장합니다.
-                  });
-                },
               ),
             SizedBox(height: 16.0),
             Row(
@@ -227,7 +221,7 @@ class AddressInfoState extends State<AddressInfo> {
                 child: SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_homeColor == Colors.transparent &&
                           _workColor == Colors.transparent &&
                           _locationColor == Colors.transparent) {
@@ -253,6 +247,8 @@ class AddressInfoState extends State<AddressInfo> {
                             widget.searchedAddress + ' , ' + detailAddress;
                         print('상세주소 : $detailAddress');
                         print('길 안내 : $directions');
+                        print('유저아이디: ${widget.userNumber}');
+
                         if (_homeColor == Colors.black12) {
                           print('선택된 버튼: 집');
                           Provider.of<ItemListNotifier>(context, listen: false)
@@ -276,6 +272,26 @@ class AddressInfoState extends State<AddressInfo> {
                           Provider.of<ItemListNotifier>(context, listen: false)
                               .addAddress(combinedAddress);
                         }
+
+                        // HomeAddressDto 생성
+                        final homeAddressDto = HomeAddressDto(
+                          addressUserNumber: int.parse(widget.userNumber), // 적절한 사용자 번호로 변경하세요.
+                          address: combinedAddress,
+                          addressCategory: _homeColor == Colors.black12 ? '집'
+                              : _workColor == Colors.black12 ? '회사'
+                                  : _locationColor == Colors.black12 ? '기타':alias
+                        );
+
+                        // 서버로 데이터 전송
+                        await saveHomeAddress(homeAddressDto);
+
+                       
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(userNumber: widget.userNumber),
+                          ),
+                        );
                          showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -286,20 +302,12 @@ class AddressInfoState extends State<AddressInfo> {
                                 TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
-                                    
                                   },
                                   child: Text("확인"),
                                 ),
-                              ]
+                              ],
                             );
-                         
-                         
-                          });
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AddressRegisterPage(),
-                          ),
+                          },
                         );
                       }
                     },

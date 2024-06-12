@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:delivery/dto/favorite_dto.dart';
 import 'package:delivery/pages/MenuSearchPage.dart';
 import 'package:delivery/service/sv_favorite.dart';
+import 'package:delivery/service/sv_menu.dart';
 import 'package:delivery/service/sv_store.dart';
 import 'package:delivery/service/sv_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class CategorySelect extends StatefulWidget {
   final String CategoryName;
@@ -39,11 +43,13 @@ class _JapaneseState extends State<CategorySelect> {
   late List<Map<String, dynamic>> _storeImg = [];
 
   late List<Map<String, dynamic>> _allStores = []; // 매장 정보 전체 받아옴
+  late List<Map<String, dynamic>> _allMenus = []; // 매장 메뉴 전체 받아옴
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = _titles.indexOf(widget.CategoryName); // initState 메서드 내에서 호출
+    _currentIndex =
+        _titles.indexOf(widget.CategoryName); // initState 메서드 내에서 호출
     _fetchStoreData(); // 데이터 불러오기
   }
 
@@ -52,24 +58,58 @@ class _JapaneseState extends State<CategorySelect> {
     _storeName = await getStoreName();
     _storeImg = await getStoreImg();
     _allStores = await getAllStores();
+    _allMenus = await getAllMenus();
 
+    for (var store in _allStores) {
+    print(store);
+    double averageRating = await getStoreRating(store['storeId']);
+    store['averageRating'] = averageRating; // 가져온 평균 별점을 가게 정보에 추가
     print('매장정보들:');
+  }
     _allStores.forEach((store) {
       print(store);
     });
-
     setState(() {}); // 상태 업데이트
-
-    // 각 카테고리를 콘솔에 출력
   }
+
+  //별점평균 불러오는 비동기 함수
+  Future<double> getStoreRating(int storeId) async {
+  try {
+    final response = await http.get(
+      Uri.parse('http://localhost:8080/reviews/$storeId/rating'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final dynamic responseData = jsonDecode(utf8.decode(response.bodyBytes));
+      if (responseData is Map<String, dynamic> && responseData.containsKey('averageRating')) {
+        final averageRating = responseData['averageRating'];
+        if (averageRating is double) {
+          return averageRating;
+        } else {
+          throw Exception('Invalid average rating format: $averageRating');
+        }
+      } else {
+        throw Exception('Invalid response format: $responseData');
+      }
+    } else {
+      throw Exception('Failed to fetch store rating: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error fetching store rating: $e');
+    throw e;
+  }
+}
 
   // 정렬 함수 추가
   void _sortStores() {
     setState(() {
       if (selectedValue == '가나다순') {
-        _allStores.sort((Map<String, dynamic> a, Map<String, dynamic> b) => a['storeName'].compareTo(b['storeName']));
+        _allStores.sort((Map<String, dynamic> a, Map<String, dynamic> b) =>
+            a['storeName'].compareTo(b['storeName']));
       } else if (selectedValue == '신규매장순') {
-        _allStores.sort((Map<String, dynamic> a, Map<String, dynamic> b) => b['storeId'].compareTo(a['storeId']));
+        _allStores.sort((Map<String, dynamic> a, Map<String, dynamic> b) =>
+            b['storeId'].compareTo(a['storeId']));
       }
     });
   }
@@ -197,109 +237,178 @@ class _JapaneseState extends State<CategorySelect> {
   }
 
   // 이미지 클릭 메서드
-  Widget _Image(String storeImage_URL, String storeName, int storeId,
-    String storeAddress, String userNumber) {
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MenuSearchPage(
-                  storeImage_URL: storeImage_URL,
-                  storeName: storeName,
-                  storeId: storeId,
-                  storeAddress: storeAddress,
-                ),
-              ),
-            );
-          },
-          child: Stack(
-            children: [
-              Container(
-                height: 180,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 15,
-                      offset: Offset(5, 10),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: const Color.fromARGB(66, 13, 13, 13), width: 3), // 얇은 회색 테두리 추가
-                    ),
-                    child: Image.network(
-                      storeImage_URL,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity,
-                      loadingBuilder: (BuildContext context, Widget child,
-                          ImageChunkEvent? loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        } else {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          );
-                        }
-                      },
-                      errorBuilder: (BuildContext context, Object error,
-                          StackTrace? stackTrace) {
-                        return Center(
-                          child: Icon(
-                            Icons.error,
-                            color: Colors.red,
-                          ),
-                        );
-                      },
-                    ),
+
+  Widget _Image(
+    String storeName,
+    int storeId,
+    String storeAddress,
+    String storeImg1,
+    String storeImg2,
+    String storeImg3,
+    String userNumber, 
+    double averageRating,
+  ) {
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MenuSearchPage(
+
+                    storeImage_URL: storeImg1,
+                    storeName: storeName,
+                    storeId: storeId,
+                    storeAddress: storeAddress, 
+                    userNumber: widget.userNumber,
+
                   ),
                 ),
-              ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: HeartIconButton(
-                  userNumber: userNumber,
-                  storeId: '$storeId',
-                  storeImg: storeImage_URL,
-                  storeName: storeName,
+              );
+            },
+           child: Container(
+            height: 200,
+            width: 400,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: _buildImageContainer(storeImg1),
                 ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            storeName,
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
+                SizedBox(width: 10),
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: _buildImageContainer(storeImg2),
+                      ),
+                      SizedBox(height: 10),
+                      Expanded(
+                        child: _buildImageContainer(storeImg3),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
+            
+          ),
+            SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    storeName.length > 15 ? storeName.substring(0, 15) + '...' : storeName,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Text(
+                        '평균 별점: ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        averageRating.toStringAsFixed(1),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.amber,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            HeartIconButton(
+              userNumber: userNumber,
+              storeId: '$storeId',
+              storeImg: storeImg1,
+              storeName: storeName,
+            ),
+          ],
         ),
+        
       ],
     ),
   );
 }
+
+  Widget _buildImageContainer(String imageURL) {
+    return Container(
+      height: 200,
+      width: 180,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black26,
+        //     blurRadius: 15,
+        //     offset: Offset(5, 10),
+        //   ),
+        // ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          decoration: BoxDecoration(
+            // border: Border.all(
+            //     color: const Color.fromARGB(66, 13, 13, 13),
+            //     width: 3), // 얇은 회색 테두리 추가
+          ),
+          child: Image.network(
+            imageURL,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent? loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!
+                        : null,
+                  ),
+                );
+              }
+            },
+            errorBuilder:
+                (BuildContext context, Object error, StackTrace? stackTrace) {
+              return Center(
+                child: Icon(
+                  Icons.error,
+                  color: Colors.red,
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
 
 // 이미지 위젯들을 반환하는 메서드
   Widget _buildImagesForCategory(int categoryIndex, String userNumber) {
@@ -354,7 +463,7 @@ class _JapaneseState extends State<CategorySelect> {
           final storeData = filteredStoreData[index];
           final storeId = storeData['storeId'] ?? '';
           final storeAddress = storeData['storeAddress'] ?? '';
-          final storeImg = _allStores.firstWhere(
+          final storeImg1 = _allStores.firstWhere(
                 (element) => element['storeId'] == storeId,
                 orElse: () => {'storeImg': ''},
               )['storeImg'] ??
@@ -364,12 +473,30 @@ class _JapaneseState extends State<CategorySelect> {
                 orElse: () => {'storeName': '매장정보 없음'}, // 매장명이 없을 때 처리
               )['storeName'] ??
               '매장정보 없음';
+          final averageRating = _allStores.firstWhere(
+                (element) => element['storeId'] == storeId,
+                orElse: () => {'averageRating': 0.0}, // 별점이 없을 때 처리
+              )['averageRating'] ?? 0.0;
+          final matchingProducts = _allMenus
+              .where((element) => element['menu_storeId'] == storeId)
+              .toList();
+
+          final storeImg2 = matchingProducts.length > 1
+              ? matchingProducts[1]['productImg']
+              : '';
+          final storeImg3 = matchingProducts.length > 2
+              ? matchingProducts[2]['productImg']
+              : '';
+
           return _Image(
-              storeImg, // 이미지 URL
               storeName, // 스토어 이름
               storeId,
               storeAddress,
-              userNumber);
+              storeImg1, // 이미지 URL
+              storeImg2,
+              storeImg3,
+              userNumber,
+              averageRating);
         }),
       );
     }
@@ -382,12 +509,14 @@ class HeartIconButton extends StatefulWidget {
   final String storeId;
   final String storeImg;
   final String storeName;
+  final double? rating;
 
   HeartIconButton({
     required this.userNumber,
     required this.storeId,
     required this.storeImg,
     required this.storeName,
+    this.rating,
   });
 
   @override
@@ -406,10 +535,12 @@ class _HeartIconButtonState extends State<HeartIconButton> {
 
   // 사용자의 즐겨찾기 목록을 로드하여 해당 상점이 있는지 확인하는 함수
   Future<void> checkIfStoreIsFavorite() async {
-    List<Map<String, dynamic>> favorites = await getUserFavorites(widget.userNumber);
+    List<Map<String, dynamic>> favorites =
+        await getUserFavorites(widget.userNumber);
     setState(() {
       // 사용자의 즐겨찾기 목록에 특정 상점이 포함되어 있는지 확인
-      isFilled = favorites.any((favorite) => favorite['favoriteStoreId'].toString() == widget.storeId);
+      isFilled = favorites.any((favorite) =>
+          favorite['favoriteStoreId'].toString() == widget.storeId);
     });
   }
 
@@ -418,14 +549,14 @@ class _HeartIconButtonState extends State<HeartIconButton> {
     return IconButton(
       icon: isFilled
           ? Icon(Icons.favorite, color: Colors.red)
-          : Icon(Icons.favorite_border, color: Colors.white),
+          : Icon(Icons.favorite_border, color: Colors.grey),
       onPressed: () async {
         // 상태를 먼저 변경
         setState(() {
           isFilled = !isFilled;
         });
 
-        // 상태 변경 후, 즐겨찾기 추가 또는 삭제 
+        // 상태 변경 후, 즐겨찾기 추가 또는 삭제
         if (isFilled) {
           // 즐겨찾기를 추가하는 로직
           final favorite = FavoriteDto(
@@ -445,7 +576,8 @@ class _HeartIconButtonState extends State<HeartIconButton> {
         } else {
           // 즐겨찾기를 삭제
           try {
-            await deleteFavorite(int.parse(widget.userNumber), int.parse(widget.storeId)); // 하트 비우면 즐겨찾기 삭제
+            await deleteFavorite(int.parse(widget.userNumber),
+                int.parse(widget.storeId)); // 하트 비우면 즐겨찾기 삭제
           } catch (e) {
             print('삭제 실패: $e');
           }
@@ -463,7 +595,8 @@ class _HeartIconButtonState extends State<HeartIconButton> {
     final currentFavoritesCount = prefs.getInt('favoritesCount') ?? 0;
     setState(() {
       // 하트가 채워져 있는 경우에만 즐겨찾기 개수를 증가
-      final newFavoritesCount = isFilled ? currentFavoritesCount + 1 : currentFavoritesCount - 1;
+      final newFavoritesCount =
+          isFilled ? currentFavoritesCount + 1 : currentFavoritesCount - 1;
       prefs.setInt('favoritesCount', newFavoritesCount);
     });
   }
