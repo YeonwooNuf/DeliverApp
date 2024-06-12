@@ -240,6 +240,10 @@ class _FavoritePageState extends State<FavoritePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+
+            buildRecommendationWidget(),
+            SizedBox(width: 50,),
+
                   DropdownButton<String>(
                     value: selectedFilter,
                     underline: Container(),

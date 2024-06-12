@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:delivery/dto/review_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,47 +38,66 @@ class _ReviewPageState extends State<ReviewPage> {
   }
 
   Future<void> _fetchReviewsCount() async {
-  final prefs = await SharedPreferences.getInstance();
-  int? reviewsCount = prefs.getInt('reviewsCount') ?? 0;
-  // 받아온 리뷰 개수를 UI에 반영하기 위해 상태를 업데이트
-  setState(() {
-    reviewsCount = reviewsCount;
-  });
-}
-
-  void _sendReviewToServer() async {
-  double rating = stars.where((star) => star).length.toDouble();
-  var reviewData = ReviewData(
-    userNumber: widget.userNumber,
-    storeName: widget.storeName,
-    productNames: widget.productNames,
-    selectedFeedbacks: selectedFeedbacks,
-    deliveryFeedbacks: deliveryFeedbacks,
-    rating: rating,
-  );
-
-  var url = Uri.parse('http://localhost:8080/reviews'); // 서버 URL을 적절히 수정하세요.
-  var response = await http.post(
-    url,
-    headers: {"Content-Type": "application/json"},
-    body: json.encode(reviewData.toJson()),
-  );
-
-  if (response.statusCode == 200) {
-    print('Review has been saved');
-
-    // 리뷰 수를 SharedPreferences에 저장
     final prefs = await SharedPreferences.getInstance();
     int? reviewsCount = prefs.getInt('reviewsCount') ?? 0;
-    await prefs.setInt('reviewsCount', reviewsCount + 1);
-
-    // 리뷰 개수 업데이트
-    _fetchReviewsCount();
-  } else {
-    print('Failed to save review: ${response.statusCode}');
+    // 받아온 리뷰 개수를 UI에 반영하기 위해 상태를 업데이트
+    setState(() {
+      reviewsCount = reviewsCount;
+    });
   }
-}
 
+  void _sendReviewToServer() async {
+    double rating = stars.where((star) => star).length.toDouble();
+    var reviewData = ReviewData(
+      userNumber: widget.userNumber,
+      storeName: widget.storeName,
+      productNames: widget.productNames,
+      selectedFeedbacks: selectedFeedbacks,
+      deliveryFeedbacks: deliveryFeedbacks,
+      rating: rating,
+    );
+
+    var url = Uri.parse('http://localhost:8080/reviews'); // 서버 URL을 적절히 수정하세요.
+    var response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(reviewData.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      print('Review has been saved');
+
+      // 리뷰 수를 SharedPreferences에 저장
+      final prefs = await SharedPreferences.getInstance();
+      int? reviewsCount = prefs.getInt('reviewsCount') ?? 0;
+      await prefs.setInt('reviewsCount', reviewsCount + 1);
+
+      // 리뷰 개수 업데이트
+      _fetchReviewsCount();
+    } else {
+      print('Failed to save review: ${response.statusCode}');
+    }
+  }
+
+  void _showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('등록되었습니다.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop(); // 다이얼로그 닫기
+                Navigator.of(context).pop(); // 이전 화면으로 돌아가기
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +125,8 @@ class _ReviewPageState extends State<ReviewPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: screenWidth * 0.1),
+          padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.1, vertical: screenWidth * 0.1),
           color: Colors.white,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -179,7 +200,8 @@ class _ReviewPageState extends State<ReviewPage> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.thumb_up, color: _isLiked ? Colors.blue : Colors.grey),
+                    icon: Icon(Icons.thumb_up,
+                        color: _isLiked ? Colors.blue : Colors.grey),
                     onPressed: () {
                       setState(() {
                         _isLiked = !_isLiked;
@@ -189,7 +211,8 @@ class _ReviewPageState extends State<ReviewPage> {
                   ),
                   SizedBox(width: screenWidth * 0.04),
                   IconButton(
-                    icon: Icon(Icons.thumb_down, color: _isDisliked ? Colors.blue : Colors.grey),
+                    icon: Icon(Icons.thumb_down,
+                        color: _isDisliked ? Colors.blue : Colors.grey),
                     onPressed: () {
                       setState(() {
                         _isDisliked = !_isDisliked;
@@ -245,7 +268,8 @@ class _ReviewPageState extends State<ReviewPage> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.thumb_up, color: _deliveryLiked ? Colors.blue : Colors.grey),
+                    icon: Icon(Icons.thumb_up,
+                        color: _deliveryLiked ? Colors.blue : Colors.grey),
                     onPressed: () {
                       setState(() {
                         _deliveryLiked = !_deliveryLiked;
@@ -255,7 +279,8 @@ class _ReviewPageState extends State<ReviewPage> {
                   ),
                   SizedBox(width: screenWidth * 0.04),
                   IconButton(
-                    icon: Icon(Icons.thumb_down, color: _deliveryDisliked ? Colors.blue : Colors.grey),
+                    icon: Icon(Icons.thumb_down,
+                        color: _deliveryDisliked ? Colors.blue : Colors.grey),
                     onPressed: () {
                       setState(() {
                         _deliveryDisliked = !_deliveryDisliked;
@@ -307,6 +332,7 @@ class _ReviewPageState extends State<ReviewPage> {
         child: ElevatedButton(
           onPressed: () {
             _sendReviewToServer();
+            _showSuccessDialog(context);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue,
@@ -314,7 +340,10 @@ class _ReviewPageState extends State<ReviewPage> {
           ),
           child: Text(
             '등록하기',
-            style: TextStyle(color: Colors.white, fontSize: screenWidth * 0.05, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: screenWidth * 0.05,
+                fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -323,7 +352,10 @@ class _ReviewPageState extends State<ReviewPage> {
 
   Widget _buildFeedbackTile(String feedback) {
     return ListTile(
-      title: Text(feedback, style: TextStyle(color: Colors.black),),
+      title: Text(
+        feedback,
+        style: TextStyle(color: Colors.black),
+      ),
       trailing: selectedFeedbacks.contains(feedback)
           ? Icon(Icons.check, color: Colors.blue)
           : null,
@@ -341,7 +373,10 @@ class _ReviewPageState extends State<ReviewPage> {
 
   Widget _buildDeliveryTile(String feedbackdel) {
     return ListTile(
-      title: Text(feedbackdel, style: TextStyle(color: Colors.black),),
+      title: Text(
+        feedbackdel,
+        style: TextStyle(color: Colors.black),
+      ),
       trailing: deliveryFeedbacks.contains(feedbackdel)
           ? Icon(Icons.check, color: Colors.blue)
           : null,
@@ -357,44 +392,3 @@ class _ReviewPageState extends State<ReviewPage> {
     );
   }
 }
-
-class ReviewData {
-  final String userNumber;
-  final String storeName;
-  final String productNames;
-  final List<String> selectedFeedbacks;
-  final List<String> deliveryFeedbacks;
-  final double rating;
-
-  ReviewData({
-    required this.userNumber,
-    required this.storeName,
-    required this.productNames,
-    required this.selectedFeedbacks,
-    required this.deliveryFeedbacks,
-    required this.rating,
-  });
-
-  Map<String, dynamic> toJson() {
-    // selectedFeedbacks와 deliveryFeedbacks가 공백이면 "좋아요"로 대체
-    String selectedFeedbacksStr = selectedFeedbacks.isEmpty ? '메뉴 맛있어요' : selectedFeedbacks.join(', ');
-    String deliveryFeedbacksStr = deliveryFeedbacks.isEmpty ? '배달파트너 좋아요' : deliveryFeedbacks.join(', ');
-
-    // 두 값이 모두 "좋아요"라면 하나의 "좋아요"만 포함
-    String reviewContent;
-    if (selectedFeedbacksStr == '메뉴 맛있어요' && deliveryFeedbacksStr == '배달파트너 좋아요') {
-      reviewContent = '완전 완전 만족해요';
-    } else {
-      reviewContent = selectedFeedbacksStr + ' ' + deliveryFeedbacksStr;
-    }
-
-    return {
-      'userNumber': userNumber,
-      'storeName': storeName,
-      'productNames': productNames,
-      'reviewContent': reviewContent,
-      'rating': rating.toString(),
-    };
-  }
-}
-

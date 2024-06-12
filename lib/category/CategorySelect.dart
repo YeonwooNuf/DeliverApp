@@ -4,12 +4,11 @@ import 'package:delivery/dto/favorite_dto.dart';
 import 'package:delivery/pages/MenuSearchPage.dart';
 import 'package:delivery/service/sv_favorite.dart';
 import 'package:delivery/service/sv_menu.dart';
+import 'package:delivery/service/sv_review.dart';
 import 'package:delivery/service/sv_store.dart';
-import 'package:delivery/service/sv_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 
 class CategorySelect extends StatefulWidget {
   final String CategoryName;
@@ -61,45 +60,15 @@ class _JapaneseState extends State<CategorySelect> {
     _allMenus = await getAllMenus();
 
     for (var store in _allStores) {
-    print(store);
     double averageRating = await getStoreRating(store['storeId']);
     store['averageRating'] = averageRating; // 가져온 평균 별점을 가게 정보에 추가
-    print('매장정보들:');
   }
-    _allStores.forEach((store) {
-      print(store);
-    });
+   
     setState(() {}); // 상태 업데이트
   }
 
   //별점평균 불러오는 비동기 함수
-  Future<double> getStoreRating(int storeId) async {
-  try {
-    final response = await http.get(
-      Uri.parse('http://localhost:8080/reviews/$storeId/rating'),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      final dynamic responseData = jsonDecode(utf8.decode(response.bodyBytes));
-      if (responseData is Map<String, dynamic> && responseData.containsKey('averageRating')) {
-        final averageRating = responseData['averageRating'];
-        if (averageRating is double) {
-          return averageRating;
-        } else {
-          throw Exception('Invalid average rating format: $averageRating');
-        }
-      } else {
-        throw Exception('Invalid response format: $responseData');
-      }
-    } else {
-      throw Exception('Failed to fetch store rating: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error fetching store rating: $e');
-    throw e;
-  }
-}
+ 
 
   // 정렬 함수 추가
   void _sortStores() {
