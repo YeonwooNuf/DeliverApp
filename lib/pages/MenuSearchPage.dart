@@ -153,7 +153,7 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
                 color: Colors.transparent, // 내부 배경색을 투명하게 설정
               ),
               child: Padding(
-                padding: EdgeInsets.only(right: 16.0), // 오른쪽 여백 추가
+                padding: EdgeInsets.only(right: 16.0, left: 16.0, bottom: 5.0, top: 5.0), // 오른쪽 여백 추가
                 child: Align(
                   child: Text(
                     '${widget.storeAddress}',

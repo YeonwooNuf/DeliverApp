@@ -43,16 +43,16 @@ class _MyPageState extends State<MyPage> {
     return MaterialApp(
       theme: ThemeData(
         textTheme: TextTheme(
-          headline1: TextStyle(
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'MangoDdobak'),
-          headline2: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'MangoDdobak'),
-          bodyText1: TextStyle(fontSize: 16, fontFamily: 'MangoDdobak'),
-          button: TextStyle(fontSize: 20, fontFamily: 'MangoDdobak'),
+          // headline1: TextStyle(
+          //     fontSize: 40,
+          //     fontWeight: FontWeight.bold,
+          //     fontFamily: 'MangoDdobak'),
+          // headline2: TextStyle(
+          //     fontSize: 18,
+          //     fontWeight: FontWeight.bold,
+          //     fontFamily: 'MangoDdobak'),
+          // bodyText1: TextStyle(fontSize: 16, fontFamily: 'MangoDdobak'),
+          // button: TextStyle(fontSize: 20, fontFamily: 'MangoDdobak'),
         ),
       ),
       home: DeliveryScreen(

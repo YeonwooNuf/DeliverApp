@@ -22,7 +22,7 @@ class CategorySelect extends StatefulWidget {
 
 class _JapaneseState extends State<CategorySelect> {
   var currentValue = '1'; // 드롭다운메뉴 변수
-  final List<String> _items = <String>['가나다순', '신규매장순']; // 드롭다운메뉴
+  final List<String> _items = <String>[' 가나다순', ' 신규매장순']; // 드롭다운메뉴
   late String selectedValue = _items[0];
   final List<String> _titles = [
     "한식",
@@ -89,6 +89,7 @@ class _JapaneseState extends State<CategorySelect> {
       length: 8,
       initialIndex: _currentIndex, // 초기 탭
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: 80,
           backgroundColor: Colors.white,
@@ -173,7 +174,7 @@ class _JapaneseState extends State<CategorySelect> {
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.grey, // 테두리 색상
-          width: 1.0, // 테두리 두께
+          width: 2.0, // 테두리 두께
         ),
         borderRadius: BorderRadius.circular(30), // 테두리 모양 (원형)
       ),
@@ -208,18 +209,23 @@ class _JapaneseState extends State<CategorySelect> {
   // 이미지 클릭 메서드
 
   Widget _Image(
-    String storeName,
-    int storeId,
-    String storeAddress,
-    String storeImg1,
-    String storeImg2,
-    String storeImg3,
-    String userNumber, 
-    double averageRating,
-  ) {
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+  String storeName,
+  int storeId,
+  String storeAddress,
+  String storeImg1,
+  String storeImg2,
+  String storeImg3,
+  String userNumber,
+  double averageRating,
+) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: const Color.fromARGB(255, 177, 177, 177), width: 0.0), // 테두리 추가
+        borderRadius: BorderRadius.circular(10), // 테두리 모서리 둥글게
+      ),
+      padding: EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -229,95 +235,94 @@ class _JapaneseState extends State<CategorySelect> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => MenuSearchPage(
-
                     storeImage_URL: storeImg1,
                     storeName: storeName,
                     storeId: storeId,
-
-                    storeAddress: storeAddress, userNumber: widget.userNumber,
-
+                    storeAddress: storeAddress,
+                    userNumber: widget.userNumber,
                   ),
                 ),
               );
             },
-           child: Container(
-            height: 200,
-            width: 400,
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: _buildImageContainer(storeImg1),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: _buildImageContainer(storeImg2),
-                      ),
-                      SizedBox(height: 10),
-                      Expanded(
-                        child: _buildImageContainer(storeImg3),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-            
-          ),
-            SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, 
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            child: Container(
+              height: 200,
+              width: double.infinity,
+              child: Row(
                 children: [
-                  Text(
-                    storeName.length > 15 ? storeName.substring(0, 15) + '...' : storeName,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20,
-                    ),
+                  Expanded(
+                    flex: 3,
+                    child: _buildImageContainer(storeImg1),
                   ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(
-                        '평균 별점: ',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                  SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: _buildImageContainer(storeImg2),
                         ),
-                      ),
-                      Text(
-                        averageRating.toStringAsFixed(1),
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.amber,
+                        SizedBox(height: 10),
+                        Expanded(
+                          child: _buildImageContainer(storeImg3),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            HeartIconButton(
-              userNumber: userNumber,
-              storeId: '$storeId',
-              storeImg: storeImg1,
-              storeName: storeName,
-            ),
-          ],
-        ),
-        
-      ],
+          ),
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      storeName.length > 15
+                          ? storeName.substring(0, 15) + '...'
+                          : storeName,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text(
+                          '평균 별점: ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          averageRating.toStringAsFixed(1),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.amber,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              HeartIconButton(
+                userNumber: userNumber,
+                storeId: '$storeId',
+                storeImg: storeImg1,
+                storeName: storeName,
+              ),
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }
