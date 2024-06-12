@@ -149,23 +149,24 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
               ),
             ),
             Padding(
-  padding: EdgeInsets.all(20),
-  child: Container(
-    height: MediaQuery.of(context).size.height * 0.15, // 리뷰 박스 높이 설정
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal, // 가로 스크롤
-      itemCount: 3, // 리뷰 박스 개수 (예시로 3개)
-      itemBuilder: (context, index) {
-        return Row(
-          children: [
-            _ReviewBox(context),
-            SizedBox(width: 20), // 간격 추가
-          ],
-        );
-      },
-    ),
-  ),
-),
+              padding: EdgeInsets.all(20),
+              child: Container(
+                height:
+                    MediaQuery.of(context).size.height * 0.15, // 리뷰 박스 높이 설정
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal, // 가로 스크롤
+                  itemCount: 3, // 리뷰 박스 개수 (예시로 3개)
+                  itemBuilder: (context, index) {
+                    return Row(
+                      children: [
+                        _ReviewBox(context),
+                        SizedBox(width: 20), // 간격 추가
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
             SizedBox(height: 20),
             Container(
               decoration: BoxDecoration(

@@ -18,6 +18,7 @@ class _FavoritePageState extends State<FavoritePage> {
   late List<Widget> favorites = [];
   late List<Map<String, dynamic>> allFavorites = [];
   late List<Map<String, dynamic>> allStores = [];
+  late String mostFrequentCategory = '';
 
   @override
   void initState() {
@@ -37,6 +38,8 @@ class _FavoritePageState extends State<FavoritePage> {
         allStores = _fetchedAllStores;
 
         favorites = buildFavoritesList(allFavorites);
+
+        mostFrequentCategory = calculateMostFrequentCategory(allFavorites);
 
         print('Fetched favorites: $allFavorites');
       });
@@ -69,6 +72,34 @@ class _FavoritePageState extends State<FavoritePage> {
     }).toList();
   }
 
+  // 가장 많은 카테고리를 찾는 함수
+  String calculateMostFrequentCategory(
+      List<Map<String, dynamic>> favoritesData) {
+    Map<String, int> categoryCount = {};
+    for (var favorite in favoritesData) {
+      String category = allStores.firstWhere(
+            (store) => store['storeId'] == favorite['favoriteStoreId'],
+            orElse: () => {},
+          )['category'] ??
+          '';
+
+      if (category.isNotEmpty) {
+        categoryCount[category] = (categoryCount[category] ?? 0) + 1;
+      }
+    }
+
+    String mostFrequent = '';
+    int maxCount = 0;
+    categoryCount.forEach((category, count) {
+      if (count > maxCount) {
+        maxCount = count;
+        mostFrequent = category;
+      }
+    });
+
+    return mostFrequent;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -96,6 +127,8 @@ class _FavoritePageState extends State<FavoritePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  // 추천 위젯 추가
+            buildRecommendationWidget(),
                   DropdownButton<String>(
                     value: selectedFilter,
                     underline: Container(),
@@ -142,107 +175,125 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  Widget buildItemWidget(
-    int favoriteStoreId,
-    String title,
-    String imagePath,
-    String starRating,
-    String storeAddress,
-  ) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MenuSearchPage(
-              storeImage_URL: imagePath,
-              storeName: title,
-              storeId: favoriteStoreId,
-              storeAddress: storeAddress,
+  // 추천 위젯 생성
+  Widget buildRecommendationWidget() {
+    return mostFrequentCategory.isNotEmpty
+        ? Padding(
+            padding: EdgeInsets.symmetric(vertical: 10.0),
+            child: Text(
+              '추천: $mostFrequentCategory',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
+          )
+        : SizedBox.shrink();
+  }
+
+  Widget buildItemWidget(
+  int favoriteStoreId,
+  String title,
+  String imagePath,
+  String starRating,
+  String storeAddress,
+) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MenuSearchPage(
+            storeImage_URL: imagePath,
+            storeName: title,
+            storeId: favoriteStoreId,
+            storeAddress: storeAddress,
           ),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.grey[200],
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 4,
-                offset: Offset(0, 2),
+        ),
+      );
+    },
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.grey[200],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 4,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Row(
+            children: [
+              Image.network(
+                imagePath,
+                width: 110,
+                height: 90,
+                fit: BoxFit.contain,
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(height: 5.0),
+                    Row(
+                      children: [
+                        ...List.generate(
+                          int.parse(starRating),
+                          (index) => Icon(Icons.star,
+                              color: Colors.yellow, size: 20),
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          starRating,
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5.0),
+                    Text(
+                      storeAddress,
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () async {
+                  try {
+                    await deleteFavorite(int.parse(widget.userNumber), favoriteStoreId);
+                    _fetchFavoriteData(); // 데이터 갱신
+                  } catch (e) {
+                    print('Error deleting favorite: $e');
+                  }
+                },
               ),
             ],
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Row(
-              children: [
-                Image.network(
-                  imagePath,
-                  width: 110,
-                  height: 90,
-                  fit: BoxFit.contain,
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          ...List.generate(
-                            int.parse(starRating),
-                            (index) => Icon(Icons.star,
-                                color: Colors.yellow, size: 20),
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            starRating,
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete, color: Colors.black),
-                  onPressed: () async {
-                    await deleteFavorite(
-                        int.parse(widget.userNumber), favoriteStoreId);
-                    setState(() {
-                      allFavorites.removeWhere((favorite) =>
-                          favorite['favoriteStoreId'] ==
-                          favoriteStoreId); // 클릭하면 바로 상태 업데이트
-                      favorites = buildFavoritesList(allFavorites);
-                    });
-
-                    // 즐겨찾기 수를 SharedPreferences에 저장
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.setInt('favoritesCount', allFavorites.length);
-
-                   
-                  },
-                ),
-              ],
-            ),
-          ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
