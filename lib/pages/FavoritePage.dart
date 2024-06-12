@@ -28,11 +28,11 @@ class _FavoritePageState extends State<FavoritePage> {
     selectedFilter = filterOptions[0];
     _fetchFavoriteData();
   }
-  
 
   Future<void> _fetchFavoriteData() async {
     try {
-      List<Map<String, dynamic>> _fetchedFavoriteData = await getUserFavorites(widget.userNumber);
+      List<Map<String, dynamic>> _fetchedFavoriteData =
+          await getUserFavorites(widget.userNumber);
       List<Map<String, dynamic>> _fetchedAllStores = await getAllStores();
 
       // 각 즐겨찾기에 평점 정보를 추가합니다.
@@ -41,7 +41,8 @@ class _FavoritePageState extends State<FavoritePage> {
         try {
           averageRating = await getStoreRating(favorite['favoriteStoreId']);
         } catch (e) {
-          print('Error fetching rating for store ${favorite['favoriteStoreId']}: $e');
+          print(
+              'Error fetching rating for store ${favorite['favoriteStoreId']}: $e');
         }
         favorite['averageRating'] = averageRating;
       }
@@ -66,32 +67,53 @@ class _FavoritePageState extends State<FavoritePage> {
   }
 
   Future<double> getStoreRating(int storeId) async {
-  try {
-    final response = await http.get(
-      Uri.parse('http://localhost:8080/reviews/$storeId/rating'),
-      headers: {'Content-Type': 'application/json'},
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('http://localhost:8080/reviews/$storeId/rating'),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    if (response.statusCode == 200) {
-      final dynamic responseData = jsonDecode(utf8.decode(response.bodyBytes));
-      if (responseData is Map<String, dynamic> && responseData.containsKey('averageRating')) {
-        final averageRating = responseData['averageRating'];
-        if (averageRating is double) {
-          return averageRating;
+      if (response.statusCode == 200) {
+        final dynamic responseData =
+            jsonDecode(utf8.decode(response.bodyBytes));
+        if (responseData is Map<String, dynamic> &&
+            responseData.containsKey('averageRating')) {
+          final averageRating = responseData['averageRating'];
+          if (averageRating is double) {
+            return averageRating;
+          } else {
+            throw Exception('Invalid average rating format: $averageRating');
+          }
         } else {
-          throw Exception('Invalid average rating format: $averageRating');
+          throw Exception('Invalid response format: $responseData');
         }
       } else {
-        throw Exception('Invalid response format: $responseData');
+        throw Exception('Failed to fetch store rating: ${response.statusCode}');
       }
-    } else {
-      throw Exception('Failed to fetch store rating: ${response.statusCode}');
+    } catch (e) {
+      print('Error fetching store rating: $e');
+      throw e;
     }
-  } catch (e) {
-    print('Error fetching store rating: $e');
-    throw e;
   }
-}
+
+  List<Widget> buildUnFavoritesList(List<Map<String, dynamic>> favoritesData) {
+    return favoritesData.map<Widget>((favorite) {
+      Map<String, dynamic> store = allStores.firstWhere(
+        (store) => store['storeId'] != favorite['favoriteStoreId'],
+        orElse: () => {},
+      );
+
+      double averageRating = favorite['averageRating'] ?? 0.0;
+
+      return buildItemWidget(
+        favorite['favoriteStoreId'] as int,
+        favorite['favoriteStoreName'],
+        favorite['favorite_storeImg'],
+        averageRating.toString(),
+        store['storeAddress'] ?? '주소를 찾을 수 없음',
+      );
+    }).toList();
+  }
 
   // 즐겨찾기에 추가한 매장들만 필터링 해주는 함수
   List<Widget> buildFavoritesList(List<Map<String, dynamic>> favoritesData) {
@@ -163,13 +185,61 @@ class _FavoritePageState extends State<FavoritePage> {
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
         child: Column(
           children: [
+            // Padding(
+            //   padding: EdgeInsets.all(screenWidth * 0.02),
+            //   child: Align(
+            //     alignment: Alignment.centerLeft,
+            //     child: Text(
+            //       '추천: $mostFrequentCategory',
+            //       style: TextStyle(
+            //         fontSize: 18.0,
+            //         fontWeight: FontWeight.bold,
+            //         color: Colors.black,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             Padding(
-              padding: EdgeInsets.all(screenWidth * 0.02),
+              padding: EdgeInsets.symmetric(vertical: 10.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '이런 매장은 어떠신가요?',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 160.0,
+              child: FutureBuilder(
+                future: getAllStores(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  }
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                  List<Map<String, dynamic>> otherStores = snapshot.data ?? [];
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return buildOtherStoreItemWidget(otherStores[index]);
+                    },
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(screenWidth * 0.001),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // 추천 위젯 추가
-            buildRecommendationWidget(),
                   DropdownButton<String>(
                     value: selectedFilter,
                     underline: Container(),
@@ -209,6 +279,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 children: [...favorites],
               ),
             ),
+            // 추천 바로 아래에 다른 매장 추가
           ],
         ),
       ),
@@ -216,133 +287,167 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  // 추천 위젯 생성
-  Widget buildRecommendationWidget() {
-    return mostFrequentCategory.isNotEmpty
-        ? Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.0),
-            child: Text(
-              '추천: $mostFrequentCategory',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+  // 다른 매장 아이템 위젯 생성
+  Widget buildOtherStoreItemWidget(Map<String, dynamic> store) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 180.0,
+            height: 115.0,
+            padding: EdgeInsets.all(4.0), // 내부 여백 추가
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.black, // 테두리 색상
+                width: 2.0, // 테두리 두께
               ),
             ),
-          )
-        : SizedBox.shrink();
-  }
-  
-  Widget buildItemWidget(
-  int favoriteStoreId,
-  String title,
-  String imagePath,
-  String averageRating, // 변경: averageRating으로 수정
-  String storeAddress,
-) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MenuSearchPage(
-            storeImage_URL: imagePath,
-            storeName: title,
-            storeId: favoriteStoreId,
-            storeAddress: storeAddress,
-            userNumber: widget.userNumber,
-          ),
-        ),
-      );
-    },
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.grey[200],
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 4,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Row(
-            children: [
-              Image.network(
-                imagePath,
-                width: 110,
-                height: 90,
-                fit: BoxFit.contain,
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.black,
+            child: Column(
+              children: [
+                // 매장 이미지 또는 아이콘
+                store['storeImg'] != null
+                    ? Image.network(
+                        store['storeImg'],
+                        width: 80.0,
+                        height: 80.0,
+                        fit: BoxFit.cover,
+                      )
+                    : Icon(
+                        Icons.store,
+                        size: 40.0,
+                        color: Colors.grey[600],
                       ),
-                    ),
-                    Row(
-                      children: [
-                        ...List.generate(
-                          double.parse(averageRating).round(), // 변경: double로 파싱한 후 반올림하여 사용
-                          (index) => Icon(Icons.star,
-                              color: Colors.yellow, size: 16), // 별 아이콘 크기 조정
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          double.parse(averageRating).toStringAsFixed(1), // 한 자리까지만 표시
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                  ],
+                SizedBox(height: 4.0),
+                // 매장명 텍스트
+                Text(
+                  store['storeName'] ?? '매장 이름 없음',
+                  style: TextStyle(fontSize: 12.0),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              IconButton(
-// <<<<<<< yeonwoo
-//                 icon: Icon(Icons.delete),
-//                 onPressed: () async {
-//                   try {
-//                     await deleteFavorite(int.parse(widget.userNumber), favoriteStoreId);
-//                     _fetchFavoriteData(); // 데이터 갱신
-//                   } catch (e) {
-//                     print('Error deleting favorite: $e');
-//                   }
-// =======
-                icon: Icon(Icons.delete, color: Colors.black),
-                onPressed: () async {
-                  await deleteFavorite(
-                      int.parse(widget.userNumber), favoriteStoreId);
-                  setState(() {
-                    allFavorites.removeWhere((favorite) =>
-                        favorite['favoriteStoreId'] == favoriteStoreId); // 클릭하면 바로 상태 업데이트
-                    favorites = buildFavoritesList(allFavorites);
-                  });
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-                  // 즐겨찾기 수를 SharedPreferences에 저장
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.setInt('favoritesCount', allFavorites.length);
-                },
+  // 즐겨찾기 아이템 위젯 생성
+  Widget buildItemWidget(
+    int favoriteStoreId,
+    String title,
+    String imagePath,
+    String averageRating, // 변경: averageRating으로 수정
+    String storeAddress,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MenuSearchPage(
+              storeImage_URL: imagePath,
+              storeName: title,
+              storeId: favoriteStoreId,
+              storeAddress: storeAddress,
+              userNumber: widget.userNumber,
+            ),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.grey[200],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 4,
+                offset: Offset(0, 2),
               ),
             ],
           ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Row(
+              children: [
+                Image.network(
+                  imagePath,
+                  width: 110,
+                  height: 90,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: Colors.black,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          ...List.generate(
+                            double.parse(averageRating)
+                                .round(), // 변경: double로 파싱한 후 반올림하여 사용
+                            (index) => Icon(Icons.star,
+                                color: Colors.yellow, size: 16), // 별 아이콘 크기 조정
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            double.parse(averageRating)
+                                .toStringAsFixed(1), // 한 자리까지만 표시
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () async {
+                    try {
+                      await deleteFavorite(
+                          int.parse(widget.userNumber), favoriteStoreId);
+                      _fetchFavoriteData(); // 데이터 갱신
+                    } catch (e) {
+                      print('Error deleting favorite: $e');
+                    }
+                    // icon: Icon(Icons.delete, color: Colors.black),
+                    // onPressed: () async {
+                    //   await deleteFavorite(
+                    //       int.parse(widget.userNumber), favoriteStoreId);
+                    //   setState(() {
+                    //     allFavorites.removeWhere((favorite) =>
+                    //         favorite['favoriteStoreId'] == favoriteStoreId); // 클릭하면 바로 상태 업데이트
+                    //     favorites = buildFavoritesList(allFavorites);
+                    //   });
+
+                    // 즐겨찾기 수를 SharedPreferences에 저장
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setInt('favoritesCount', allFavorites.length);
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
