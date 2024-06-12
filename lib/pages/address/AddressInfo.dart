@@ -1,12 +1,9 @@
-import 'package:delivery/pages/HomePage.dart';
 import 'package:delivery/pages/address/AddressRegisterPage.dart';
 import 'package:delivery/service/sv_homeAddress.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:delivery/pages/address/AddressChange.dart';
 import 'package:delivery/dto/homeAddress_dto.dart'; // HomeAddressDto를 사용하기 위해 추가
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class AddressInfo extends StatefulWidget {
   final String searchedAddress;

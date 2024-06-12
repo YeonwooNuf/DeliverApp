@@ -1,15 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:bootpay/bootpay.dart';
-import 'package:bootpay/model/extra.dart';
-import 'package:bootpay/model/item.dart';
-import 'package:bootpay/model/payload.dart';
-import 'package:bootpay/model/stat_item.dart';
-import 'package:bootpay/model/user.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:delivery/product/productInfo.dart';
-import 'package:delivery/product/productService.dart';
 
 class ItemListNotifier extends ChangeNotifier {
   List<String> _addresses = [

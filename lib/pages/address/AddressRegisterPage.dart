@@ -1,9 +1,6 @@
-import 'package:delivery/pages/PaymentPage.dart';
 import 'package:delivery/pages/address/AddressChange.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import 'package:delivery/pages/HomePage.dart';
 import 'package:delivery/pages/address/AddressMapPage.dart';
@@ -134,14 +131,23 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
             ),
             SizedBox(height: 20),
             Divider(height: 1, color: Colors.grey),
+            SizedBox(height: 20),
             Expanded(
               child: Column(
-                children: List.generate(
-                  3,
-                  (index) => _buildCategoryList(context, index),
-                ),
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 16.0), // 16크기 패딩
+                  ),
+                  Column(
+                    children: List.generate(
+                      3,
+                      (index) => _buildCategoryList(context, index),
+                    ),
+                  ),
+                ],
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -226,9 +232,10 @@ class _AddressRegisterPageState extends State<AddressRegisterPage> {
                                 _getCategory(categoryIndex),
                                 true,
                               );
-                              Provider.of<ItemListNotifier>(context, listen: false)
-        .setSelectedAddress(addresses[index]['addressCategory']);
-                              
+                              Provider.of<ItemListNotifier>(context,
+                                      listen: false)
+                                  .setSelectedAddress(
+                                      addresses[index]['addressCategory']);
                             });
                           },
                         );

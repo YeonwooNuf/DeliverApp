@@ -170,6 +170,7 @@ class _FavoritePageState extends State<FavoritePage> {
                 children: [
                   // 추천 위젯 추가
             buildRecommendationWidget(),
+            SizedBox(width: 50,),
                   DropdownButton<String>(
                     value: selectedFilter,
                     underline: Container(),

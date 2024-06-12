@@ -1,8 +1,6 @@
 import 'package:delivery/service/sv_homeAddress.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:delivery/pages/address/NewAddressPage.dart';
-import 'package:delivery/pages/address/AddressChange.dart';
 
 class AddressManagePage extends StatefulWidget {
   final String userNumber;

@@ -57,12 +57,15 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
   Future<void> _fetchReviewData() async {
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:8080/reviews/store/${widget.storeName}'), // 수정된 부분: 리뷰 정보를 가져오는 엔드포인트 URL
+        Uri.parse(
+            'http://localhost:8080/reviews/store/${widget.storeName}'), // 수정된 부분: 리뷰 정보를 가져오는 엔드포인트 URL
         headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
-        final List<Map<String, dynamic>> reviews = List<Map<String, dynamic>>.from(jsonDecode(utf8.decode(response.bodyBytes)));
+        final List<Map<String, dynamic>> reviews =
+            List<Map<String, dynamic>>.from(
+                jsonDecode(utf8.decode(response.bodyBytes)));
         setState(() {
           _reviews = reviews; // 리뷰 데이터를 저장
         });
@@ -179,7 +182,8 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
             Padding(
               padding: EdgeInsets.all(20),
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.15, // 리뷰 박스 높이 설정
+                height:
+                    MediaQuery.of(context).size.height * 0.15, // 리뷰 박스 높이 설정
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal, // 가로 스크롤
                   itemCount: _reviews.length, // 리뷰 박스 개수 (예시로 3개)
@@ -228,14 +232,18 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
                 _goToPaymentPage(selectedMenus);
               },
               child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 23),
                 height: MediaQuery.of(context).size.height * 0.1,
-                color: Colors.blue,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(10),
+                ),
                 child: Center(
                   child: Text(
                     '${_totalPrice}원 결제하기',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -273,7 +281,9 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    menu['productName'],
+                    menu['productName'].length > 15
+                        ? '${menu['productName'].substring(0, 15)}..'
+                        : menu['productName'],
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text(
@@ -397,7 +407,7 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
           userNumber: widget.userNumber,
         ),
       ),
-    )).then((result) {
+    ).then((result) {
       // 결과값을 확인하고 페이지를 새로고침
       if (result == true) {
         setState(() {
@@ -410,39 +420,38 @@ class _MenuSearchPageState extends State<MenuSearchPage> {
 
   //리뷰박스 ui
   Widget _ReviewBox(BuildContext context, int index) {
-  final review = _reviews[index];
-  return Container(
-    width: MediaQuery.of(context).size.width * 0.65,
-    height: MediaQuery.of(context).size.height * 0.15,
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.grey), // 회색 테두리 추가
-    ),
-    child: Padding(
-      padding: EdgeInsets.all(10), // 여백 추가
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '주문한 메뉴: ${review['productNames']}',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            softWrap: true, // 자동으로 줄바꿈 설정
-          ),
-          Flexible(
-            child: Text(
-              '리뷰: ${review['reviewContent']}',
+    final review = _reviews[index];
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.65,
+      height: MediaQuery.of(context).size.height * 0.15,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey), // 회색 테두리 추가
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(10), // 여백 추가
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '주문한 메뉴: ${review['productNames']}',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               softWrap: true, // 자동으로 줄바꿈 설정
-              overflow: TextOverflow.ellipsis, // 새로운 오버플로우 발생 시 생략하여 표시
             ),
-          ),
-          Text(
-            '평점: ${review['rating']}',
-            style: TextStyle(fontSize: 14),
-          ),
-        ],
+            Flexible(
+              child: Text(
+                '리뷰: ${review['reviewContent']}',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                softWrap: true, // 자동으로 줄바꿈 설정
+                overflow: TextOverflow.ellipsis, // 새로운 오버플로우 발생 시 생략하여 표시
+              ),
+            ),
+            Text(
+              '평점: ${review['rating']}',
+              style: TextStyle(fontSize: 14),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }
